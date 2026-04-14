@@ -1,0 +1,2 @@
+- Transfer tickets to another
+- Refunds only if event is cancelled
