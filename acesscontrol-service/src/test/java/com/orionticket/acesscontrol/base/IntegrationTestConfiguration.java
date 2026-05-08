@@ -12,6 +12,7 @@ public class IntegrationTestConfiguration {
 
     @Bean
     @ServiceConnection
+    @SuppressWarnings("resource")
     PostgreSQLContainer<?> postgresContainer() {
         return new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"))
                 .withDatabaseName("accesscontrol_test")
@@ -21,7 +22,8 @@ public class IntegrationTestConfiguration {
 
     @Bean
     @ServiceConnection
-    RabbitMQContainer<?> rabbitMQContainer() {
+    @SuppressWarnings("resource")
+    RabbitMQContainer rabbitMQContainer() {
         return new RabbitMQContainer(DockerImageName.parse("rabbitmq:3-management-alpine"));
     }
 }

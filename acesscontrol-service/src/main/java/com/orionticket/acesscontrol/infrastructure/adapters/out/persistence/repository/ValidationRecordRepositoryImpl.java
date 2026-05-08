@@ -3,6 +3,7 @@ package com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.rep
 import com.orionticket.acesscontrol.domain.model.ValidationRecord;
 import com.orionticket.acesscontrol.domain.port.out.ValidationRecordRepositoryPort;
 import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.mapper.ValidationRecordEntityMapper;
+import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.entity.ValidationRecordEntity;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;

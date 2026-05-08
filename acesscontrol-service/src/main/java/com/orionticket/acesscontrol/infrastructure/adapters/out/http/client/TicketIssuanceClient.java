@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +14,7 @@ public class TicketIssuanceClient implements TicketLookupPort {
 
     private static final Logger log = LoggerFactory.getLogger(TicketIssuanceClient.class);
 
+    @SuppressWarnings("unused")
     private final WebClient webClient;
 
     public TicketIssuanceClient(WebClient.Builder webClientBuilder) {

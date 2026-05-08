@@ -1,4 +1,4 @@
-package com.orionticket.acesscontrol.infrastructure.adapters.out.messaging.event;
+package com.orionticket.acesscontrol.infrastructure.adapters.out.messaging;
 
 import com.orionticket.acesscontrol.domain.model.ValidationRecord;
 import com.orionticket.acesscontrol.domain.port.out.DomainEventPublisher;

@@ -3,7 +3,6 @@ package com.orionticket.acesscontrol.application.service;
 import com.orionticket.acesscontrol.application.port.in.command.SyncValidationsCommand;
 import com.orionticket.acesscontrol.application.port.in.dto.SyncResultDto;
 import com.orionticket.acesscontrol.application.port.in.dto.ValidationResultDto;
-import com.orionticket.acesscontrol.domain.model.FailureReason;
 import com.orionticket.acesscontrol.domain.model.ValidationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
