@@ -1,6 +1,7 @@
 package com.orionticket.identity.infrastructure.adapters.in.rest;
 
 import com.orionticket.identity.domain.exception.UserAlreadyExistsException;
+import com.orionticket.identity.domain.exception.RoleNotAllowedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,5 +37,29 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage())
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "BAD_REQUEST");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "INTERNAL_SERVER_ERROR");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(RoleNotAllowedException.class)
+    public ResponseEntity<Map<String, String>> handleRoleNotAllowed(RoleNotAllowedException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "UNPROCESSABLE_ENTITY");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
     }
 }

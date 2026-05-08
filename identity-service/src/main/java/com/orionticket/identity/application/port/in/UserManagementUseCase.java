@@ -9,4 +9,5 @@ public interface UserManagementUseCase {
     java.util.List<User> getAllUsers();
     User createUser(String email, String passwordHash, String fullName, String phone, UUID roleId, UUID organizerId, UUID adminId);
     User updateUser(UUID userId, String fullName, String phone, UUID adminId);
+    User createOrganizerStaff(UUID organizerId, String email, String passwordHash, String fullName, String phone, UUID roleId, UUID creatorId);
 }

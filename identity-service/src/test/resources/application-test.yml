@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/identity_db
+    username: postgres
+    password: postgres
+  flyway:
+    url: jdbc:postgresql://localhost:5433/identity_db
+    user: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+
