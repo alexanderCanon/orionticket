@@ -21,6 +21,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
+    @ExceptionHandler(com.orionticket.identity.domain.exception.InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(com.orionticket.identity.domain.exception.InvalidCredentialsException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "UNAUTHORIZED");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

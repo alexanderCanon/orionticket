@@ -24,6 +24,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/v1/auth/**").permitAll() // Permitimos acceso libre a registro/login
+                .requestMatchers("/error").permitAll() // Evita 403 cuando hay excepciones y se mapean a /error
                 .anyRequest().authenticated()
             );
         return http.build();

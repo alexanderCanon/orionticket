@@ -1,9 +1,12 @@
 package com.orionticket.identity.infrastructure.adapters.in.rest;
 
+import com.orionticket.identity.application.port.in.LoginUserUseCase;
 import com.orionticket.identity.application.port.in.RegisterUserUseCase;
 import com.orionticket.identity.domain.model.User;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.RegisterRequest;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.RegisterResponse;
+import com.orionticket.identity.infrastructure.adapters.in.rest.dto.LoginRequest;
+import com.orionticket.identity.infrastructure.adapters.in.rest.dto.LoginResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final RegisterUserUseCase registerUserUseCase;
+    private final LoginUserUseCase loginUserUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -37,5 +41,19 @@ public class AuthController {
                 .build();
                 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        String token = loginUserUseCase.login(request.getEmail(), request.getPassword());
+        User user = loginUserUseCase.getUserByEmail(request.getEmail());
+
+        LoginResponse response = LoginResponse.builder()
+                .accessToken(token)
+                .userId(user.getUserId())
+                .roleId(user.getRoleId())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }
