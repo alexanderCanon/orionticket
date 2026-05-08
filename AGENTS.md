@@ -197,3 +197,4 @@ If both Maven and Gradle files are absent for a service, do not create commands 
 - Pricing is collapsed into Orders. Do not create a separate Pricing service unless a new ADR changes that.
 - Docker Compose is the accepted MVP orchestration choice. Do not introduce Kubernetes/Swarm/ECS without a new decision.
 - Verify documentation links before relying on them during edits, especially when files have been moved or reorganized.
+qw
