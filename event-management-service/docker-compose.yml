@@ -1,0 +1,35 @@
+services:
+  event-postgres:
+    image: postgres:16-alpine
+    container_name: event-postgres
+    environment:
+      POSTGRES_USER: orion
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: event_management_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - event-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: orion-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  event-postgres-data:
