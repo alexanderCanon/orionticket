@@ -55,4 +55,15 @@ public class RabbitMqEventPublisherAdapter implements EventPublisherPort {
         rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.VENUE_CREATED_ROUTING_KEY, message);
         log.info("Published VenueCreated for venueId: {}", venue.getVenueId());
     }
+
+    @Override
+    public void publishEventSubmittedForReview(Event event) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("eventId", event.getEventId());
+        message.put("organizerId", event.getOrganizerId());
+        message.put("status", event.getStatus());
+
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.EVENT_SUBMITTED_ROUTING_KEY, message);
+        log.info("Published EventSubmittedForReview for eventId: {}", event.getEventId());
+    }
 }

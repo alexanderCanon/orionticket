@@ -101,4 +101,40 @@ class EventManagementServiceTest {
             eventManagementService.addDateToEvent(eventId, UUID.randomUUID(), ZonedDateTime.now(), UUID.randomUUID(), 100);
         });
     }
+
+    @Test
+    void shouldSubmitEventForReviewSuccessfully() {
+        UUID organizerId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        event.setEventId(eventId);
+        event.addDate(ZonedDateTime.now().plusDays(10), UUID.randomUUID(), 100);
+
+        when(eventRepositoryPort.findById(eventId)).thenReturn(java.util.Optional.of(event));
+        when(eventRepositoryPort.save(any(Event.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        Event submittedEvent = eventManagementService.submitEventForReview(eventId, organizerId);
+
+        assertEquals("UNDER_REVIEW", submittedEvent.getStatus());
+        verify(eventRepositoryPort, times(1)).save(event);
+        verify(eventPublisherPort, times(1)).publishEventSubmittedForReview(event);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSubmittingEventWithoutDates() {
+        UUID organizerId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        event.setEventId(eventId);
+        // Note: No dates added
+
+        when(eventRepositoryPort.findById(eventId)).thenReturn(java.util.Optional.of(event));
+
+        assertThrows(com.orionticket.events.domain.exception.InvalidEventStateException.class, () -> {
+            eventManagementService.submitEventForReview(eventId, organizerId);
+        });
+
+        verify(eventRepositoryPort, never()).save(any());
+        verify(eventPublisherPort, never()).publishEventSubmittedForReview(any());
+    }
 }

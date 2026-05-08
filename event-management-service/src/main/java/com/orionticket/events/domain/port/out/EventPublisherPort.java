@@ -7,4 +7,5 @@ public interface EventPublisherPort {
     void publishEventCreated(Event event);
     void publishDateAdded(Event event, EventDate date);
     void publishVenueCreated(com.orionticket.events.domain.model.Venue venue);
+    void publishEventSubmittedForReview(Event event);
 }

@@ -50,4 +50,19 @@ public class Event {
         this.dates.add(newDate);
         return newDate;
     }
+
+    /**
+     * Regla de Negocio: Enviar el evento a revisión.
+     * Requiere que el evento tenga al menos una fecha configurada.
+     */
+    public void submitForReview() {
+        if (!"DRAFT".equals(this.status)) {
+            throw new com.orionticket.events.domain.exception.InvalidEventStateException("Only events in DRAFT status can be submitted for review.");
+        }
+        if (this.dates == null || this.dates.isEmpty()) {
+            throw new com.orionticket.events.domain.exception.InvalidEventStateException("Cannot submit an event without dates.");
+        }
+        
+        this.status = "UNDER_REVIEW";
+    }
 }

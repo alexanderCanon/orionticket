@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface EventManagementUseCase {
     Event createEvent(UUID organizerId, String name, String description);
     EventDate addDateToEvent(UUID eventId, UUID organizerId, ZonedDateTime scheduledAt, UUID venueId, Integer capacity);
+    Event submitEventForReview(UUID eventId, UUID organizerId);
 }

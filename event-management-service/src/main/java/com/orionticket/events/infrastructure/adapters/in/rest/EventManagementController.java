@@ -7,6 +7,8 @@ import com.orionticket.events.infrastructure.adapters.in.rest.dto.AddEventDateRe
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.CreateEventRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/v1/events")
 @RequiredArgsConstructor
+@Tag(name = "Events", description = "Event Management Endpoints")
 public class EventManagementController {
 
     private final EventManagementUseCase eventManagementUseCase;
@@ -24,6 +27,7 @@ public class EventManagementController {
     private final UUID TEMPORARY_ORGANIZER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @PostMapping
+    @Operation(summary = "Create a new event", description = "Creates a new event in DRAFT status")
     public ResponseEntity<Event> createEvent(@Valid @RequestBody CreateEventRequest request) {
         Event event = eventManagementUseCase.createEvent(
                 TEMPORARY_ORGANIZER_ID, 
@@ -34,6 +38,7 @@ public class EventManagementController {
     }
 
     @PostMapping("/{eventId}/dates")
+    @Operation(summary = "Add a date to an event", description = "Adds a date with venue and capacity to a DRAFT event")
     public ResponseEntity<EventDate> addDateToEvent(
             @PathVariable UUID eventId,
             @Valid @RequestBody AddEventDateRequest request) {
@@ -46,5 +51,12 @@ public class EventManagementController {
                 request.getCapacity()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(date);
+    }
+
+    @PostMapping("/{eventId}/submit")
+    @Operation(summary = "Submit event for review", description = "Transitions an event from DRAFT to UNDER_REVIEW")
+    public ResponseEntity<Event> submitEventForReview(@PathVariable UUID eventId) {
+        Event event = eventManagementUseCase.submitEventForReview(eventId, TEMPORARY_ORGANIZER_ID);
+        return ResponseEntity.ok(event);
     }
 }

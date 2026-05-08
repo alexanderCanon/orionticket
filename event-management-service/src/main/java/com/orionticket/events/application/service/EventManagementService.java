@@ -45,4 +45,21 @@ public class EventManagementService implements EventManagementUseCase {
         
         return newDate;
     }
+
+    @Override
+    public Event submitEventForReview(UUID eventId, UUID organizerId) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
+
+        if (!event.getOrganizerId().equals(organizerId)) {
+            throw new UnauthorizedAccessException("You are not the owner of this event.");
+        }
+
+        event.submitForReview();
+        
+        Event savedEvent = eventRepositoryPort.save(event);
+        eventPublisherPort.publishEventSubmittedForReview(savedEvent);
+        
+        return savedEvent;
+    }
 }

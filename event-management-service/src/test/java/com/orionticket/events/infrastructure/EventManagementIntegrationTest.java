@@ -122,4 +122,32 @@ class EventManagementIntegrationTest {
                 .andExpect(jsonPath("$.name").value("Estadio Nacional"))
                 .andExpect(jsonPath("$.capacity").value(25000));
     }
+
+    @Test
+    void shouldSubmitEventForReview() throws Exception {
+        // Preparar evento con fecha en BD
+        UUID eventId = UUID.randomUUID();
+        EventJpaEntity event = new EventJpaEntity();
+        event.setEventId(eventId);
+        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setName("Evento para Review");
+        event.setStatus("DRAFT");
+        event.setCreatedAt(ZonedDateTime.now());
+
+        com.orionticket.events.infrastructure.adapters.out.persistence.entity.EventDateJpaEntity date = 
+            new com.orionticket.events.infrastructure.adapters.out.persistence.entity.EventDateJpaEntity();
+        date.setDateId(UUID.randomUUID());
+        date.setEvent(event);
+        date.setScheduledAt(ZonedDateTime.now().plusDays(5));
+        date.setVenueId(UUID.randomUUID());
+        date.setCapacity(100);
+        date.setCreatedAt(ZonedDateTime.now());
+        
+        event.getDates().add(date);
+        eventRepository.save(event);
+
+        mockMvc.perform(post("/v1/events/" + eventId + "/submit"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UNDER_REVIEW"));
+    }
 }
