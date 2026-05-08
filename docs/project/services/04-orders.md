@@ -11,11 +11,11 @@ Responsable del proceso de checkout, la lógica de precios y la gestión de prom
 - Ciclo de vida del pedido (Created -> Paid -> Expired).
 
 ## 2. Documentación Técnica Específica
-- **Casos de Uso:** [UC-OR-01, UC-OR-02](../docs/phases/phase-2/use-case-catalog.md).
-- **Agregados:** [Order (con LineItems), Promotion](../docs/phases/phase-1/aggregate-definitions.md).
-- **Contrato API:** [Orders Endpoints](../docs/phases/phase-3/service-contracts.md).
-- **Diagrama ER:** [Modelo de Datos de Orders](../docs/phases/phase-3/er-diagrams/orders.md).
-- **Decisión de Arquitectura:** [Pricing colapsado en Orders (ADR-011)](../docs/phases/phase-3/adrs/ADR-011-pricing-collapsed.md).
+- **Casos de Uso:** [UC-OR-01, UC-OR-02](../../phases/phase-2/use-case-catalog.md).
+- **Agregados:** [Order (con LineItems), Promotion](../../phases/phase-1/aggregate-definitions.md).
+- **Contrato API:** [Orders Endpoints](../../phases/phase-3/service-contracts.md).
+- **Diagrama ER:** [Modelo de Datos de Orders](../../phases/phase-3/er-diagrams/orders.md).
+- **Decisión de Arquitectura:** [Pricing colapsado en Orders (ADR-011)](../../phases/phase-3/adrs/ADR-011-pricing-collapsed.md).
 
 ## 3. Eventos de Dominio
 ### Genera (Produce):
@@ -29,4 +29,4 @@ Responsable del proceso de checkout, la lógica de precios y la gestión de prom
 ---
 
 ## 4. Estándares Aplicables
-- [Estrategia de Idempotencia (ADR-008)](../docs/phases/phase-3/adrs/ADR-008-idempotency-key.md).
+- [Estrategia de Idempotencia (ADR-008)](../../phases/phase-3/adrs/ADR-008-idempotency-key.md).

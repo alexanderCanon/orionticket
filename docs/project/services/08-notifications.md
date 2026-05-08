@@ -10,9 +10,9 @@ Responsable del envío de comunicaciones externas (Email, SMS, WhatsApp) a trav�
 - Lógica de reintentos en caso de fallo del proveedor.
 
 ## 2. Documentación Técnica Específica
-- **Casos de Uso:** [UC-NO-01](../docs/phases/phase-2/use-case-catalog.md).
-- **Agregado:** [Notification](../docs/phases/phase-1/aggregate-definitions.md).
-- **Diagrama ER:** [Modelo de Datos de Notifications](../docs/phases/phase-3/er-diagrams/notifications.md).
+- **Casos de Uso:** [UC-NO-01](../../phases/phase-2/use-case-catalog.md).
+- **Agregado:** [Notification](../../phases/phase-1/aggregate-definitions.md).
+- **Diagrama ER:** [Modelo de Datos de Notifications](../../phases/phase-3/er-diagrams/notifications.md).
 
 ## 3. Eventos de Dominio
 ### Genera (Produce):
@@ -23,4 +23,4 @@ Responsable del envío de comunicaciones externas (Email, SMS, WhatsApp) a trav�
 ---
 
 ## 4. Estándares Aplicables
-- [Manejo de DLQ (Dead Letter Queues)](../docs/phases/phase-3/adrs/ADR-014-message-broker.md).
+- [Manejo de DLQ (Dead Letter Queues)](../../phases/phase-3/adrs/ADR-014-message-broker.md).

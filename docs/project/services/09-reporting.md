@@ -11,10 +11,10 @@ Responsable de consolidar datos para inteligencia de negocio a través de modelo
 - Consolidación de datos históricos.
 
 ## 2. Documentación Técnica Específica
-- **Casos de Uso:** [UC-RE-01, UC-RE-02, UC-RE-03](../docs/phases/phase-2/use-case-catalog.md).
-- **Modelos de Lectura (Proyecciones):** [SalesReport, CommissionReport, AccessReport](../docs/phases/phase-1/aggregate-definitions.md).
-- **Contrato API:** [Reporting Endpoints](../docs/phases/phase-3/service-contracts.md).
-- **Diagrama ER:** [Modelo de Datos de Reporting](../docs/phases/phase-3/er-diagrams/reporting.md).
+- **Casos de Uso:** [UC-RE-01, UC-RE-02, UC-RE-03](../../phases/phase-2/use-case-catalog.md).
+- **Modelos de Lectura (Proyecciones):** [SalesReport, CommissionReport, AccessReport](../../phases/phase-1/aggregate-definitions.md).
+- **Contrato API:** [Reporting Endpoints](../../phases/phase-3/service-contracts.md).
+- **Diagrama ER:** [Modelo de Datos de Reporting](../../phases/phase-3/er-diagrams/reporting.md).
 
 ## 3. Funcionamiento
 Este servicio es **puramente reactivo**. No genera eventos que cambien el estado del negocio, solo consume eventos para actualizar sus proyecciones (consistencia eventual).
@@ -25,4 +25,4 @@ Este servicio es **puramente reactivo**. No genera eventos que cambien el estado
 ---
 
 ## 4. Estándares Aplicables
-- [NFR-030: Consistencia Eventual en Reportes](../docs/phases/phase-3/non-functional-requirements.md).
+- [NFR-030: Consistencia Eventual en Reportes](../../phases/phase-3/non-functional-requirements.md).

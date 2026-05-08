@@ -11,15 +11,15 @@ Responsable de la alta disponibilidad de asientos y la gestión de la concurrenc
 - Expiración de reservas (Cleanup job).
 
 ## 2. Documentación Técnica Específica
-- **Casos de Uso:** [UC-SI-01, UC-SI-02, UC-SI-03](../docs/phases/phase-2/use-case-catalog.md).
-- **Agregados:** [Seat (con Batch y Reservation)](../docs/phases/phase-1/aggregate-definitions.md).
-- **Contrato API:** [Seating/Inventory Endpoints](../docs/phases/phase-3/service-contracts.md).
-- **Diagrama ER:** [Modelo de Datos de Seating/Inventory](../docs/phases/phase-3/er-diagrams/seating-inventory.md).
-- **Flujo Crítico:** [Secuencia de Reserva y Expiración](../docs/phases/phase-2/critical-flows.md).
+- **Casos de Uso:** [UC-SI-01, UC-SI-02, UC-SI-03](../../phases/phase-2/use-case-catalog.md).
+- **Agregados:** [Seat (con Batch y Reservation)](../../phases/phase-1/aggregate-definitions.md).
+- **Contrato API:** [Seating/Inventory Endpoints](../../phases/phase-3/service-contracts.md).
+- **Diagrama ER:** [Modelo de Datos de Seating/Inventory](../../phases/phase-3/er-diagrams/seating-inventory.md).
+- **Flujo Crítico:** [Secuencia de Reserva y Expiración](../../phases/phase-2/critical-flows.md).
 
 ## 3. Decisiones Críticas
-- **ADR-004:** [Modelo de Reserva Universal](../docs/phases/phase-3/adrs/ADR-004-universal-reservation.md).
-- **ADR-005:** [Consistencia Atómica en Tandas/Reservas](../docs/phases/phase-3/adrs/ADR-005-atomic-batch-reservation.md).
+- **ADR-004:** [Modelo de Reserva Universal](../../phases/phase-3/adrs/ADR-004-universal-reservation.md).
+- **ADR-005:** [Consistencia Atómica en Tandas/Reservas](../../phases/phase-3/adrs/ADR-005-atomic-batch-reservation.md).
 
 ## 4. Eventos de Dominio
 ### Genera (Produce):
@@ -32,4 +32,4 @@ Responsable de la alta disponibilidad de asientos y la gestión de la concurrenc
 ---
 
 ## 5. Estándares Aplicables
-- [NFR-017 / NFR-024: Concurrencia y Bloqueos](../docs/phases/phase-3/non-functional-requirements.md).
+- [NFR-017 / NFR-024: Concurrencia y Bloqueos](../../phases/phase-3/non-functional-requirements.md).
