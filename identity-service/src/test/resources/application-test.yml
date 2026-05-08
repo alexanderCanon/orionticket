@@ -1,13 +1,18 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/identity_db
+    url: jdbc:postgresql://127.0.0.1:5433/identity_db
     username: postgres
     password: postgres
   flyway:
-    url: jdbc:postgresql://localhost:5433/identity_db
+    url: jdbc:postgresql://127.0.0.1:5433/identity_db
     user: postgres
     password: postgres
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest

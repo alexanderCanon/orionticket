@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.orionticket.events.infrastructure.EventManagementIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.433 s -- in com.orionticket.events.infrastructure.EventManagementIntegrationTest

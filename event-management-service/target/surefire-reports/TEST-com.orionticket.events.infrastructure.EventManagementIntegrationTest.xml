@@ -1,0 +1,814 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="2.433" tests="8" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.specification.version" value="21"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service\target\test-classes;C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service\target\classes;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-actuator\3.3.0\spring-boot-starter-actuator-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter\3.3.0\spring-boot-starter-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.3.0\spring-boot-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.3.0\spring-boot-starter-logging-3.3.0.jar;C:\Users\20041\.m2\repository\ch\qos\logback\logback-classic\1.5.6\logback-classic-1.5.6.jar;C:\Users\20041\.m2\repository\ch\qos\logback\logback-core\1.5.6\logback-core-1.5.6.jar;C:\Users\20041\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.23.1\log4j-to-slf4j-2.23.1.jar;C:\Users\20041\.m2\repository\org\apache\logging\log4j\log4j-api\2.23.1\log4j-api-2.23.1.jar;C:\Users\20041\.m2\repository\org\slf4j\jul-to-slf4j\2.0.13\jul-to-slf4j-2.0.13.jar;C:\Users\20041\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\20041\.m2\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-actuator-autoconfigure\3.3.0\spring-boot-actuator-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-actuator\3.3.0\spring-boot-actuator-3.3.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.1\jackson-datatype-jsr310-2.17.1.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-observation\1.13.0\micrometer-observation-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-commons\1.13.0\micrometer-commons-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-jakarta9\1.13.0\micrometer-jakarta9-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-core\1.13.0\micrometer-core-1.13.0.jar;C:\Users\20041\.m2\repository\org\hdrhistogram\HdrHistogram\2.2.1\HdrHistogram-2.2.1.jar;C:\Users\20041\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.3.0\spring-boot-starter-data-jpa-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-aop\3.3.0\spring-boot-starter-aop-3.3.0.jar;C:\Users\20041\.m2\repository\org\aspectj\aspectjweaver\1.9.22\aspectjweaver-1.9.22.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.3.0\spring-boot-starter-jdbc-3.3.0.jar;C:\Users\20041\.m2\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-jdbc\6.1.8\spring-jdbc-6.1.8.jar;C:\Users\20041\.m2\repository\org\hibernate\orm\hibernate-core\6.5.2.Final\hibernate-core-6.5.2.Final.jar;C:\Users\20041\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\20041\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\20041\.m2\repository\org\jboss\logging\jboss-logging\3.5.3.Final\jboss-logging-3.5.3.Final.jar;C:\Users\20041\.m2\repository\org\hibernate\common\hibernate-commons-annotations\6.0.6.Final\hibernate-commons-annotations-6.0.6.Final.jar;C:\Users\20041\.m2\repository\io\smallrye\jandex\3.1.2\jandex-3.1.2.jar;C:\Users\20041\.m2\repository\com\fasterxml\classmate\1.7.0\classmate-1.7.0.jar;C:\Users\20041\.m2\repository\net\bytebuddy\byte-buddy\1.14.16\byte-buddy-1.14.16.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.5\jaxb-runtime-4.0.5.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.5\jaxb-core-4.0.5.jar;C:\Users\20041\.m2\repository\org\eclipse\angus\angus-activation\2.0.2\angus-activation-2.0.2.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\txw2\4.0.5\txw2-4.0.5.jar;C:\Users\20041\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;C:\Users\20041\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\20041\.m2\repository\org\antlr\antlr4-runtime\4.13.0\antlr4-runtime-4.13.0.jar;C:\Users\20041\.m2\repository\org\springframework\data\spring-data-jpa\3.3.0\spring-data-jpa-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\data\spring-data-commons\3.3.0\spring-data-commons-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-orm\6.1.8\spring-orm-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-context\6.1.8\spring-context-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-tx\6.1.8\spring-tx-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-beans\6.1.8\spring-beans-6.1.8.jar;C:\Users\20041\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\20041\.m2\repository\org\springframework\spring-aspects\6.1.8\spring-aspects-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-security\3.3.0\spring-boot-starter-security-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-aop\6.1.8\spring-aop-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-config\6.3.0\spring-security-config-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-web\6.3.0\spring-security-web-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-expression\6.1.8\spring-expression-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-validation\3.3.0\spring-boot-starter-validation-3.3.0.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.24\tomcat-embed-el-10.1.24.jar;C:\Users\20041\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;C:\Users\20041\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.3.0\spring-boot-starter-web-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.3.0\spring-boot-starter-json-3.3.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.17.1\jackson-datatype-jdk8-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.17.1\jackson-module-parameter-names-2.17.1.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.3.0\spring-boot-starter-tomcat-3.3.0.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.24\tomcat-embed-core-10.1.24.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.24\tomcat-embed-websocket-10.1.24.jar;C:\Users\20041\.m2\repository\org\springframework\spring-web\6.1.8\spring-web-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-webmvc\6.1.8\spring-webmvc-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-amqp\3.3.0\spring-boot-starter-amqp-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-messaging\6.1.8\spring-messaging-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\amqp\spring-rabbit\3.1.5\spring-rabbit-3.1.5.jar;C:\Users\20041\.m2\repository\org\springframework\amqp\spring-amqp\3.1.5\spring-amqp-3.1.5.jar;C:\Users\20041\.m2\repository\org\springframework\retry\spring-retry\2.0.6\spring-retry-2.0.6.jar;C:\Users\20041\.m2\repository\com\rabbitmq\amqp-client\5.21.0\amqp-client-5.21.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-ui\2.5.0\springdoc-openapi-starter-webmvc-ui-2.5.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-api\2.5.0\springdoc-openapi-starter-webmvc-api-2.5.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-common\2.5.0\springdoc-openapi-starter-common-2.5.0.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-core-jakarta\2.2.21\swagger-core-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\org\apache\commons\commons-lang3\3.14.0\commons-lang3-3.14.0.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-annotations-jakarta\2.2.21\swagger-annotations-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-models-jakarta\2.2.21\swagger-models-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.1\jackson-dataformat-yaml-2.17.1.jar;C:\Users\20041\.m2\repository\org\webjars\swagger-ui\5.13.0\swagger-ui-5.13.0.jar;C:\Users\20041\.m2\repository\org\flywaydb\flyway-core\10.10.0\flyway-core-10.10.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-toml\2.17.1\jackson-dataformat-toml-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar;C:\Users\20041\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\20041\.m2\repository\org\flywaydb\flyway-database-postgresql\10.10.0\flyway-database-postgresql-10.10.0.jar;C:\Users\20041\.m2\repository\org\postgresql\postgresql\42.7.3\postgresql-42.7.3.jar;C:\Users\20041\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-api\0.12.5\jjwt-api-0.12.5.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-impl\0.12.5\jjwt-impl-0.12.5.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-jackson\0.12.5\jjwt-jackson-0.12.5.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar;C:\Users\20041\.m2\repository\org\projectlombok\lombok\1.18.34\lombok-1.18.34.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-test\3.3.0\spring-boot-starter-test-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-test\3.3.0\spring-boot-test-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.3.0\spring-boot-test-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;C:\Users\20041\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.2\jakarta.xml.bind-api-4.0.2.jar;C:\Users\20041\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.3\jakarta.activation-api-2.1.3.jar;C:\Users\20041\.m2\repository\net\minidev\json-smart\2.5.1\json-smart-2.5.1.jar;C:\Users\20041\.m2\repository\net\minidev\accessors-smart\2.5.1\accessors-smart-2.5.1.jar;C:\Users\20041\.m2\repository\org\ow2\asm\asm\9.6\asm-9.6.jar;C:\Users\20041\.m2\repository\org\assertj\assertj-core\3.25.3\assertj-core-3.25.3.jar;C:\Users\20041\.m2\repository\org\awaitility\awaitility\4.2.1\awaitility-4.2.1.jar;C:\Users\20041\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\20041\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\20041\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\20041\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;C:\Users\20041\.m2\repository\org\mockito\mockito-core\5.11.0\mockito-core-5.11.0.jar;C:\Users\20041\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.16\byte-buddy-agent-1.14.16.jar;C:\Users\20041\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\20041\.m2\repository\org\mockito\mockito-junit-jupiter\5.11.0\mockito-junit-jupiter-5.11.0.jar;C:\Users\20041\.m2\repository\org\skyscreamer\jsonassert\1.5.1\jsonassert-1.5.1.jar;C:\Users\20041\.m2\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;C:\Users\20041\.m2\repository\org\springframework\spring-core\6.1.8\spring-core-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-jcl\6.1.8\spring-jcl-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-test\6.1.8\spring-test-6.1.8.jar;C:\Users\20041\.m2\repository\org\xmlunit\xmlunit-core\2.9.1\xmlunit-core-2.9.1.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-test\6.3.0\spring-security-test-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-core\6.3.0\spring-security-core-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-crypto\6.3.0\spring-security-crypto-6.3.0.jar;C:\Users\20041\.m2\repository\org\testcontainers\junit-jupiter\1.19.8\junit-jupiter-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\testcontainers\1.19.8\testcontainers-1.19.8.jar;C:\Users\20041\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\20041\.m2\repository\org\hamcrest\hamcrest-core\2.2\hamcrest-core-2.2.jar;C:\Users\20041\.m2\repository\org\apache\commons\commons-compress\1.24.0\commons-compress-1.24.0.jar;C:\Users\20041\.m2\repository\org\rnorth\duct-tape\duct-tape\1.0.8\duct-tape-1.0.8.jar;C:\Users\20041\.m2\repository\org\jetbrains\annotations\17.0.0\annotations-17.0.0.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-api\3.3.6\docker-java-api-3.3.6.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-transport-zerodep\3.3.6\docker-java-transport-zerodep-3.3.6.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-transport\3.3.6\docker-java-transport-3.3.6.jar;C:\Users\20041\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\20041\.m2\repository\org\testcontainers\postgresql\1.19.8\postgresql-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\jdbc\1.19.8\jdbc-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\database-commons\1.19.8\database-commons-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\rabbitmq\1.19.8\rabbitmq-1.19.8.jar;"/>
+    <property name="java.vm.vendor" value="Eclipse Adoptium"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://adoptium.net/"/>
+    <property name="user.timezone" value="America/Guatemala"/>
+    <property name="org.jboss.logging.provider" value="slf4j"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="java.vm.specification.version" value="21"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="user.country" value="GT"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot\bin"/>
+    <property name="sun.java.command" value="C:\Users\20041\AppData\Local\Temp\surefire645420726370938369\surefirebooter-20260508151042800_3.jar C:\Users\20041\AppData\Local\Temp\surefire645420726370938369 2026-05-08T15-10-42_669-jvmRun1 surefire-20260508151042800_1tmp surefire_0-20260508151042800_2tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service\target\test-classes;C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service\target\classes;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-actuator\3.3.0\spring-boot-starter-actuator-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter\3.3.0\spring-boot-starter-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot\3.3.0\spring-boot-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.3.0\spring-boot-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.3.0\spring-boot-starter-logging-3.3.0.jar;C:\Users\20041\.m2\repository\ch\qos\logback\logback-classic\1.5.6\logback-classic-1.5.6.jar;C:\Users\20041\.m2\repository\ch\qos\logback\logback-core\1.5.6\logback-core-1.5.6.jar;C:\Users\20041\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.23.1\log4j-to-slf4j-2.23.1.jar;C:\Users\20041\.m2\repository\org\apache\logging\log4j\log4j-api\2.23.1\log4j-api-2.23.1.jar;C:\Users\20041\.m2\repository\org\slf4j\jul-to-slf4j\2.0.13\jul-to-slf4j-2.0.13.jar;C:\Users\20041\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\20041\.m2\repository\org\yaml\snakeyaml\2.2\snakeyaml-2.2.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-actuator-autoconfigure\3.3.0\spring-boot-actuator-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-actuator\3.3.0\spring-boot-actuator-3.3.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.17.1\jackson-datatype-jsr310-2.17.1.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-observation\1.13.0\micrometer-observation-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-commons\1.13.0\micrometer-commons-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-jakarta9\1.13.0\micrometer-jakarta9-1.13.0.jar;C:\Users\20041\.m2\repository\io\micrometer\micrometer-core\1.13.0\micrometer-core-1.13.0.jar;C:\Users\20041\.m2\repository\org\hdrhistogram\HdrHistogram\2.2.1\HdrHistogram-2.2.1.jar;C:\Users\20041\.m2\repository\org\latencyutils\LatencyUtils\2.0.3\LatencyUtils-2.0.3.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.3.0\spring-boot-starter-data-jpa-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-aop\3.3.0\spring-boot-starter-aop-3.3.0.jar;C:\Users\20041\.m2\repository\org\aspectj\aspectjweaver\1.9.22\aspectjweaver-1.9.22.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.3.0\spring-boot-starter-jdbc-3.3.0.jar;C:\Users\20041\.m2\repository\com\zaxxer\HikariCP\5.1.0\HikariCP-5.1.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-jdbc\6.1.8\spring-jdbc-6.1.8.jar;C:\Users\20041\.m2\repository\org\hibernate\orm\hibernate-core\6.5.2.Final\hibernate-core-6.5.2.Final.jar;C:\Users\20041\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\20041\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\20041\.m2\repository\org\jboss\logging\jboss-logging\3.5.3.Final\jboss-logging-3.5.3.Final.jar;C:\Users\20041\.m2\repository\org\hibernate\common\hibernate-commons-annotations\6.0.6.Final\hibernate-commons-annotations-6.0.6.Final.jar;C:\Users\20041\.m2\repository\io\smallrye\jandex\3.1.2\jandex-3.1.2.jar;C:\Users\20041\.m2\repository\com\fasterxml\classmate\1.7.0\classmate-1.7.0.jar;C:\Users\20041\.m2\repository\net\bytebuddy\byte-buddy\1.14.16\byte-buddy-1.14.16.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.5\jaxb-runtime-4.0.5.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.5\jaxb-core-4.0.5.jar;C:\Users\20041\.m2\repository\org\eclipse\angus\angus-activation\2.0.2\angus-activation-2.0.2.jar;C:\Users\20041\.m2\repository\org\glassfish\jaxb\txw2\4.0.5\txw2-4.0.5.jar;C:\Users\20041\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.2\istack-commons-runtime-4.1.2.jar;C:\Users\20041\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\20041\.m2\repository\org\antlr\antlr4-runtime\4.13.0\antlr4-runtime-4.13.0.jar;C:\Users\20041\.m2\repository\org\springframework\data\spring-data-jpa\3.3.0\spring-data-jpa-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\data\spring-data-commons\3.3.0\spring-data-commons-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-orm\6.1.8\spring-orm-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-context\6.1.8\spring-context-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-tx\6.1.8\spring-tx-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-beans\6.1.8\spring-beans-6.1.8.jar;C:\Users\20041\.m2\repository\org\slf4j\slf4j-api\2.0.13\slf4j-api-2.0.13.jar;C:\Users\20041\.m2\repository\org\springframework\spring-aspects\6.1.8\spring-aspects-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-security\3.3.0\spring-boot-starter-security-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-aop\6.1.8\spring-aop-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-config\6.3.0\spring-security-config-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-web\6.3.0\spring-security-web-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-expression\6.1.8\spring-expression-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-validation\3.3.0\spring-boot-starter-validation-3.3.0.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.24\tomcat-embed-el-10.1.24.jar;C:\Users\20041\.m2\repository\org\hibernate\validator\hibernate-validator\8.0.1.Final\hibernate-validator-8.0.1.Final.jar;C:\Users\20041\.m2\repository\jakarta\validation\jakarta.validation-api\3.0.2\jakarta.validation-api-3.0.2.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.3.0\spring-boot-starter-web-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.3.0\spring-boot-starter-json-3.3.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.17.1\jackson-datatype-jdk8-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.17.1\jackson-module-parameter-names-2.17.1.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-tomcat\3.3.0\spring-boot-starter-tomcat-3.3.0.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-core\10.1.24\tomcat-embed-core-10.1.24.jar;C:\Users\20041\.m2\repository\org\apache\tomcat\embed\tomcat-embed-websocket\10.1.24\tomcat-embed-websocket-10.1.24.jar;C:\Users\20041\.m2\repository\org\springframework\spring-web\6.1.8\spring-web-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-webmvc\6.1.8\spring-webmvc-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-amqp\3.3.0\spring-boot-starter-amqp-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\spring-messaging\6.1.8\spring-messaging-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\amqp\spring-rabbit\3.1.5\spring-rabbit-3.1.5.jar;C:\Users\20041\.m2\repository\org\springframework\amqp\spring-amqp\3.1.5\spring-amqp-3.1.5.jar;C:\Users\20041\.m2\repository\org\springframework\retry\spring-retry\2.0.6\spring-retry-2.0.6.jar;C:\Users\20041\.m2\repository\com\rabbitmq\amqp-client\5.21.0\amqp-client-5.21.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-ui\2.5.0\springdoc-openapi-starter-webmvc-ui-2.5.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-webmvc-api\2.5.0\springdoc-openapi-starter-webmvc-api-2.5.0.jar;C:\Users\20041\.m2\repository\org\springdoc\springdoc-openapi-starter-common\2.5.0\springdoc-openapi-starter-common-2.5.0.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-core-jakarta\2.2.21\swagger-core-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\org\apache\commons\commons-lang3\3.14.0\commons-lang3-3.14.0.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-annotations-jakarta\2.2.21\swagger-annotations-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\io\swagger\core\v3\swagger-models-jakarta\2.2.21\swagger-models-jakarta-2.2.21.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-yaml\2.17.1\jackson-dataformat-yaml-2.17.1.jar;C:\Users\20041\.m2\repository\org\webjars\swagger-ui\5.13.0\swagger-ui-5.13.0.jar;C:\Users\20041\.m2\repository\org\flywaydb\flyway-core\10.10.0\flyway-core-10.10.0.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\dataformat\jackson-dataformat-toml\2.17.1\jackson-dataformat-toml-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.17.1\jackson-core-2.17.1.jar;C:\Users\20041\.m2\repository\com\google\code\gson\gson\2.10.1\gson-2.10.1.jar;C:\Users\20041\.m2\repository\org\flywaydb\flyway-database-postgresql\10.10.0\flyway-database-postgresql-10.10.0.jar;C:\Users\20041\.m2\repository\org\postgresql\postgresql\42.7.3\postgresql-42.7.3.jar;C:\Users\20041\.m2\repository\org\checkerframework\checker-qual\3.42.0\checker-qual-3.42.0.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-api\0.12.5\jjwt-api-0.12.5.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-impl\0.12.5\jjwt-impl-0.12.5.jar;C:\Users\20041\.m2\repository\io\jsonwebtoken\jjwt-jackson\0.12.5\jjwt-jackson-0.12.5.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.17.1\jackson-databind-2.17.1.jar;C:\Users\20041\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.17.1\jackson-annotations-2.17.1.jar;C:\Users\20041\.m2\repository\org\projectlombok\lombok\1.18.34\lombok-1.18.34.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-starter-test\3.3.0\spring-boot-starter-test-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-test\3.3.0\spring-boot-test-3.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\boot\spring-boot-test-autoconfigure\3.3.0\spring-boot-test-autoconfigure-3.3.0.jar;C:\Users\20041\.m2\repository\com\jayway\jsonpath\json-path\2.9.0\json-path-2.9.0.jar;C:\Users\20041\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.2\jakarta.xml.bind-api-4.0.2.jar;C:\Users\20041\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.3\jakarta.activation-api-2.1.3.jar;C:\Users\20041\.m2\repository\net\minidev\json-smart\2.5.1\json-smart-2.5.1.jar;C:\Users\20041\.m2\repository\net\minidev\accessors-smart\2.5.1\accessors-smart-2.5.1.jar;C:\Users\20041\.m2\repository\org\ow2\asm\asm\9.6\asm-9.6.jar;C:\Users\20041\.m2\repository\org\assertj\assertj-core\3.25.3\assertj-core-3.25.3.jar;C:\Users\20041\.m2\repository\org\awaitility\awaitility\4.2.1\awaitility-4.2.1.jar;C:\Users\20041\.m2\repository\org\hamcrest\hamcrest\2.2\hamcrest-2.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.2\junit-jupiter-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.2\junit-jupiter-api-5.10.2.jar;C:\Users\20041\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\20041\.m2\repository\org\junit\platform\junit-platform-commons\1.10.2\junit-platform-commons-1.10.2.jar;C:\Users\20041\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.2\junit-jupiter-params-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.2\junit-jupiter-engine-5.10.2.jar;C:\Users\20041\.m2\repository\org\junit\platform\junit-platform-engine\1.10.2\junit-platform-engine-1.10.2.jar;C:\Users\20041\.m2\repository\org\mockito\mockito-core\5.11.0\mockito-core-5.11.0.jar;C:\Users\20041\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.16\byte-buddy-agent-1.14.16.jar;C:\Users\20041\.m2\repository\org\objenesis\objenesis\3.3\objenesis-3.3.jar;C:\Users\20041\.m2\repository\org\mockito\mockito-junit-jupiter\5.11.0\mockito-junit-jupiter-5.11.0.jar;C:\Users\20041\.m2\repository\org\skyscreamer\jsonassert\1.5.1\jsonassert-1.5.1.jar;C:\Users\20041\.m2\repository\com\vaadin\external\google\android-json\0.0.20131108.vaadin1\android-json-0.0.20131108.vaadin1.jar;C:\Users\20041\.m2\repository\org\springframework\spring-core\6.1.8\spring-core-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-jcl\6.1.8\spring-jcl-6.1.8.jar;C:\Users\20041\.m2\repository\org\springframework\spring-test\6.1.8\spring-test-6.1.8.jar;C:\Users\20041\.m2\repository\org\xmlunit\xmlunit-core\2.9.1\xmlunit-core-2.9.1.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-test\6.3.0\spring-security-test-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-core\6.3.0\spring-security-core-6.3.0.jar;C:\Users\20041\.m2\repository\org\springframework\security\spring-security-crypto\6.3.0\spring-security-crypto-6.3.0.jar;C:\Users\20041\.m2\repository\org\testcontainers\junit-jupiter\1.19.8\junit-jupiter-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\testcontainers\1.19.8\testcontainers-1.19.8.jar;C:\Users\20041\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\20041\.m2\repository\org\hamcrest\hamcrest-core\2.2\hamcrest-core-2.2.jar;C:\Users\20041\.m2\repository\org\apache\commons\commons-compress\1.24.0\commons-compress-1.24.0.jar;C:\Users\20041\.m2\repository\org\rnorth\duct-tape\duct-tape\1.0.8\duct-tape-1.0.8.jar;C:\Users\20041\.m2\repository\org\jetbrains\annotations\17.0.0\annotations-17.0.0.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-api\3.3.6\docker-java-api-3.3.6.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-transport-zerodep\3.3.6\docker-java-transport-zerodep-3.3.6.jar;C:\Users\20041\.m2\repository\com\github\docker-java\docker-java-transport\3.3.6\docker-java-transport-3.3.6.jar;C:\Users\20041\.m2\repository\net\java\dev\jna\jna\5.13.0\jna-5.13.0.jar;C:\Users\20041\.m2\repository\org\testcontainers\postgresql\1.19.8\postgresql-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\jdbc\1.19.8\jdbc-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\database-commons\1.19.8\database-commons-1.19.8.jar;C:\Users\20041\.m2\repository\org\testcontainers\rabbitmq\1.19.8\rabbitmq-1.19.8.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\20041"/>
+    <property name="user.language" value="es"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2026-04-21"/>
+    <property name="java.home" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
+    <property name="surefire.real.class.path" value="C:\Users\20041\AppData\Local\Temp\surefire645420726370938369\surefirebooter-20260508151042800_3.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="21.0.11+10-LTS"/>
+    <property name="user.name" value="20041"/>
+    <property name="stdout.encoding" value="Cp1252"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="Temurin-21.0.11+10"/>
+    <property name="localRepository" value="C:\Users\20041\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+    <property name="java.io.tmpdir" value="C:\Users\20041\AppData\Local\Temp\"/>
+    <property name="com.zaxxer.hikari.pool_number" value="2"/>
+    <property name="java.version" value="21.0.11"/>
+    <property name="user.dir" value="C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="33624"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
+    <property name="native.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\Users\20041\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Program Files (x86)\Dev-Cpp\MinGW64\bin;C:\Program Files (x86)\GnuWin32\bin;C:\Program Files\nodejs\;C:\Program Files\PuTTY\;C:\Program Files\Sunshine;C:\Program Files\Sunshine\tools;C:\Program Files\Tailscale\;C:\Users\20041\AppData\Local\Microsoft\WindowsApps;C:\Users\20041\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\20041\AppData\Local\GitHubDesktop\bin;C:\Users\20041\.dotnet\tools;C:\Users\20041\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Program Files (x86)\GnuWin32\bin;C:\Program Files (x86)\Dev-Cpp\MinGW64\bin;C:\Users\20041\AppData\Local\Programs\Antigravity\bin;C:\Users\20041\AppData\Local\Python\bin;C:\Users\20041\AppData\Roaming\npm;C:\Users\20041\AppData\Local\Programs\Ollama;."/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="stderr.encoding" value="Cp1252"/>
+    <property name="java.vendor" value="Eclipse Adoptium"/>
+    <property name="java.vm.version" value="21.0.11+10-LTS"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="65.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[event-management-service] "/>
+  </properties>
+  <testcase name="shouldApproveEvent" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.444">
+    <system-out><![CDATA[2026-05-08 15:10:52.103 [main] INFO  [NO_CORRELATION] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.orionticket.events.infrastructure.EventManagementIntegrationTest]: EventManagementIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-05-08 15:10:52.129 [main] INFO  [NO_CORRELATION] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.orionticket.events.EventManagementServiceApplication for test class com.orionticket.events.infrastructure.EventManagementIntegrationTest
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2026-05-08 15:10:52.174 [main] INFO  [NO_CORRELATION] c.o.e.i.EventManagementIntegrationTest - Starting EventManagementIntegrationTest using Java 21.0.11 with PID 33624 (started by 20041 in C:\Users\20041\OneDrive\Documentos\GitHub\orionticket\event-management-service)
+2026-05-08 15:10:52.174 [main] INFO  [NO_CORRELATION] c.o.e.i.EventManagementIntegrationTest - The following 1 profile is active: "test"
+2026-05-08 15:10:52.655 [main] INFO  [NO_CORRELATION] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-08 15:10:52.675 [main] INFO  [NO_CORRELATION] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 19 ms. Found 2 JPA repository interfaces.
+2026-05-08 15:10:52.874 [main] INFO  [NO_CORRELATION] org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5434/event_management_db (PostgreSQL 16.13)
+2026-05-08 15:10:52.912 [main] INFO  [NO_CORRELATION] o.f.core.internal.command.DbValidate - Successfully validated 4 migrations (execution time 00:00.019s)
+2026-05-08 15:10:52.952 [main] INFO  [NO_CORRELATION] o.f.core.internal.command.DbMigrate - Current version of schema "public": 4
+2026-05-08 15:10:52.954 [main] INFO  [NO_CORRELATION] o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-05-08 15:10:52.989 [main] INFO  [NO_CORRELATION] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-05-08 15:10:52.992 [main] INFO  [NO_CORRELATION] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-05-08 15:10:53.005 [main] INFO  [NO_CORRELATION] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-08 15:10:53.006 [main] INFO  [NO_CORRELATION] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2026-05-08 15:10:53.029 [main] INFO  [NO_CORRELATION] com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@3990c36c
+2026-05-08 15:10:53.029 [main] INFO  [NO_CORRELATION] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2026-05-08 15:10:53.126 [main] INFO  [NO_CORRELATION] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-08 15:10:53.154 [main] INFO  [NO_CORRELATION] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-08 15:10:53.372 [main] WARN  [NO_CORRELATION] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-08 15:10:53.388 [main] WARN  [NO_CORRELATION] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 3f01b4bc-4f33-4545-bb35-6011e551bdf7
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-05-08 15:10:53.391 [main] INFO  [NO_CORRELATION] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-05-08 15:10:53.514 [main] INFO  [NO_CORRELATION] o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-05-08 15:10:53.531 [main] INFO  [NO_CORRELATION] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@153e2f2f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4457e347, org.springframework.security.web.context.SecurityContextHolderFilter@11b097a1, org.springframework.security.web.header.HeaderWriterFilter@2d7157b0, org.springframework.web.filter.CorsFilter@5f914d68, org.springframework.security.web.authentication.logout.LogoutFilter@1f05b63d, com.orionticket.events.infrastructure.adapters.in.rest.filter.CorrelationIdFilter@5fb65af5, com.orionticket.events.infrastructure.adapters.in.rest.filter.JwtAuthenticationFilter@12329d37, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7a6980d4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@125c42e3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@177244f5, org.springframework.security.web.session.SessionManagementFilter@68e47ff9, org.springframework.security.web.access.ExceptionTranslationFilter@1946579d, org.springframework.security.web.access.intercept.AuthorizationFilter@1c49ae29]
+2026-05-08 15:10:53.751 [main] INFO  [NO_CORRELATION] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-05-08 15:10:53.751 [main] INFO  [NO_CORRELATION] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-05-08 15:10:53.752 [main] INFO  [NO_CORRELATION] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-05-08 15:10:53.769 [main] INFO  [NO_CORRELATION] c.o.e.i.EventManagementIntegrationTest - Started EventManagementIntegrationTest in 1.636 seconds (process running for 10.765)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    update
+        events 
+    set
+        category=?,
+        created_at=?,
+        description=?,
+        name=?,
+        organizer_id=?,
+        rejection_reason=?,
+        status=? 
+    where
+        event_id=?
+2026-05-08 15:10:54.063 [main] INFO  [6d1b5210-3ce7-49f4-9842-f4465c41295b] o.s.a.r.c.CachingConnectionFactory - Attempting to connect to: [localhost:5672]
+2026-05-08 15:10:54.111 [main] INFO  [6d1b5210-3ce7-49f4-9842-f4465c41295b] o.s.a.r.c.CachingConnectionFactory - Created new connection: rabbitConnectionFactory#c2de6ec:0/SimpleConnection@517c2be7 [delegate=amqp://guest@127.0.0.1:5672/, localPort=57984]
+2026-05-08 15:10:54.146 [main] INFO  [6d1b5210-3ce7-49f4-9842-f4465c41295b] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published EventReleased for eventEntityId: 984532a3-562f-40e9-bc1a-3bdd24a58c60
+2026-05-08 15:10:54.147 [main] INFO  [6d1b5210-3ce7-49f4-9842-f4465c41295b] c.o.e.i.a.o.a.Slf4jAuditLogAdapter - AUDIT_LOG | Actor: 00000000-0000-0000-0000-000000000009 | Action: APPROVE_EVENT | Entity: Event | ID: 984532a3-562f-40e9-bc1a-3bdd24a58c60 | Details: Event approved by platform operator.
+]]></system-out>
+  </testcase>
+  <testcase name="shouldSubmitEventForReview" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.063">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    select
+        edje1_0.date_id,
+        edje1_0.capacity,
+        edje1_0.created_at,
+        edje1_0.event_id,
+        edje1_0.scheduled_at,
+        edje1_0.venue_id 
+    from
+        event_dates edje1_0 
+    where
+        edje1_0.date_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    insert 
+    into
+        event_dates
+        (capacity, created_at, event_id, scheduled_at, venue_id, date_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    update
+        events 
+    set
+        category=?,
+        created_at=?,
+        description=?,
+        name=?,
+        organizer_id=?,
+        rejection_reason=?,
+        status=? 
+    where
+        event_id=?
+2026-05-08 15:10:54.274 [main] INFO  [fd8c7267-9951-4178-a2e4-c67c1fc89b1e] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published EventSubmittedForReview for eventEntityId: 9e03bd28-cfe6-4a08-b01e-6d1f92b6375a
+]]></system-out>
+  </testcase>
+  <testcase name="shouldCancelEvent" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.081">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        event_dates 
+    where
+        date_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    update
+        events 
+    set
+        category=?,
+        created_at=?,
+        description=?,
+        name=?,
+        organizer_id=?,
+        rejection_reason=?,
+        status=? 
+    where
+        event_id=?
+2026-05-08 15:10:54.360 [main] INFO  [a5f5d11a-9d0b-4b04-9988-3a7cad182660] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published EventCanceled for eventEntityId: 0ba45073-7119-4f09-9920-b61b147aa640, canceledBy: 00000000-0000-0000-0000-000000000002
+2026-05-08 15:10:54.360 [main] INFO  [a5f5d11a-9d0b-4b04-9988-3a7cad182660] c.o.e.i.a.o.a.Slf4jAuditLogAdapter - AUDIT_LOG | Actor: 00000000-0000-0000-0000-000000000002 | Action: CANCEL_EVENT | Entity: Event | ID: 0ba45073-7119-4f09-9920-b61b147aa640 | Details: Reason: Fuerza mayor — condiciones meteorológicas adversas
+]]></system-out>
+  </testcase>
+  <testcase name="shouldReturn400WhenCancelEventWithoutReason" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.028">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+]]></system-out>
+  </testcase>
+  <testcase name="shouldAddDateToEvent" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.046">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    select
+        edje1_0.date_id,
+        edje1_0.capacity,
+        edje1_0.created_at,
+        edje1_0.event_id,
+        edje1_0.scheduled_at,
+        edje1_0.venue_id 
+    from
+        event_dates edje1_0 
+    where
+        edje1_0.date_id=?
+Hibernate: 
+    insert 
+    into
+        event_dates
+        (capacity, created_at, event_id, scheduled_at, venue_id, date_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-08 15:10:54.436 [main] INFO  [38f382dd-1a8c-45cf-8057-cbcb88f5a289] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published DateAdded for eventEntityId: f50bedcd-33ed-4fe9-ae29-4265d21c6146, dateId: 93bf7b0d-0b3d-4f19-9c11-6572b449d9b0
+]]></system-out>
+  </testcase>
+  <testcase name="shouldCreateEvent" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.03">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        event_dates 
+    where
+        date_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-05-08 15:10:54.466 [main] INFO  [f83a7113-77fd-41ea-ba27-c58cba985a86] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published EventCreated for eventEntityId: ab7ae9e8-d11d-4d5e-8b5e-fc2007a00931
+]]></system-out>
+  </testcase>
+  <testcase name="shouldCreateVenue" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.03">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        event_dates d1_0 
+    where
+        d1_0.event_id=?
+Hibernate: 
+    delete 
+    from
+        events 
+    where
+        event_id=?
+Hibernate: 
+    select
+        vje1_0.venue_id,
+        vje1_0.address,
+        vje1_0.capacity,
+        vje1_0.created_at,
+        vje1_0.name,
+        vje1_0.organizer_id 
+    from
+        venues vje1_0 
+    where
+        vje1_0.venue_id=?
+Hibernate: 
+    insert 
+    into
+        venues
+        (address, capacity, created_at, name, organizer_id, venue_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-05-08 15:10:54.497 [main] INFO  [d013ba4c-07c8-498a-a6bb-944348f644b0] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published VenueCreated for venueId: 9595e610-e79e-4072-bbb9-a5a86971c009
+]]></system-out>
+  </testcase>
+  <testcase name="shouldRejectEvent" classname="com.orionticket.events.infrastructure.EventManagementIntegrationTest" time="0.032">
+    <system-out><![CDATA[Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status 
+    from
+        events eje1_0
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    insert 
+    into
+        events
+        (category, created_at, description, name, organizer_id, rejection_reason, status, event_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+Hibernate: 
+    select
+        eje1_0.event_id,
+        eje1_0.category,
+        eje1_0.created_at,
+        eje1_0.description,
+        eje1_0.name,
+        eje1_0.organizer_id,
+        eje1_0.rejection_reason,
+        eje1_0.status,
+        d1_0.event_id,
+        d1_0.date_id,
+        d1_0.capacity,
+        d1_0.created_at,
+        d1_0.scheduled_at,
+        d1_0.venue_id 
+    from
+        events eje1_0 
+    left join
+        event_dates d1_0 
+            on eje1_0.event_id=d1_0.event_id 
+    where
+        eje1_0.event_id=?
+Hibernate: 
+    update
+        events 
+    set
+        category=?,
+        created_at=?,
+        description=?,
+        name=?,
+        organizer_id=?,
+        rejection_reason=?,
+        status=? 
+    where
+        event_id=?
+2026-05-08 15:10:54.531 [main] INFO  [83f53150-9c08-4c58-bcc7-d64faa9efe61] c.o.e.i.a.o.m.RabbitMqEventPublisherAdapter - Published EventRejected for eventEntityId: aabe3a25-bcbb-4ffd-88b8-ddf988e6381b, reason: Faltan detalles de seguridad
+2026-05-08 15:10:54.531 [main] INFO  [83f53150-9c08-4c58-bcc7-d64faa9efe61] c.o.e.i.a.o.a.Slf4jAuditLogAdapter - AUDIT_LOG | Actor: 00000000-0000-0000-0000-000000000009 | Action: REJECT_EVENT | Entity: Event | ID: aabe3a25-bcbb-4ffd-88b8-ddf988e6381b | Details: Reason: Faltan detalles de seguridad
+]]></system-out>
+  </testcase>
+</testsuite>

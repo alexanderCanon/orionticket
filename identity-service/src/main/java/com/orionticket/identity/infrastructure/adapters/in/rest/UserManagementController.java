@@ -17,6 +17,7 @@ import java.util.UUID;
 public class UserManagementController {
 
     private final UserManagementUseCase userManagementUseCase;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     // En producción esto se obtiene del token JWT (Spring Security Principal)
     private final UUID TEMPORARY_ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000003");
@@ -45,12 +46,9 @@ public class UserManagementController {
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody com.orionticket.identity.infrastructure.adapters.in.rest.dto.CreateUserRequest request) {
-        // En un entorno real, la contraseña vendría o se autogeneraría y encriptaría
-        // Para este MVP, asumimos que viene en texto plano y la debemos hashear (simulado aquí)
-        // Spring Security PasswordEncoder debería usarse aquí idealmente.
         User user = userManagementUseCase.createUser(
                 request.getEmail(), 
-                "HASHED_" + request.getPassword(), // TODO: inject PasswordEncoder
+                passwordEncoder.encode(request.getPassword()), 
                 request.getFullName(), 
                 request.getPhone(), 
                 request.getRoleId(), 

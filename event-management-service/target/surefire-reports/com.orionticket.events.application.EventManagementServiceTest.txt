@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.orionticket.events.application.EventManagementServiceTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.278 s -- in com.orionticket.events.application.EventManagementServiceTest
