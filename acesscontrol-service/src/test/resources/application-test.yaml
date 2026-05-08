@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: accesscontrol-test
+
+  datasource:
+    url: jdbc:tc:postgresql:///test
+    driver-class-name: org.testcontainers.jdbc.TestContainerDriver
+
+  flyway:
+    enabled: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/.well-known/jwks.json
+
+app:
+  ticket-issuance:
+    base-url: http://localhost:8087
+    timeout-ms: 100
+  validation:
+    offline-sync-max-records: 100
+
+logging:
+  level:
+    com.orionticket: DEBUG
