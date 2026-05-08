@@ -12,6 +12,7 @@ public class VenueMapper {
                 .organizerId(entity.getOrganizerId())
                 .name(entity.getName())
                 .address(entity.getAddress())
+                .city(entity.getCity())
                 .capacity(entity.getCapacity())
                 .createdAt(entity.getCreatedAt())
                 .build();
@@ -24,6 +25,7 @@ public class VenueMapper {
         entity.setOrganizerId(venue.getOrganizerId());
         entity.setName(venue.getName());
         entity.setAddress(venue.getAddress());
+        entity.setCity(venue.getCity());
         entity.setCapacity(venue.getCapacity());
         entity.setCreatedAt(venue.getCreatedAt());
         return entity;

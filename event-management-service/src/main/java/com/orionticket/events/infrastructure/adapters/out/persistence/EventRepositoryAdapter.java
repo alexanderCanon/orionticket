@@ -6,8 +6,11 @@ import com.orionticket.events.infrastructure.adapters.out.persistence.entity.Eve
 import com.orionticket.events.infrastructure.adapters.out.persistence.mapper.EventMapper;
 import com.orionticket.events.infrastructure.adapters.out.persistence.repository.SpringDataEventRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,5 +30,11 @@ public class EventRepositoryAdapter implements EventRepositoryPort {
     @Override
     public Optional<Event> findById(UUID eventId) {
         return repository.findById(eventId).map(EventMapper::toDomain);
+    }
+
+    @Override
+    public Page<Event> findCatalog(String category, String city, LocalDate date, UUID organizerId, Pageable pageable) {
+        return repository.findCatalog(category, organizerId, city, date, pageable)
+                .map(EventMapper::toDomain);
     }
 }

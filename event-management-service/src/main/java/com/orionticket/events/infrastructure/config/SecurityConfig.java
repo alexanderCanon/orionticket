@@ -26,8 +26,9 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v1/events/**").permitAll() // TEMPORAL: permitimos acceso para smoke tests iniciales
+                .requestMatchers("/v1/events/**").permitAll()
                 .requestMatchers("/v1/venues/**").permitAll()
+                .requestMatchers("/v1/catalog/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated()

@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Event {
     private UUID eventId;
     private UUID organizerId;
+    private String organizerName;
     private String name;
     private String description;
     private String category;
@@ -29,6 +30,7 @@ public class Event {
         return Event.builder()
                 .eventId(UUID.randomUUID())
                 .organizerId(organizerId)
+                .organizerName("Unknown Organizer") // Should be updated via event or projection
                 .name(name)
                 .description(description)
                 .category(category)

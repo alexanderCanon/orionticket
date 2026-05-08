@@ -9,6 +9,7 @@ Responsable del ciclo de vida de los eventos, desde su creación en borrador has
 - Gestión de Fechas (Dates) de eventos.
 - Proceso de aprobación (Submit for Review / Approve / Reject).
 - Modelo de lectura de Catálogo Público (Read Model).
+  - `GET /v1/catalog/events` (Público).
 
 ## 2. Documentación Técnica Específica
 - **Casos de Uso:** [UC-EM-01, UC-EM-03, UC-EM-04, UC-EM-05](../docs/phases/phase-2/use-case-catalog.md).

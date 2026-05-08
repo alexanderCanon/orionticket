@@ -22,6 +22,9 @@ public class EventJpaEntity {
     @Column(name = "organizer_id", nullable = false)
     private UUID organizerId;
 
+    @Column(name = "organizer_name")
+    private String organizerName;
+
     @Column(name = "name", nullable = false)
     private String name;
 

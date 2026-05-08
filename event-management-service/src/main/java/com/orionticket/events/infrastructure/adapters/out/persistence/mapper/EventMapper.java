@@ -16,6 +16,7 @@ public class EventMapper {
         Event event = Event.builder()
                 .eventId(entity.getEventId())
                 .organizerId(entity.getOrganizerId())
+                .organizerName(entity.getOrganizerName())
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .category(entity.getCategory())
@@ -50,6 +51,7 @@ public class EventMapper {
         EventJpaEntity entity = new EventJpaEntity();
         entity.setEventId(event.getEventId());
         entity.setOrganizerId(event.getOrganizerId());
+        entity.setOrganizerName(event.getOrganizerName());
         entity.setName(event.getName());
         entity.setDescription(event.getDescription());
         entity.setCategory(event.getCategory());

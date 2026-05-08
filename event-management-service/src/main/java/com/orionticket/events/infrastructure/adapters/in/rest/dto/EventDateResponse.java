@@ -1,4 +1,4 @@
-package com.orionticket.events.domain.model;
+package com.orionticket.events.infrastructure.adapters.in.rest.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,13 +8,9 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class EventDate {
+public class EventDateResponse {
     private UUID dateId;
-    private UUID eventId;
     private ZonedDateTime scheduledAt;
-    private UUID venueId;
     private String venueName;
-    private Integer capacity;
     private Integer availableSeats;
-    private ZonedDateTime createdAt;
 }

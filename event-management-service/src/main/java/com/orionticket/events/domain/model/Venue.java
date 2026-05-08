@@ -13,6 +13,7 @@ public class Venue {
     private UUID organizerId;
     private String name;
     private String address;
+    private String city;
     private Integer capacity;
     private ZonedDateTime createdAt;
 
@@ -29,6 +30,7 @@ public class Venue {
                 .organizerId(organizerId)
                 .name(name)
                 .address(address)
+                .city("Unknown") // Default or provide it in create method
                 .capacity(capacity)
                 .createdAt(ZonedDateTime.now())
                 .build();
