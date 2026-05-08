@@ -38,6 +38,18 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         return repository.findByEmail(email).map(this::mapToDomain);
     }
 
+    @Override
+    public Optional<User> findById(java.util.UUID userId) {
+        return repository.findById(userId).map(this::mapToDomain);
+    }
+
+    @Override
+    public java.util.List<User> findAll() {
+        return repository.findAll().stream()
+                .map(this::mapToDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     private User mapToDomain(UserJpaEntity entity) {
         return User.builder()
                 .userId(entity.getUserId())

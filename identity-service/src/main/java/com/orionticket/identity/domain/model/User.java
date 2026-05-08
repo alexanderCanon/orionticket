@@ -34,4 +34,8 @@ public class User {
                 .createdAt(ZonedDateTime.now())
                 .build();
     }
+
+    public void suspend() {
+        this.status = "SUSPENDED";
+    }
 }

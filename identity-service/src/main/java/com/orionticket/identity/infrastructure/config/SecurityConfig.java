@@ -24,6 +24,8 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/v1/auth/**").permitAll() // Permitimos acceso libre a registro/login
+                .requestMatchers("/v1/users/**").permitAll() // TEMPORAL: Permitir acceso directo a usuarios para testing local sin Gateway
+                .requestMatchers("/v1/roles/**").permitAll() // TEMPORAL: Permitir acceso directo a roles
                 .requestMatchers("/error").permitAll() // Evita 403 cuando hay excepciones y se mapean a /error
                 .anyRequest().authenticated()
             );
