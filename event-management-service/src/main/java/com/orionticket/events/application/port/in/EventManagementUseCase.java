@@ -10,4 +10,6 @@ public interface EventManagementUseCase {
     Event createEvent(UUID organizerId, String name, String description);
     EventDate addDateToEvent(UUID eventId, UUID organizerId, ZonedDateTime scheduledAt, UUID venueId, Integer capacity);
     Event submitEventForReview(UUID eventId, UUID organizerId);
+    Event approveEvent(UUID eventId, UUID operatorId);
+    Event rejectEvent(UUID eventId, UUID operatorId, String reason);
 }

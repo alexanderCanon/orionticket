@@ -59,4 +59,24 @@ public class EventManagementController {
         Event event = eventManagementUseCase.submitEventForReview(eventId, TEMPORARY_ORGANIZER_ID);
         return ResponseEntity.ok(event);
     }
+
+    @PostMapping("/{eventId}/approve")
+    @Operation(summary = "Approve event", description = "Transitions an event to RELEASED status. Only for Platform Operators.")
+    public ResponseEntity<Event> approveEvent(@PathVariable UUID eventId) {
+        // TODO: Extraer operatorId desde el token
+        UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
+        Event event = eventManagementUseCase.approveEvent(eventId, operatorId);
+        return ResponseEntity.ok(event);
+    }
+
+    @PostMapping("/{eventId}/reject")
+    @Operation(summary = "Reject event", description = "Rejects an event and returns it to DRAFT status. Only for Platform Operators.")
+    public ResponseEntity<Event> rejectEvent(
+            @PathVariable UUID eventId,
+            @Valid @RequestBody com.orionticket.events.infrastructure.adapters.in.rest.dto.RejectEventRequest request) {
+        // TODO: Extraer operatorId desde el token
+        UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
+        Event event = eventManagementUseCase.rejectEvent(eventId, operatorId, request.getReason());
+        return ResponseEntity.ok(event);
+    }
 }

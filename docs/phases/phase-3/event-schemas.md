@@ -213,6 +213,29 @@
 }
 ```
 
+### EventRejected
+
+| Field | Value |
+|---|---|
+| **Producer** | Event Management |
+| **Consumers** | Notifications |
+| **Trigger** | Platform Operator rejects an Event that was submitted for review. |
+
+```json
+{
+  "eventType": "EventRejected",
+  "eventId": "uuid",
+  "occurredAt": "ISO-8601",
+  "payload": {
+    "eventEntityId": "uuid",
+    "organizerId": "uuid",
+    "rejectedBy": "uuid",
+    "reason": "string",
+    "status": "DRAFT"
+  }
+}
+```
+
 ### EventReleased
 
 | Field | Value |

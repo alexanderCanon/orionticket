@@ -137,4 +137,44 @@ class EventManagementServiceTest {
         verify(eventRepositoryPort, never()).save(any());
         verify(eventPublisherPort, never()).publishEventSubmittedForReview(any());
     }
+
+    @Test
+    void shouldApproveEventSuccessfully() {
+        UUID operatorId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        Event event = Event.builder()
+                .eventId(eventId)
+                .organizerId(UUID.randomUUID())
+                .status("UNDER_REVIEW")
+                .build();
+
+        when(eventRepositoryPort.findById(eventId)).thenReturn(java.util.Optional.of(event));
+        when(eventRepositoryPort.save(any(Event.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        Event approvedEvent = eventManagementService.approveEvent(eventId, operatorId);
+
+        assertEquals("RELEASED", approvedEvent.getStatus());
+        verify(eventRepositoryPort, times(1)).save(event);
+        verify(eventPublisherPort, times(1)).publishEventReleased(event, operatorId);
+    }
+
+    @Test
+    void shouldRejectEventSuccessfully() {
+        UUID operatorId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        Event event = Event.builder()
+                .eventId(eventId)
+                .organizerId(UUID.randomUUID())
+                .status("UNDER_REVIEW")
+                .build();
+
+        when(eventRepositoryPort.findById(eventId)).thenReturn(java.util.Optional.of(event));
+        when(eventRepositoryPort.save(any(Event.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        Event rejectedEvent = eventManagementService.rejectEvent(eventId, operatorId, "Incomplete information");
+
+        assertEquals("DRAFT", rejectedEvent.getStatus());
+        verify(eventRepositoryPort, times(1)).save(event);
+        verify(eventPublisherPort, times(1)).publishEventRejected(event, operatorId, "Incomplete information");
+    }
 }

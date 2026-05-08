@@ -62,4 +62,34 @@ public class EventManagementService implements EventManagementUseCase {
         
         return savedEvent;
     }
+
+    @Override
+    public Event approveEvent(UUID eventId, UUID operatorId) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
+
+        // TODO: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        
+        event.approve();
+        
+        Event savedEvent = eventRepositoryPort.save(event);
+        eventPublisherPort.publishEventReleased(savedEvent, operatorId);
+        
+        return savedEvent;
+    }
+
+    @Override
+    public Event rejectEvent(UUID eventId, UUID operatorId, String reason) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
+
+        // TODO: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        
+        event.reject(reason);
+        
+        Event savedEvent = eventRepositoryPort.save(event);
+        eventPublisherPort.publishEventRejected(savedEvent, operatorId, reason);
+        
+        return savedEvent;
+    }
 }

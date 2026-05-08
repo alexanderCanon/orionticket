@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -65,5 +66,30 @@ public class RabbitMqEventPublisherAdapter implements EventPublisherPort {
 
         rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.EVENT_SUBMITTED_ROUTING_KEY, message);
         log.info("Published EventSubmittedForReview for eventId: {}", event.getEventId());
+    }
+
+    @Override
+    public void publishEventReleased(Event event, UUID operatorId) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("eventEntityId", event.getEventId());
+        message.put("organizerId", event.getOrganizerId());
+        message.put("approvedBy", operatorId);
+        message.put("status", event.getStatus());
+
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.EVENT_RELEASED_ROUTING_KEY, message);
+        log.info("Published EventReleased for eventId: {}", event.getEventId());
+    }
+
+    @Override
+    public void publishEventRejected(Event event, UUID operatorId, String reason) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("eventEntityId", event.getEventId());
+        message.put("organizerId", event.getOrganizerId());
+        message.put("rejectedBy", operatorId);
+        message.put("status", event.getStatus());
+        message.put("reason", reason);
+
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.EVENT_REJECTED_ROUTING_KEY, message);
+        log.info("Published EventRejected for eventId: {}, reason: {}", event.getEventId(), reason);
     }
 }

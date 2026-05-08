@@ -150,4 +150,44 @@ class EventManagementIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UNDER_REVIEW"));
     }
+
+    @Test
+    void shouldApproveEvent() throws Exception {
+        UUID eventId = UUID.randomUUID();
+        EventJpaEntity event = new EventJpaEntity();
+        event.setEventId(eventId);
+        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setName("Evento para Aprobar");
+        event.setStatus("UNDER_REVIEW");
+        event.setCreatedAt(ZonedDateTime.now());
+        eventRepository.save(event);
+
+        mockMvc.perform(post("/v1/events/" + eventId + "/approve"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("RELEASED"));
+    }
+
+    @Test
+    void shouldRejectEvent() throws Exception {
+        UUID eventId = UUID.randomUUID();
+        EventJpaEntity event = new EventJpaEntity();
+        event.setEventId(eventId);
+        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setName("Evento para Rechazar");
+        event.setStatus("UNDER_REVIEW");
+        event.setCreatedAt(ZonedDateTime.now());
+        eventRepository.save(event);
+
+        String requestBody = """
+                {
+                    "reason": "Faltan detalles de seguridad"
+                }
+                """;
+
+        mockMvc.perform(post("/v1/events/" + eventId + "/reject")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DRAFT"));
+    }
 }

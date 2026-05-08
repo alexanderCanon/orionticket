@@ -65,4 +65,27 @@ public class Event {
         
         this.status = "UNDER_REVIEW";
     }
+
+    /**
+     * Regla de Negocio: Aprobar el evento (Solo por Platform Operator).
+     */
+    public void approve() {
+        if (!"UNDER_REVIEW".equals(this.status)) {
+            throw new com.orionticket.events.domain.exception.InvalidEventStateException("Only events UNDER_REVIEW can be approved.");
+        }
+        this.status = "RELEASED";
+    }
+
+    /**
+     * Regla de Negocio: Rechazar el evento (Solo por Platform Operator).
+     */
+    public void reject(String reason) {
+        if (!"UNDER_REVIEW".equals(this.status)) {
+            throw new com.orionticket.events.domain.exception.InvalidEventStateException("Only events UNDER_REVIEW can be rejected.");
+        }
+        if (reason == null || reason.trim().isEmpty()) {
+            throw new IllegalArgumentException("A rejection reason must be provided.");
+        }
+        this.status = "DRAFT";
+    }
 }

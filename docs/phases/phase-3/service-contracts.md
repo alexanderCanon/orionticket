@@ -120,6 +120,45 @@
 }
 ```
 
+### POST /v1/events/{eventId}/approve
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-04 |
+| **Description** | Platform Operator approves an event under review. |
+
+**Response (200 OK):**
+```json
+{
+  "eventId": "uuid",
+  "status": "RELEASED"
+}
+```
+
+### POST /v1/events/{eventId}/reject
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-05 |
+| **Description** | Platform Operator rejects an event under review. |
+
+**Request body:**
+```json
+{
+  "reason": "string (required)"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "eventId": "uuid",
+  "status": "DRAFT"
+}
+```
+
 ### POST /v1/venues
 
 | Field | Value |
