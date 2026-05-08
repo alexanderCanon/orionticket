@@ -18,7 +18,9 @@ public class EventMapper {
                 .organizerId(entity.getOrganizerId())
                 .name(entity.getName())
                 .description(entity.getDescription())
+                .category(entity.getCategory())
                 .status(entity.getStatus())
+                .rejectionReason(entity.getRejectionReason())
                 .createdAt(entity.getCreatedAt())
                 .dates(new ArrayList<>())
                 .build();
@@ -50,7 +52,9 @@ public class EventMapper {
         entity.setOrganizerId(event.getOrganizerId());
         entity.setName(event.getName());
         entity.setDescription(event.getDescription());
+        entity.setCategory(event.getCategory());
         entity.setStatus(event.getStatus());
+        entity.setRejectionReason(event.getRejectionReason());
         entity.setCreatedAt(event.getCreatedAt());
         
         if (event.getDates() != null) {

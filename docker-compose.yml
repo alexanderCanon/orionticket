@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # ── Databases ──────────────────────────────────────────────────────────────
+  identity-db:
+    image: postgres:16-alpine
+    container_name: identity-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: identity_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - identity_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  event-db:
+    image: postgres:16-alpine
+    container_name: event-postgres
+    environment:
+      POSTGRES_USER: orion
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: event_management_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - event_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion -d event_management_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Messaging ──────────────────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: orion-rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend Services ───────────────────────────────────────────────────────
+  identity-service:
+    build:
+      context: ./identity-service
+      dockerfile: Dockerfile
+    container_name: identity-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_HOST=identity-db
+      - DB_PORT=5432
+      - DB_NAME=identity_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      identity-db:
+        condition: service_healthy
+
+  event-management-service:
+    build:
+      context: ./event-management-service
+      dockerfile: Dockerfile
+    container_name: event-management-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_HOST=event-db
+      - DB_PORT=5432
+      - DB_NAME=event_management_db
+      - DB_USER=orion
+      - DB_PASSWORD=secret
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      event-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  identity_pg_data:
+  event_pg_data:

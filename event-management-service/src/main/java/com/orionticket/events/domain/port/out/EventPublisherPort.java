@@ -9,7 +9,9 @@ public interface EventPublisherPort {
     void publishEventCreated(Event event);
     void publishDateAdded(Event event, EventDate date);
     void publishVenueCreated(com.orionticket.events.domain.model.Venue venue);
-    void publishEventSubmittedForReview(Event event);
+    void publishEventSubmittedForReview(Event event, UUID submittedBy);
     void publishEventReleased(Event event, UUID operatorId);
     void publishEventRejected(Event event, UUID operatorId, String reason);
+    void publishEventCanceled(Event event, UUID canceledBy, String reason);
+    void publishDateCanceled(EventDate date, UUID canceledBy, String reason);
 }

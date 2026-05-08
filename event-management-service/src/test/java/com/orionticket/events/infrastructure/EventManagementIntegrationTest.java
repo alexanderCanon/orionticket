@@ -8,13 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -25,30 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
+@ActiveProfiles("test")
 class EventManagementIntegrationTest {
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
-            .withDatabaseName("event_db")
-            .withUsername("orion")
-            .withPassword("secret");
-
-    @Container
-    static RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:3.13-management");
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.flyway.url", postgres::getJdbcUrl);
-        registry.add("spring.flyway.user", postgres::getUsername);
-        registry.add("spring.flyway.password", postgres::getPassword);
-        
-        registry.add("spring.rabbitmq.host", rabbitmq::getHost);
-        registry.add("spring.rabbitmq.port", rabbitmq::getAmqpPort);
-    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,7 +39,8 @@ class EventManagementIntegrationTest {
         String requestBody = """
                 {
                     "name": "Concierto Integracion",
-                    "description": "Prueba desde Testcontainers"
+                    "description": "Prueba desde Testcontainers",
+                    "category": "MUSIC"
                 }
                 """;
 
@@ -75,7 +49,8 @@ class EventManagementIntegrationTest {
                 .content(requestBody))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.status").value("DRAFT"))
-                .andExpect(jsonPath("$.name").value("Concierto Integracion"));
+                .andExpect(jsonPath("$.name").value("Concierto Integracion"))
+                .andExpect(jsonPath("$.category").value("MUSIC"));
     }
 
     @Test
@@ -86,6 +61,7 @@ class EventManagementIntegrationTest {
         event.setEventId(eventId);
         event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
         event.setName("Evento Base");
+        event.setCategory("MUSIC");
         event.setStatus("DRAFT");
         event.setCreatedAt(ZonedDateTime.now());
         eventRepository.save(event);
@@ -131,6 +107,7 @@ class EventManagementIntegrationTest {
         event.setEventId(eventId);
         event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
         event.setName("Evento para Review");
+        event.setCategory("SPORTS");
         event.setStatus("DRAFT");
         event.setCreatedAt(ZonedDateTime.now());
 
@@ -158,6 +135,7 @@ class EventManagementIntegrationTest {
         event.setEventId(eventId);
         event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
         event.setName("Evento para Aprobar");
+        event.setCategory("MUSIC");
         event.setStatus("UNDER_REVIEW");
         event.setCreatedAt(ZonedDateTime.now());
         eventRepository.save(event);
@@ -174,6 +152,7 @@ class EventManagementIntegrationTest {
         event.setEventId(eventId);
         event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
         event.setName("Evento para Rechazar");
+        event.setCategory("MUSIC");
         event.setStatus("UNDER_REVIEW");
         event.setCreatedAt(ZonedDateTime.now());
         eventRepository.save(event);
@@ -188,6 +167,50 @@ class EventManagementIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("DRAFT"));
+                .andExpect(jsonPath("$.status").value("DRAFT"))
+                .andExpect(jsonPath("$.rejectionReason").value("Faltan detalles de seguridad"));
+    }
+
+    @Test
+    void shouldCancelEvent() throws Exception {
+        UUID eventId = UUID.randomUUID();
+        EventJpaEntity event = new EventJpaEntity();
+        event.setEventId(eventId);
+        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setName("Evento para Cancelar");
+        event.setCategory("MUSIC");
+        event.setStatus("RELEASED");
+        event.setCreatedAt(ZonedDateTime.now());
+        eventRepository.save(event);
+
+        String requestBody = """
+                {
+                    "reason": "Fuerza mayor — condiciones meteorológicas adversas"
+                }
+                """;
+
+        mockMvc.perform(post("/v1/events/" + eventId + "/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CANCELED"));
+    }
+
+    @Test
+    void shouldReturn400WhenCancelEventWithoutReason() throws Exception {
+        UUID eventId = UUID.randomUUID();
+        EventJpaEntity event = new EventJpaEntity();
+        event.setEventId(eventId);
+        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setName("Evento para Cancelar");
+        event.setCategory("MUSIC");
+        event.setStatus("RELEASED");
+        event.setCreatedAt(ZonedDateTime.now());
+        eventRepository.save(event);
+
+        mockMvc.perform(post("/v1/events/" + eventId + "/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isBadRequest());
     }
 }

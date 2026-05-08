@@ -15,7 +15,9 @@ public class Event {
     private UUID organizerId;
     private String name;
     private String description;
+    private String category;
     private String status;
+    private String rejectionReason;
     @Builder.Default
     private List<EventDate> dates = new ArrayList<>();
     private ZonedDateTime createdAt;
@@ -23,12 +25,13 @@ public class Event {
     /**
      * Regla de Negocio: Un nuevo evento siempre inicia como DRAFT.
      */
-    public static Event createDraft(UUID organizerId, String name, String description) {
+    public static Event createDraft(UUID organizerId, String name, String description, String category) {
         return Event.builder()
                 .eventId(UUID.randomUUID())
                 .organizerId(organizerId)
                 .name(name)
                 .description(description)
+                .category(category)
                 .status("DRAFT")
                 .createdAt(ZonedDateTime.now())
                 .build();
@@ -87,5 +90,16 @@ public class Event {
             throw new IllegalArgumentException("A rejection reason must be provided.");
         }
         this.status = "DRAFT";
+        this.rejectionReason = reason;
+    }
+
+    /**
+     * Regla de Negocio: Cancelar el evento.
+     */
+    public void cancel() {
+        if ("CANCELED".equals(this.status)) {
+            throw new com.orionticket.events.domain.exception.InvalidEventStateException("Event is already canceled.");
+        }
+        this.status = "CANCELED";
     }
 }

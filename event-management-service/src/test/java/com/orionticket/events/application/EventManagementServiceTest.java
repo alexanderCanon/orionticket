@@ -1,6 +1,7 @@
 package com.orionticket.events.application;
 
 import com.orionticket.events.application.service.EventManagementService;
+import com.orionticket.events.application.port.out.AuditLogPort;
 import com.orionticket.events.domain.exception.EventNotFoundException;
 import com.orionticket.events.domain.exception.UnauthorizedAccessException;
 import com.orionticket.events.domain.model.Event;
@@ -28,6 +29,9 @@ class EventManagementServiceTest {
 
     @Mock
     private EventPublisherPort eventPublisherPort;
+    
+    @Mock
+    private AuditLogPort auditLogPort;
 
     @InjectMocks
     private EventManagementService eventManagementService;
@@ -42,10 +46,11 @@ class EventManagementServiceTest {
         UUID organizerId = UUID.randomUUID();
         when(eventRepositoryPort.save(any(Event.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        Event event = eventManagementService.createEvent(organizerId, "My Event", "Description");
+        Event event = eventManagementService.createEvent(organizerId, "My Event", "Description", "MUSIC");
 
         assertNotNull(event.getEventId());
         assertEquals("DRAFT", event.getStatus());
+        assertEquals("MUSIC", event.getCategory());
         assertEquals(organizerId, event.getOrganizerId());
 
         verify(eventRepositoryPort, times(1)).save(event);
@@ -56,7 +61,7 @@ class EventManagementServiceTest {
     void shouldAddDateToEventSuccessfully() {
         UUID organizerId = UUID.randomUUID();
         UUID eventId = UUID.randomUUID();
-        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        Event event = Event.createDraft(organizerId, "My Event", "Desc", "MUSIC");
         event.setEventId(eventId);
 
         when(eventRepositoryPort.findById(eventId)).thenReturn(Optional.of(event));
@@ -79,7 +84,7 @@ class EventManagementServiceTest {
         UUID organizerId = UUID.randomUUID();
         UUID attackerId = UUID.randomUUID();
         UUID eventId = UUID.randomUUID();
-        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        Event event = Event.createDraft(organizerId, "My Event", "Desc", "MUSIC");
         event.setEventId(eventId);
 
         when(eventRepositoryPort.findById(eventId)).thenReturn(Optional.of(event));
@@ -106,7 +111,7 @@ class EventManagementServiceTest {
     void shouldSubmitEventForReviewSuccessfully() {
         UUID organizerId = UUID.randomUUID();
         UUID eventId = UUID.randomUUID();
-        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        Event event = Event.createDraft(organizerId, "My Event", "Desc", "MUSIC");
         event.setEventId(eventId);
         event.addDate(ZonedDateTime.now().plusDays(10), UUID.randomUUID(), 100);
 
@@ -117,14 +122,14 @@ class EventManagementServiceTest {
 
         assertEquals("UNDER_REVIEW", submittedEvent.getStatus());
         verify(eventRepositoryPort, times(1)).save(event);
-        verify(eventPublisherPort, times(1)).publishEventSubmittedForReview(event);
+        verify(eventPublisherPort, times(1)).publishEventSubmittedForReview(event, organizerId);
     }
 
     @Test
     void shouldThrowExceptionWhenSubmittingEventWithoutDates() {
         UUID organizerId = UUID.randomUUID();
         UUID eventId = UUID.randomUUID();
-        Event event = Event.createDraft(organizerId, "My Event", "Desc");
+        Event event = Event.createDraft(organizerId, "My Event", "Desc", "MUSIC");
         event.setEventId(eventId);
         // Note: No dates added
 
@@ -135,7 +140,7 @@ class EventManagementServiceTest {
         });
 
         verify(eventRepositoryPort, never()).save(any());
-        verify(eventPublisherPort, never()).publishEventSubmittedForReview(any());
+        verify(eventPublisherPort, never()).publishEventSubmittedForReview(any(), any());
     }
 
     @Test
@@ -174,7 +179,29 @@ class EventManagementServiceTest {
         Event rejectedEvent = eventManagementService.rejectEvent(eventId, operatorId, "Incomplete information");
 
         assertEquals("DRAFT", rejectedEvent.getStatus());
+        assertEquals("Incomplete information", rejectedEvent.getRejectionReason());
         verify(eventRepositoryPort, times(1)).save(event);
         verify(eventPublisherPort, times(1)).publishEventRejected(event, operatorId, "Incomplete information");
+    }
+
+    @Test
+    void shouldCancelEventSuccessfully() {
+        UUID organizerId = UUID.randomUUID();
+        UUID eventId = UUID.randomUUID();
+        Event event = Event.builder()
+                .eventId(eventId)
+                .organizerId(organizerId)
+                .status("RELEASED")
+                .build();
+
+        when(eventRepositoryPort.findById(eventId)).thenReturn(java.util.Optional.of(event));
+        when(eventRepositoryPort.save(any(Event.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        String reason = "Fuerza mayor";
+        Event canceledEvent = eventManagementService.cancelEvent(eventId, organizerId, reason);
+
+        assertEquals("CANCELED", canceledEvent.getStatus());
+        verify(eventRepositoryPort, times(1)).save(event);
+        verify(eventPublisherPort, times(1)).publishEventCanceled(event, organizerId, reason);
     }
 }

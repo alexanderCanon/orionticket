@@ -28,8 +28,14 @@ public class EventJpaEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "category", nullable = false)
+    private String category;
+
     @Column(name = "status", nullable = false)
     private String status;
+
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<EventDateJpaEntity> dates = new ArrayList<>();

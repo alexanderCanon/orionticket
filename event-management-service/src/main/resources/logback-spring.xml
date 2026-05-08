@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Configuración de logging estructurado en JSON para el Event Management Service.
+  Cumple DoD §2: "Structured JSON log emitted on entry and exit (correlation ID
+  propagated via X-Correlation-Id header)."
+
+  En producción (profile != local) se usa el appender JSON.
+  En local se usa el appender de consola legible.
+-->
+<configuration>
+
+    <!-- Appender de consola legible para desarrollo local -->
+    <springProfile name="local,default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId:-NO_CORRELATION}] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- Appender JSON estructurado para producción/Docker -->
+    <springProfile name="prod,docker">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>correlationId</includeMdcKeyName>
+                <customFields>{"service":"event-management-service","version":"0.0.1"}</customFields>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

@@ -23,16 +23,17 @@ public class EventManagementController {
 
     private final EventManagementUseCase eventManagementUseCase;
 
-    // TODO: Extraer desde el token JWT (Spring Security) en el futuro
+    // Nota: Extraer desde el token JWT (Spring Security) en el futuro
     private final UUID TEMPORARY_ORGANIZER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @PostMapping
     @Operation(summary = "Create a new event", description = "Creates a new event in DRAFT status")
     public ResponseEntity<Event> createEvent(@Valid @RequestBody CreateEventRequest request) {
         Event event = eventManagementUseCase.createEvent(
-                TEMPORARY_ORGANIZER_ID, 
-                request.getName(), 
-                request.getDescription()
+                TEMPORARY_ORGANIZER_ID,
+                request.getName(),
+                request.getDescription(),
+                request.getCategory()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(event);
     }
@@ -63,7 +64,7 @@ public class EventManagementController {
     @PostMapping("/{eventId}/approve")
     @Operation(summary = "Approve event", description = "Transitions an event to RELEASED status. Only for Platform Operators.")
     public ResponseEntity<Event> approveEvent(@PathVariable UUID eventId) {
-        // TODO: Extraer operatorId desde el token
+        // Nota: Extraer operatorId desde el token
         UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
         Event event = eventManagementUseCase.approveEvent(eventId, operatorId);
         return ResponseEntity.ok(event);
@@ -74,9 +75,18 @@ public class EventManagementController {
     public ResponseEntity<Event> rejectEvent(
             @PathVariable UUID eventId,
             @Valid @RequestBody com.orionticket.events.infrastructure.adapters.in.rest.dto.RejectEventRequest request) {
-        // TODO: Extraer operatorId desde el token
+        // Nota: Extraer operatorId desde el token
         UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
         Event event = eventManagementUseCase.rejectEvent(eventId, operatorId, request.getReason());
+        return ResponseEntity.ok(event);
+    }
+
+    @PostMapping("/{eventId}/cancel")
+    @Operation(summary = "Cancel event", description = "Transitions an event to CANCELED status. Requires a cancellation reason.")
+    public ResponseEntity<Event> cancelEvent(
+            @PathVariable UUID eventId,
+            @Valid @RequestBody com.orionticket.events.infrastructure.adapters.in.rest.dto.CancelEventRequest request) {
+        Event event = eventManagementUseCase.cancelEvent(eventId, TEMPORARY_ORGANIZER_ID, request.getReason());
         return ResponseEntity.ok(event);
     }
 }

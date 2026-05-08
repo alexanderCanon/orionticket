@@ -22,7 +22,7 @@ public class VenueManagementController {
 
     private final VenueManagementUseCase venueManagementUseCase;
 
-    // TODO: Extraer desde el token JWT en el futuro
+    // Nota: Extraer desde el token JWT en el futuro
     private final UUID TEMPORARY_ORGANIZER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
 
     @PostMapping

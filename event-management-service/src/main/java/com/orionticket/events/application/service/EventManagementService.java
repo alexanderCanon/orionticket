@@ -5,6 +5,7 @@ import com.orionticket.events.domain.exception.EventNotFoundException;
 import com.orionticket.events.domain.exception.UnauthorizedAccessException;
 import com.orionticket.events.domain.model.Event;
 import com.orionticket.events.domain.model.EventDate;
+import com.orionticket.events.application.port.out.AuditLogPort;
 import com.orionticket.events.domain.port.out.EventPublisherPort;
 import com.orionticket.events.domain.port.out.EventRepositoryPort;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,11 @@ public class EventManagementService implements EventManagementUseCase {
 
     private final EventRepositoryPort eventRepositoryPort;
     private final EventPublisherPort eventPublisherPort;
+    private final AuditLogPort auditLogPort;
 
     @Override
-    public Event createEvent(UUID organizerId, String name, String description) {
-        Event event = Event.createDraft(organizerId, name, description);
+    public Event createEvent(UUID organizerId, String name, String description, String category) {
+        Event event = Event.createDraft(organizerId, name, description, category);
         Event savedEvent = eventRepositoryPort.save(event);
         
         eventPublisherPort.publishEventCreated(savedEvent);
@@ -58,7 +60,7 @@ public class EventManagementService implements EventManagementUseCase {
         event.submitForReview();
         
         Event savedEvent = eventRepositoryPort.save(event);
-        eventPublisherPort.publishEventSubmittedForReview(savedEvent);
+        eventPublisherPort.publishEventSubmittedForReview(savedEvent, organizerId);
         
         return savedEvent;
     }
@@ -68,12 +70,14 @@ public class EventManagementService implements EventManagementUseCase {
         Event event = eventRepositoryPort.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
 
-        // TODO: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        // Nota: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
         
         event.approve();
         
         Event savedEvent = eventRepositoryPort.save(event);
         eventPublisherPort.publishEventReleased(savedEvent, operatorId);
+        
+        auditLogPort.logAction(operatorId, "APPROVE_EVENT", "Event", eventId, "Event approved by platform operator.");
         
         return savedEvent;
     }
@@ -83,12 +87,37 @@ public class EventManagementService implements EventManagementUseCase {
         Event event = eventRepositoryPort.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
 
-        // TODO: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        // Nota: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
         
         event.reject(reason);
         
         Event savedEvent = eventRepositoryPort.save(event);
         eventPublisherPort.publishEventRejected(savedEvent, operatorId, reason);
+        
+        auditLogPort.logAction(operatorId, "REJECT_EVENT", "Event", eventId, "Reason: " + reason);
+        
+        return savedEvent;
+    }
+
+    @Override
+    public Event cancelEvent(UUID eventId, UUID organizerId, String reason) {
+        Event event = eventRepositoryPort.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
+
+        if (!event.getOrganizerId().equals(organizerId)) {
+            throw new UnauthorizedAccessException("You are not the owner of this event.");
+        }
+
+        event.cancel();
+        
+        Event savedEvent = eventRepositoryPort.save(event);
+        eventPublisherPort.publishEventCanceled(savedEvent, organizerId, reason);
+        
+        if (savedEvent.getDates() != null) {
+            savedEvent.getDates().forEach(d -> eventPublisherPort.publishDateCanceled(d, organizerId, reason));
+        }
+        
+        auditLogPort.logAction(organizerId, "CANCEL_EVENT", "Event", eventId, "Reason: " + reason);
         
         return savedEvent;
     }

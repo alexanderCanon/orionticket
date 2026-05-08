@@ -7,9 +7,10 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public interface EventManagementUseCase {
-    Event createEvent(UUID organizerId, String name, String description);
+    Event createEvent(UUID organizerId, String name, String description, String category);
     EventDate addDateToEvent(UUID eventId, UUID organizerId, ZonedDateTime scheduledAt, UUID venueId, Integer capacity);
     Event submitEventForReview(UUID eventId, UUID organizerId);
     Event approveEvent(UUID eventId, UUID operatorId);
     Event rejectEvent(UUID eventId, UUID operatorId, String reason);
+    Event cancelEvent(UUID eventId, UUID organizerId, String reason);
 }
