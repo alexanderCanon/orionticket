@@ -15,6 +15,7 @@ public class RabbitMqConfig {
     public static final String EXCHANGE_NAME = "orionticket.events.exchange";
     public static final String EVENT_CREATED_ROUTING_KEY = "event.created";
     public static final String DATE_ADDED_ROUTING_KEY = "event.date.added";
+    public static final String VENUE_CREATED_ROUTING_KEY = "venue.created";
 
     @Bean
     public DirectExchange eventsExchange() {

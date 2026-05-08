@@ -43,4 +43,16 @@ public class RabbitMqEventPublisherAdapter implements EventPublisherPort {
         rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.DATE_ADDED_ROUTING_KEY, message);
         log.info("Published DateAdded for eventId: {}, dateId: {}", event.getEventId(), date.getDateId());
     }
+
+    @Override
+    public void publishVenueCreated(com.orionticket.events.domain.model.Venue venue) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("venueId", venue.getVenueId());
+        message.put("organizerId", venue.getOrganizerId());
+        message.put("name", venue.getName());
+        message.put("capacity", venue.getCapacity());
+
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_NAME, RabbitMqConfig.VENUE_CREATED_ROUTING_KEY, message);
+        log.info("Published VenueCreated for venueId: {}", venue.getVenueId());
+    }
 }

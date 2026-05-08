@@ -1,0 +1,8 @@
+CREATE TABLE venues (
+    venue_id UUID PRIMARY KEY,
+    organizer_id UUID NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    capacity INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

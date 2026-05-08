@@ -104,4 +104,22 @@ class EventManagementIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.capacity").value(500));
     }
+
+    @Test
+    void shouldCreateVenue() throws Exception {
+        String requestBody = """
+                {
+                    "name": "Estadio Nacional",
+                    "address": "Zona 5, Guatemala",
+                    "capacity": 25000
+                }
+                """;
+
+        mockMvc.perform(post("/v1/venues")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Estadio Nacional"))
+                .andExpect(jsonPath("$.capacity").value(25000));
+    }
 }
