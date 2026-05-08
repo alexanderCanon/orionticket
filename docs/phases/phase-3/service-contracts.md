@@ -40,6 +40,133 @@
 **Error codes:**
 | Code | Meaning |
 |---|---|
+| 400 | Invalid request format. |
+| 409 | Email already exists. |
+
+---
+
+## Event Management Service
+
+### POST /v1/events
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-01 |
+| **Description** | Organizer creates a new Event. |
+
+**Request body:**
+```json
+{
+  "name": "string (required)",
+  "description": "string (optional)"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "eventId": "uuid",
+  "organizerId": "uuid",
+  "name": "string",
+  "description": "string",
+  "status": "DRAFT",
+  "dates": [],
+  "createdAt": "datetime"
+}
+```
+
+### POST /v1/events/{eventId}/dates
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-01 |
+| **Description** | Add a date to an existing DRAFT event. |
+
+**Request body:**
+```json
+{
+  "scheduledAt": "datetime (required)",
+  "venueId": "uuid (required)",
+  "capacity": "integer (required, >0)"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "dateId": "uuid",
+  "eventId": "uuid",
+  "scheduledAt": "datetime",
+  "venueId": "uuid",
+  "capacity": "integer"
+}
+```
+
+### POST /v1/events/{eventId}/submit
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-03 |
+| **Description** | Submit event for review. |
+
+**Response (200 OK):**
+```json
+{
+  "eventId": "uuid",
+  "status": "UNDER_REVIEW"
+}
+```
+
+### POST /v1/venues
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-02 |
+| **Description** | Organizer creates a Venue. |
+
+**Request body:**
+```json
+{
+  "name": "string (required)",
+  "address": "string (required)",
+  "capacity": "integer (required, >0)"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "venueId": "uuid",
+  "organizerId": "uuid",
+  "name": "string",
+  "address": "string",
+  "capacity": "integer"
+}
+```
+
+### GET /v1/venues
+
+| Field | Value |
+|---|---|
+| **Owner** | Event Management |
+| **Related use case** | UC-EM-02 |
+| **Description** | Get venues for the authenticated organizer. |
+
+**Response (200 OK):**
+```json
+[
+  {
+    "venueId": "uuid",
+    "name": "string",
+    "address": "string",
+    "capacity": "integer"
+  }
+]
+```
 | 409 | Email already registered |
 | 422 | Validation error (missing/invalid fields) |
 
