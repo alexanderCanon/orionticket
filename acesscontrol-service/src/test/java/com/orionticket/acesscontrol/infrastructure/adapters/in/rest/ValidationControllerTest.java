@@ -17,7 +17,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.mockito.Mockito;
 import com.orionticket.acesscontrol.domain.port.out.TicketLookupPort;
 import com.orionticket.acesscontrol.domain.port.out.TicketLookupResult;
-import com.orionticket.acesscontrol.domain.model.ValidationResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

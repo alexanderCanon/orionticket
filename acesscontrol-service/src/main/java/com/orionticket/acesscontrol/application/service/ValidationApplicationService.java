@@ -14,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Service
 public class ValidationApplicationService {
     private static final Logger log = LoggerFactory.getLogger(ValidationApplicationService.class);
@@ -53,7 +50,8 @@ public class ValidationApplicationService {
         } else if ("INVALIDATED".equalsIgnoreCase(ticket.status())) {
             result = ValidationResult.FAILED;
             failureReason = FailureReason.INVALIDATED;
-        } else if (validationRecordRepository.existsByTicketIdAndResult(command.ticketId(), ValidationResult.SUCCEEDED.name())) {
+        } else if (validationRecordRepository.existsByTicketIdAndResult(command.ticketId(),
+                ValidationResult.SUCCEEDED.name())) {
             result = ValidationResult.FAILED;
             failureReason = FailureReason.ALREADY_USED;
         }
@@ -65,8 +63,7 @@ public class ValidationApplicationService {
                 command.dateId(),
                 result,
                 failureReason,
-                false
-        );
+                false);
 
         ValidationRecord savedRecord = validationRecordRepository.save(record);
         domainEventPublisher.publish(savedRecord);
@@ -75,11 +72,10 @@ public class ValidationApplicationService {
                 savedRecord.validationId(),
                 savedRecord.ticketId(),
                 savedRecord.result(),
-                savedRecord.failureReason() != null ? savedRecord.failureReason().name() : null,
+                savedRecord.failureReason(),
                 savedRecord.isOffline(),
                 savedRecord.attemptedAt(),
                 savedRecord.syncedAt(),
-                savedRecord.conflictDetected()
-        );
+                savedRecord.conflictDetected());
     }
 }
