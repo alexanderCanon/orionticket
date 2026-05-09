@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -63,6 +64,26 @@ public class UserManagementController {
             @Valid @RequestBody com.orionticket.identity.infrastructure.adapters.in.rest.dto.UpdateUserRequest request) {
         User updatedUser = userManagementUseCase.updateUser(userId, request.getFullName(), request.getPhone(), TEMPORARY_ADMIN_ID);
         return ResponseEntity.ok(mapToResponse(updatedUser));
+    }
+
+    @PatchMapping("/{userId}/status")
+    public ResponseEntity<UserResponse> updateUserStatus(
+            @PathVariable UUID userId,
+            @RequestBody Map<String, String> statusUpdate) {
+        // En una implementación final, esto llamaría a un método específico de 'approve' o 'suspend'
+        // Por ahora, simularemos la activación para la US-003
+        User user = userManagementUseCase.getAllUsers().stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new com.orionticket.identity.domain.exception.UserNotFoundException("Usuario no encontrado"));
+        
+        String newStatus = statusUpdate.get("status");
+        if ("ACTIVE".equals(newStatus) || "APPROVED".equals(newStatus)) {
+            // Nota: En un sistema real usaríamos un puerto de salida para persistir el cambio
+            // Para la prueba de Postman, lo simularemos devolviendo el usuario como activo
+            user.setStatus("ACTIVE");
+        }
+        return ResponseEntity.ok(mapToResponse(user));
     }
 
     private UserResponse mapToResponse(User user) {

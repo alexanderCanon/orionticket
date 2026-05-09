@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5439/identity_db
+    username: orion_identity
+    password: identity_secret
+  flyway:
+    url: jdbc:postgresql://localhost:5439/identity_db
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest

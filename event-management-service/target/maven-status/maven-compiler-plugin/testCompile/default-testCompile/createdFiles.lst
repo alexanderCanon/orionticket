@@ -1,0 +1,5 @@
+com\orionticket\events\EventManagementServiceApplicationTests.class
+com\orionticket\events\application\EventManagementServiceTest.class
+com\orionticket\events\infrastructure\EventManagementIntegrationTest.class
+com\orionticket\events\application\VenueManagementServiceTest.class
+com\orionticket\events\infrastructure\EventCatalogIntegrationTest.class
