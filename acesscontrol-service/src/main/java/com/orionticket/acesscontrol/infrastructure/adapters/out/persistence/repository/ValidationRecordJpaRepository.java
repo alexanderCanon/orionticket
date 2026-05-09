@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ValidationRecordRepository extends JpaRepository<ValidationRecordEntity, UUID> {
+public interface ValidationRecordJpaRepository extends JpaRepository<ValidationRecordEntity, UUID> {
 
     Optional<ValidationRecordEntity> findFirstByTicketIdAndResult(UUID ticketId, String result);
 

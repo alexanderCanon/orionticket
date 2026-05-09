@@ -11,7 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.mockito.Mockito;
+import com.orionticket.acesscontrol.domain.port.out.TicketLookupPort;
+import com.orionticket.acesscontrol.domain.port.out.TicketLookupResult;
+import com.orionticket.acesscontrol.domain.model.ValidationResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -20,6 +26,9 @@ class ValidationControllerTest extends IntegrationTestBase {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private TicketLookupPort ticketLookupPort;
 
     @Test
     @DisplayName("POST /v1/validations - returns mock validation response")
@@ -31,6 +40,19 @@ class ValidationControllerTest extends IntegrationTestBase {
                 UUID.randomUUID(),
                 UUID.randomUUID()
         );
+
+        TicketLookupResult mockTicket = TicketLookupResult.success(
+                request.ticketId(),
+                "ACTIVE",
+                "QR",
+                Instant.now().plusSeconds(3600),
+                "STANDARD",
+                request.eventId(),
+                request.dateId()
+        );
+
+        Mockito.when(ticketLookupPort.findTicketById(request.ticketId()))
+                .thenReturn(Optional.of(mockTicket));
 
         mockMvc.perform(post("/v1/validations")
                         .contentType(MediaType.APPLICATION_JSON)

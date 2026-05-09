@@ -16,6 +16,7 @@ public class TestSecurityConfig {
     @Primary
     public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+            .securityMatcher("/test-security-config-only/**")
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated());

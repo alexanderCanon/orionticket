@@ -4,7 +4,6 @@ import com.orionticket.acesscontrol.domain.model.ValidationRecord;
 import com.orionticket.acesscontrol.domain.port.out.ValidationRecordRepositoryPort;
 import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.mapper.ValidationRecordEntityMapper;
 import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.entity.ValidationRecordEntity;
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ValidationRecordRepositoryImpl implements ValidationRecordRepositoryPort {
 
-    private final ValidationRecordRepository jpaRepository;
+    private final ValidationRecordJpaRepository jpaRepository;
     private final ValidationRecordEntityMapper mapper;
 
     public ValidationRecordRepositoryImpl(
-            ValidationRecordRepository jpaRepository,
+            ValidationRecordJpaRepository jpaRepository,
             ValidationRecordEntityMapper mapper) {
         this.jpaRepository = jpaRepository;
         this.mapper = mapper;

@@ -9,7 +9,7 @@ import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.repo
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.repository.ValidationRecordRepository;
+import com.orionticket.acesscontrol.infrastructure.adapters.out.persistence.repository.ValidationRecordJpaRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ValidationRecordRepositoryTest extends IntegrationTestBase {
 
     @Autowired
-    private ValidationRecordRepository jpaRepository;
+    private ValidationRecordJpaRepository jpaRepository;
 
     @Autowired
     private ValidationRecordEntityMapper mapper;
