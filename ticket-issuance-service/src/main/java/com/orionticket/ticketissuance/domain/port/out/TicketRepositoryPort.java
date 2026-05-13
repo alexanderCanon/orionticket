@@ -11,4 +11,8 @@ public interface TicketRepositoryPort {
     Optional<Ticket> findById(UUID ticketId);
 
     List<Ticket> findByBuyerId(UUID buyerId, int page, int size);
+
+    Ticket save(Ticket ticket);
+
+    Optional<Ticket> update(Ticket ticket);
 }

@@ -1,25 +1,23 @@
-package com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto;
+package com.orionticket.ticketissuance.application.port.in.command;
 
 import com.orionticket.ticketissuance.domain.model.DeliveryChannel;
+import com.orionticket.ticketissuance.domain.model.TicketType;
 
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
-public record TicketResponse(
-        UUID ticketId,
+public record IssueTicketCommand(
         UUID orderId,
         UUID buyerId,
         UUID eventId,
         UUID dateId,
-        UUID seatId,
-        String type,
+        UUID seatId, // Nullable for general admission
+        TicketType type,
         String holderName,
         String qrCode,
         Instant qrExpiresAt,
         String accessPolicy,
-        String status,
-        Instant issuedAt,
         Set<DeliveryChannel> deliveryChannels
 ) {
 }

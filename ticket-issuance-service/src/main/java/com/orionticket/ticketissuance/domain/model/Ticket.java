@@ -2,6 +2,7 @@ package com.orionticket.ticketissuance.domain.model;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 public final class Ticket {
@@ -20,6 +21,7 @@ public final class Ticket {
     private final TicketStatus status;
     private final Instant deliveredAt;
     private final Instant issuedAt;
+    private final Set<DeliveryChannel> deliveryChannels;
 
     public Ticket(
             UUID ticketId,
@@ -35,7 +37,8 @@ public final class Ticket {
             String accessPolicy,
             TicketStatus status,
             Instant deliveredAt,
-            Instant issuedAt
+            Instant issuedAt,
+            Set<DeliveryChannel> deliveryChannels
     ) {
         this.ticketId = Objects.requireNonNull(ticketId, "ticketId is required");
         this.orderId = Objects.requireNonNull(orderId, "orderId is required");
@@ -51,6 +54,7 @@ public final class Ticket {
         this.issuedAt = Objects.requireNonNull(issuedAt, "issuedAt is required");
         this.seatId = seatId;
         this.deliveredAt = deliveredAt;
+        this.deliveryChannels = Objects.requireNonNull(deliveryChannels, "deliveryChannels is required");
 
         if (type == TicketType.MAPPED && seatId == null) {
             throw new IllegalArgumentException("seatId is required for mapped tickets");
@@ -121,5 +125,9 @@ public final class Ticket {
 
     public Instant issuedAt() {
         return issuedAt;
+    }
+
+    public Set<DeliveryChannel> deliveryChannels() {
+        return deliveryChannels;
     }
 }

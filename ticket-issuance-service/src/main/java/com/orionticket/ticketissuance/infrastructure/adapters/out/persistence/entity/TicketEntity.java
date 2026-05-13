@@ -1,11 +1,16 @@
 package com.orionticket.ticketissuance.infrastructure.adapters.out.persistence.entity;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -54,6 +59,11 @@ public class TicketEntity {
 
     @Column(name = "issued_at", nullable = false)
     private Instant issuedAt;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "ticket_delivery_channels", joinColumns = @JoinColumn(name = "ticket_id"))
+    @Column(name = "channel")
+    private Set<String> deliveryChannels;
 
     public UUID getTicketId() {
         return ticketId;
@@ -165,5 +175,13 @@ public class TicketEntity {
 
     public void setIssuedAt(Instant issuedAt) {
         this.issuedAt = issuedAt;
+    }
+
+    public Set<String> getDeliveryChannels() {
+        return deliveryChannels;
+    }
+
+    public void setDeliveryChannels(Set<String> deliveryChannels) {
+        this.deliveryChannels = deliveryChannels;
     }
 }
