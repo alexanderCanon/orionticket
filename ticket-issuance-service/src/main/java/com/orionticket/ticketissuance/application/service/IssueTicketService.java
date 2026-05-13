@@ -15,9 +15,14 @@ import java.util.UUID;
 public class IssueTicketService implements IssueTicketUseCase {
 
     private final TicketRepositoryPort ticketRepository;
+    private final com.orionticket.ticketissuance.application.port.out.TicketEventPublisherPort eventPublisher;
 
-    public IssueTicketService(TicketRepositoryPort ticketRepository) {
+    public IssueTicketService(
+            TicketRepositoryPort ticketRepository,
+            com.orionticket.ticketissuance.application.port.out.TicketEventPublisherPort eventPublisher
+    ) {
         this.ticketRepository = ticketRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -47,6 +52,11 @@ public class IssueTicketService implements IssueTicketUseCase {
         );
 
         // Save the new ticket
-        return ticketRepository.save(newTicket);
+        Ticket savedTicket = ticketRepository.save(newTicket);
+        
+        // Publish event for notifications
+        eventPublisher.publishTicketIssuedEvent(savedTicket);
+        
+        return savedTicket;
     }
 }
