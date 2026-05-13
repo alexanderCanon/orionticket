@@ -3,7 +3,9 @@ package com.orionticket.notifications.infrastructure.adapters.out.persistence.re
 import com.orionticket.notifications.infrastructure.adapters.out.persistence.entity.NotificationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface JpaNotificationRepository extends JpaRepository<NotificationEntity, UUID> {
+    List<NotificationEntity> findByStatus(String status);
 }
