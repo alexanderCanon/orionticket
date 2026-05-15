@@ -1,95 +1,247 @@
 version: '3.8'
 
 services:
-  # ── Databases ──────────────────────────────────────────────────────────────
-  identity-db:
-    image: postgres:16-alpine
-    container_name: identity-postgres
-    environment:
-      POSTGRES_USER: orion_identity
-      POSTGRES_PASSWORD: identity_secret
-      POSTGRES_DB: identity_db
-      POSTGRES_HOST_AUTH_METHOD: trust
-    ports:
-      - "5439:5432"
-    volumes:
-      - identity_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  event-db:
-    image: postgres:16-alpine
-    container_name: event-postgres
-    environment:
-      POSTGRES_USER: orion
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: event_management_db
-    ports:
-      - "5434:5432"
-    volumes:
-      - event_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U orion -d event_management_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # ── Messaging ──────────────────────────────────────────────────────────────
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
     container_name: orion-rabbitmq
     ports:
-      - "5672:5672"   # AMQP
-      - "15672:15672" # Management UI
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_running"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - orionticket-local
 
-  # ── Backend Services ───────────────────────────────────────────────────────
   identity-service:
     build:
       context: ./identity-service
       dockerfile: Dockerfile
     container_name: identity-service
-    ports:
-      - "8081:8081"
+    env_file:
+      - .env
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - DB_HOST=identity-db
-      - DB_PORT=5432
-      - DB_NAME=identity_db
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8081
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${IDENTITY_SERVICE_PORT:-8081}:8081"
     depends_on:
-      identity-db:
+      rabbitmq:
         condition: service_healthy
+    networks:
+      - orionticket-local
 
   event-management-service:
     build:
       context: ./event-management-service
       dockerfile: Dockerfile
     container_name: event-management-service
-    ports:
-      - "8082:8082"
+    env_file:
+      - .env
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - DB_HOST=event-db
-      - DB_PORT=5432
-      - DB_NAME=event_management_db
-      - DB_USER=orion
-      - DB_PASSWORD=secret
-      - RABBITMQ_HOST=rabbitmq
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8082
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
     depends_on:
-      event-db:
-        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - orionticket-local
 
-volumes:
-  identity_pg_data:
-  event_pg_data:
+  seating-inventory-service:
+    build:
+      context: ./seating-inventory-service
+      dockerfile: Dockerfile
+    container_name: seating-inventory-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8083
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+
+  orders-service:
+    build:
+      context: ./orders-service
+      dockerfile: Dockerfile
+    container_name: orders-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8084
+      RABBITMQ_HOST: rabbitmq
+      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
+      SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
+    ports:
+      - "${ORDERS_SERVICE_PORT:-8084}:8084"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      event-management-service:
+        condition: service_started
+      seating-inventory-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+
+  payments-service:
+    build:
+      context: ./payments-service
+      dockerfile: Dockerfile
+    container_name: payments-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8085
+      RABBITMQ_HOST: rabbitmq
+      ORDERS_SERVICE_URL: http://orders-service:8084
+    ports:
+      - "${PAYMENTS_SERVICE_PORT:-8085}:8085"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orders-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+
+  ticket-issuance-service:
+    build:
+      context: ./ticket-issuance-service
+      dockerfile: Dockerfile
+    container_name: ticket-issuance-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8086
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+
+  access-control-service:
+    build:
+      context: ./access-control-service
+      dockerfile: Dockerfile
+    container_name: access-control-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      APP_PORT: 8087
+      RABBITMQ_HOST: rabbitmq
+      TICKET_ISSUANCE_URL: http://ticket-issuance-service:8086
+    ports:
+      - "${ACCESS_CONTROL_SERVICE_PORT:-8087}:8087"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      ticket-issuance-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+
+  notifications-service:
+    build:
+      context: ./notifications-service
+      dockerfile: Dockerfile
+    container_name: notifications-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8088
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+
+  reporting-service:
+    build:
+      context: ./reporting-service
+      dockerfile: Dockerfile
+    container_name: reporting-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8089
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${REPORTING_SERVICE_PORT:-8089}:8089"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8080
+      IDENTITY_SERVICE_URL: http://identity-service:8081
+      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
+      SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
+      ORDERS_SERVICE_URL: http://orders-service:8084
+      PAYMENTS_SERVICE_URL: http://payments-service:8085
+      TICKET_ISSUANCE_SERVICE_URL: http://ticket-issuance-service:8086
+      ACCESS_CONTROL_SERVICE_URL: http://access-control-service:8087
+      NOTIFICATIONS_SERVICE_URL: http://notifications-service:8088
+      REPORTING_SERVICE_URL: http://reporting-service:8089
+    ports:
+      - "${GATEWAY_SERVICE_PORT:-8080}:8080"
+    depends_on:
+      identity-service:
+        condition: service_started
+      event-management-service:
+        condition: service_started
+      seating-inventory-service:
+        condition: service_started
+      orders-service:
+        condition: service_started
+      payments-service:
+        condition: service_started
+      ticket-issuance-service:
+        condition: service_started
+      access-control-service:
+        condition: service_started
+      notifications-service:
+        condition: service_started
+      reporting-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+
+networks:
+  orionticket-local:
+    name: orionticket-local
+    driver: bridge

@@ -2,31 +2,31 @@ spring:
   application:
     name: identity-service
   datasource:
-    url: jdbc:postgresql://localhost:5439/identity_db
-    username: orion_identity
-    password: identity_secret
+    url: jdbc:postgresql://${IDENTITY_DB_HOST:localhost}:${IDENTITY_DB_PORT:5432}/${IDENTITY_DB_NAME:identity_db}
+    username: ${IDENTITY_DB_USER:orion_identity}
+    password: ${IDENTITY_DB_PASSWORD:identity_secret}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
-    url: jdbc:postgresql://localhost:5439/identity_db
-    user: orion_identity
-    password: identity_secret
+    url: jdbc:postgresql://${IDENTITY_DB_HOST:localhost}:${IDENTITY_DB_PORT:5432}/${IDENTITY_DB_NAME:identity_db}
+    user: ${IDENTITY_DB_USER:orion_identity}
+    password: ${IDENTITY_DB_PASSWORD:identity_secret}
     enabled: true
     baseline-on-migrate: true
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
 
 logging:
   level:

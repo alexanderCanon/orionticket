@@ -2,9 +2,9 @@ spring:
   application:
     name: event-management-service
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5434}/${DB_NAME:event_management_db}
-    username: ${DB_USER:orion}
-    password: ${DB_PASSWORD:secret}
+    url: jdbc:postgresql://${EVENT_MANAGEMENT_DB_HOST:localhost}:${EVENT_MANAGEMENT_DB_PORT:5432}/${EVENT_MANAGEMENT_DB_NAME:event_management_db}
+    username: ${EVENT_MANAGEMENT_DB_USER:orion}
+    password: ${EVENT_MANAGEMENT_DB_PASSWORD:secret}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -22,4 +22,4 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
 
 server:
-  port: 8082
+  port: ${SERVER_PORT:8082}

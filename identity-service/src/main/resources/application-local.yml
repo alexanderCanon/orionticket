@@ -1,17 +1,19 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5439/identity_db
-    username: orion_identity
-    password: identity_secret
+    url: jdbc:postgresql://${IDENTITY_DB_HOST:localhost}:${IDENTITY_DB_PORT:5432}/${IDENTITY_DB_NAME:identity_db}
+    username: ${IDENTITY_DB_USER:orion_identity}
+    password: ${IDENTITY_DB_PASSWORD:identity_secret}
   flyway:
-    url: jdbc:postgresql://localhost:5439/identity_db
+    url: jdbc:postgresql://${IDENTITY_DB_HOST:localhost}:${IDENTITY_DB_PORT:5432}/${IDENTITY_DB_NAME:identity_db}
+    user: ${IDENTITY_DB_USER:orion_identity}
+    password: ${IDENTITY_DB_PASSWORD:identity_secret}
     enabled: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
