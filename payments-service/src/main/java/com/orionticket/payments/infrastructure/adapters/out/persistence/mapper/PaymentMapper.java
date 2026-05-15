@@ -4,8 +4,6 @@ import com.orionticket.payments.domain.model.Payment;
 import com.orionticket.payments.infrastructure.adapters.out.persistence.entity.PaymentJpaEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class PaymentMapper {
 
@@ -14,18 +12,17 @@ public class PaymentMapper {
             return null;
         }
         return new Payment(
-            entity.getPaymentId(),
-            entity.getOrderId(),
-            entity.getBuyerId(),
-            entity.getAmount(),
-            entity.getServiceFee(),
-            entity.getCurrency(),
-            Payment.PaymentMethod.valueOf(entity.getMethod().name()),
-            Payment.PaymentStatus.valueOf(entity.getStatus().name()),
-            entity.getGatewayReference(),
-            entity.getIdempotencyKey(),
-            entity.getCreatedAt()
-        );
+                entity.getPaymentId(),
+                entity.getOrderId(),
+                entity.getBuyerId(),
+                entity.getAmount(),
+                entity.getServiceFee(),
+                entity.getCurrency(),
+                Payment.PaymentMethod.valueOf(entity.getMethod().name()),
+                Payment.PaymentStatus.valueOf(entity.getStatus().name()),
+                entity.getGatewayReference(),
+                entity.getIdempotencyKey(),
+                entity.getCreatedAt());
     }
 
     public PaymentJpaEntity toEntity(Payment domain) {

@@ -1,6 +1,5 @@
 package com.orionticket.identity.infrastructure;
 
-import com.orionticket.identity.domain.model.User;
 import com.orionticket.identity.infrastructure.adapters.out.persistence.repository.SpringDataUserRepository;
 import com.orionticket.identity.infrastructure.adapters.out.persistence.entity.UserJpaEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +44,7 @@ class UserManagementIntegrationTest {
         user.setPhone("12345678");
         user.setStatus("ACTIVE");
         user.setRoleId(UUID.fromString("00000000-0000-0000-0000-000000000001")); // COMPRADOR role from flyway
-        
+
         userRepository.save(user);
     }
 
@@ -56,7 +55,7 @@ class UserManagementIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("SUSPENDED"));
     }
-    
+
     @Test
     void shouldUpdateUserRole() throws Exception {
         String newRoleId = "00000000-0000-0000-0000-000000000002"; // ORGANIZADOR

@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class RetryNotificationService implements RetryNotificationUseCase {
@@ -20,8 +19,7 @@ public class RetryNotificationService implements RetryNotificationUseCase {
 
     public RetryNotificationService(
             NotificationRepositoryPort notificationRepository,
-            NotificationSenderPort notificationSender
-    ) {
+            NotificationSenderPort notificationSender) {
         this.notificationRepository = notificationRepository;
         this.notificationSender = notificationSender;
     }
@@ -52,8 +50,7 @@ public class RetryNotificationService implements RetryNotificationUseCase {
                     newStatus,
                     newRetryCount,
                     notification.triggeredBy(),
-                    notification.createdAt()
-            );
+                    notification.createdAt());
 
             updatedNotifications.add(notificationRepository.save(retriedNotification));
         }

@@ -18,7 +18,6 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Filtro que valida el JWT en las peticiones entrantes.
@@ -36,8 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -65,7 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
-            // Token inválido - no establecemos contexto de seguridad (provocará 403 o 401 según config)
+            // Token inválido - no establecemos contexto de seguridad (provocará 403 o 401
+            // según config)
             SecurityContextHolder.clearContext();
         }
 

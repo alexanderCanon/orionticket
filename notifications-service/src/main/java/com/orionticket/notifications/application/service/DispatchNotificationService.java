@@ -10,9 +10,6 @@ import com.orionticket.notifications.domain.port.out.NotificationSenderPort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Service
 public class DispatchNotificationService implements DispatchNotificationUseCase {
 
@@ -21,8 +18,7 @@ public class DispatchNotificationService implements DispatchNotificationUseCase 
 
     public DispatchNotificationService(
             NotificationRepositoryPort notificationRepository,
-            NotificationSenderPort notificationSender
-    ) {
+            NotificationSenderPort notificationSender) {
         this.notificationRepository = notificationRepository;
         this.notificationSender = notificationSender;
     }
@@ -48,8 +44,7 @@ public class DispatchNotificationService implements DispatchNotificationUseCase 
                 newStatus,
                 notificationToDispatch.retryCount(), // Retry count might be incremented on failure
                 notificationToDispatch.triggeredBy(),
-                notificationToDispatch.createdAt()
-        );
+                notificationToDispatch.createdAt());
 
         return notificationRepository.save(dispatchedNotification);
     }
