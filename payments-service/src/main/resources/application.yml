@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: payments-service
+  datasource:
+    url: jdbc:postgresql://${PAYMENTS_DB_HOST:localhost}:${PAYMENTS_DB_PORT:5432}/${PAYMENTS_DB_NAME:payments_db}
+    username: ${PAYMENTS_DB_USER:orion_payments}
+    password: ${PAYMENTS_DB_PASSWORD:payments_secret}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    url: jdbc:postgresql://${PAYMENTS_DB_HOST:localhost}:${PAYMENTS_DB_PORT:5432}/${PAYMENTS_DB_NAME:payments_db}
+    user: ${PAYMENTS_DB_USER:orion_payments}
+    password: ${PAYMENTS_DB_PASSWORD:payments_secret}
+    enabled: true
+    baseline-on-migrate: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+server:
+  port: ${SERVER_PORT:8085}
+
+# --- Inter-service URLs ---
+services:
+  orders:
+    base-url: ${ORDERS_SERVICE_URL:http://localhost:8083}
+
+# --- Actuator (observability — BR-CC-06) ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    build:
+      enabled: true
+    git:
+      mode: simple
+
+# --- Logging ---
+logging:
+  level:
+    root: INFO
+    com.orionticket: DEBUG
+    org.springframework.security: INFO
+    org.springframework.web.client: DEBUG
