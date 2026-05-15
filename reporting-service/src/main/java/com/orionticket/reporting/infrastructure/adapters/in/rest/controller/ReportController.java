@@ -1,9 +1,8 @@
 package com.orionticket.reporting.infrastructure.adapters.in.rest.controller;
 
-import com.orionticket.reporting.application.service.AccessReportQueryService;
-import com.orionticket.reporting.application.service.CommissionReportQueryService;
-import com.orionticket.reporting.application.service.SalesReportQueryService;
-import com.orionticket.reporting.domain.model.AccessReport;
+import com.orionticket.reporting.application.port.in.AccessReportQueryPort;
+import com.orionticket.reporting.application.port.in.CommissionReportQueryPort;
+import com.orionticket.reporting.application.port.in.SalesReportQueryPort;
 import com.orionticket.reporting.infrastructure.adapters.in.rest.dto.AccessReportResponse;
 import com.orionticket.reporting.infrastructure.adapters.in.rest.dto.CommissionReportListResponse;
 import com.orionticket.reporting.infrastructure.adapters.in.rest.dto.CommissionReportResponse;
@@ -29,18 +28,18 @@ import java.util.UUID;
 @Tag(name = "Reporting", description = "Report generation and retrieval endpoints")
 public class ReportController {
 
-    private final SalesReportQueryService salesReportQueryService;
-    private final CommissionReportQueryService commissionReportQueryService;
-    private final AccessReportQueryService accessReportQueryService;
+    private final SalesReportQueryPort salesReportQueryPort;
+    private final CommissionReportQueryPort commissionReportQueryPort;
+    private final AccessReportQueryPort accessReportQueryPort;
     private final ReportMapper reportMapper;
 
-    public ReportController(SalesReportQueryService salesReportQueryService,
-                           CommissionReportQueryService commissionReportQueryService,
-                           AccessReportQueryService accessReportQueryService,
-                           ReportMapper reportMapper) {
-        this.salesReportQueryService = salesReportQueryService;
-        this.commissionReportQueryService = commissionReportQueryService;
-        this.accessReportQueryService = accessReportQueryService;
+    public ReportController(SalesReportQueryPort salesReportQueryPort,
+            CommissionReportQueryPort commissionReportQueryPort,
+            AccessReportQueryPort accessReportQueryPort,
+            ReportMapper reportMapper) {
+        this.salesReportQueryPort = salesReportQueryPort;
+        this.commissionReportQueryPort = commissionReportQueryPort;
+        this.accessReportQueryPort = accessReportQueryPort;
         this.reportMapper = reportMapper;
     }
 
@@ -52,7 +51,7 @@ public class ReportController {
             @RequestParam(required = false) UUID dateId) {
 
         List<SalesReportResponse> reports = reportMapper.toSalesReportResponseList(
-                salesReportQueryService.getSalesReports(organizerId, eventId, dateId));
+                salesReportQueryPort.getSalesReports(organizerId, eventId, dateId));
         return ResponseEntity.ok(new SalesReportListResponse(reports));
     }
 
@@ -64,7 +63,7 @@ public class ReportController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant periodEnd) {
 
         List<CommissionReportResponse> reports = reportMapper.toCommissionReportResponseList(
-                commissionReportQueryService.getCommissionReports(organizerId, periodStart, periodEnd));
+                commissionReportQueryPort.getCommissionReports(organizerId, periodStart, periodEnd));
         return ResponseEntity.ok(new CommissionReportListResponse(reports));
     }
 
@@ -75,7 +74,7 @@ public class ReportController {
             @RequestParam(required = false) UUID dateId) {
 
         AccessReportResponse report = reportMapper.toAccessReportResponse(
-                accessReportQueryService.getAccessReport(eventId, dateId));
+                accessReportQueryPort.getAccessReport(eventId, dateId));
         return ResponseEntity.ok(report);
     }
 }

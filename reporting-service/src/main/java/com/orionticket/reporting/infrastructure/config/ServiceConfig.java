@@ -1,6 +1,8 @@
 package com.orionticket.reporting.infrastructure.config;
 
-import com.orionticket.reporting.application.port.in.ReportQueryPort;
+import com.orionticket.reporting.application.port.in.AccessReportQueryPort;
+import com.orionticket.reporting.application.port.in.CommissionReportQueryPort;
+import com.orionticket.reporting.application.port.in.SalesReportQueryPort;
 import com.orionticket.reporting.application.service.AccessReportQueryService;
 import com.orionticket.reporting.application.service.CommissionReportQueryService;
 import com.orionticket.reporting.application.service.SalesReportQueryService;
@@ -18,17 +20,17 @@ public class ServiceConfig {
     }
 
     @Bean
-    public SalesReportQueryService salesReportQueryService(ReportRepository reportRepository) {
+    public SalesReportQueryPort salesReportQueryPort(ReportRepository reportRepository) {
         return new SalesReportQueryService(reportRepository);
     }
 
     @Bean
-    public CommissionReportQueryService commissionReportQueryService(ReportRepository reportRepository) {
+    public CommissionReportQueryPort commissionReportQueryPort(ReportRepository reportRepository) {
         return new CommissionReportQueryService(reportRepository);
     }
 
     @Bean
-    public AccessReportQueryService accessReportQueryService(ReportRepository reportRepository) {
+    public AccessReportQueryPort accessReportQueryPort(ReportRepository reportRepository) {
         return new AccessReportQueryService(reportRepository);
     }
 }

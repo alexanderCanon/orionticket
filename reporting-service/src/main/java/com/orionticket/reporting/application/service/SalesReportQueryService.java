@@ -1,13 +1,13 @@
 package com.orionticket.reporting.application.service;
 
-import com.orionticket.reporting.application.port.in.ReportQueryPort;
+import com.orionticket.reporting.application.port.in.SalesReportQueryPort;
 import com.orionticket.reporting.domain.model.SalesReport;
 import com.orionticket.reporting.domain.port.out.ReportRepository;
 
 import java.util.List;
 import java.util.UUID;
 
-public class SalesReportQueryService implements ReportQueryPort {
+public class SalesReportQueryService implements SalesReportQueryPort {
 
     private final ReportRepository reportRepository;
 
