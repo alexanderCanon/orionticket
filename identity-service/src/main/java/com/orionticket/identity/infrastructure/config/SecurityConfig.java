@@ -24,6 +24,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/v1/auth/**").permitAll() // Registro/Login siempre abierto
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/actuator/health").permitAll() // Salud para monitoreo
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()

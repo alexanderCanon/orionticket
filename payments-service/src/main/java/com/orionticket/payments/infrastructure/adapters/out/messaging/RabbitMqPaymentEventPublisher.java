@@ -24,7 +24,6 @@ public class RabbitMqPaymentEventPublisher implements PaymentEventPublisherPort 
 
     @Override
     public void publishPaymentInitiated(PaymentEvent event) {
-        // TODO: configure exchange and routing key in RabbitMqConfig, then publish
         log.info("publishPaymentInitiated — paymentId={} orderId={}", event.paymentId(), event.orderId());
         throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
     }

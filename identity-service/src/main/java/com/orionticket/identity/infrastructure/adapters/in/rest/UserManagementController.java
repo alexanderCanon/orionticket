@@ -4,6 +4,10 @@ import com.orionticket.identity.application.port.in.UserManagementUseCase;
 import com.orionticket.identity.domain.model.User;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.UpdateRoleRequest;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.UserResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "Users", description = "Platform user administration endpoints")
 public class UserManagementController {
 
     private final UserManagementUseCase userManagementUseCase;
@@ -23,12 +28,23 @@ public class UserManagementController {
     // En producción esto se obtiene del token JWT (Spring Security Principal)
     private final UUID TEMPORARY_ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000003");
 
+    @Operation(summary = "Suspend user", description = "Suspends an existing user account.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User suspended"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @PutMapping("/{userId}/suspend")
     public ResponseEntity<UserResponse> suspendUser(@PathVariable UUID userId) {
         User updatedUser = userManagementUseCase.suspendUser(userId, TEMPORARY_ADMIN_ID);
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 
+    @Operation(summary = "Update user role", description = "Assigns a new role to an existing user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "User or role not found")
+    })
     @PutMapping("/{userId}/roles")
     public ResponseEntity<UserResponse> updateUserRole(
             @PathVariable UUID userId,
@@ -37,6 +53,7 @@ public class UserManagementController {
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 
+    @Operation(summary = "List users", description = "Returns all platform users.")
     @GetMapping
     public ResponseEntity<java.util.List<UserResponse>> getAllUsers() {
         java.util.List<UserResponse> users = userManagementUseCase.getAllUsers().stream()
@@ -45,6 +62,12 @@ public class UserManagementController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Create user", description = "Creates an internal platform or organizer-scoped user.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "User created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "409", description = "Email already exists")
+    })
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody com.orionticket.identity.infrastructure.adapters.in.rest.dto.CreateUserRequest request) {
         User user = userManagementUseCase.createUser(
@@ -58,6 +81,12 @@ public class UserManagementController {
         return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(mapToResponse(user));
     }
 
+    @Operation(summary = "Update user profile", description = "Updates mutable user profile fields.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable UUID userId,
@@ -66,6 +95,7 @@ public class UserManagementController {
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 
+    @Operation(summary = "Update user status", description = "Updates user status for administrative workflows.")
     @PatchMapping("/{userId}/status")
     public ResponseEntity<UserResponse> updateUserStatus(
             @PathVariable UUID userId,
