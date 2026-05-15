@@ -2,32 +2,95 @@ package com.orionticket.payments.infrastructure.adapters.out.gateway;
 
 import com.orionticket.payments.application.port.out.PaymentGatewayPort;
 import com.orionticket.payments.domain.exception.PaymentGatewayException;
+import com.stripe.StripeClient;
+import com.stripe.exception.IdempotencyException;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentCreateParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 /**
  * Stripe payment gateway adapter.
- * Implements PaymentGatewayPort by translating domain requests into Stripe API calls.
  *
- * Important PCI note (BR-PA-08): gatewayToken is a Stripe PaymentMethod ID
- * (e.g. pm_xxxx) — raw card data is never sent through this service.
- * Stripe amount convention: multiply BigDecimal by 100 and send as long (centavos for GTQ).
+ * PCI note (BR-PA-08): gatewayToken is a Stripe PaymentMethod ID (pm_xxxx),
+ * created client-side with Stripe.js. Raw card data never passes through this
+ * service.
+ *
+ * Amount convention: Stripe requires amounts in the smallest currency unit.
+ * For GTQ (Guatemalan Quetzal), 1 GTQ = 100 centavos → multiply BigDecimal by
+ * 100.
+ *
+ * Idempotency: Stripe supports idempotency keys on the API request header
+ * (BR-PA-09).
+ * We pass our domain idempotencyKey directly to Stripe.
  */
 @Component
 public class StripePaymentGatewayAdapter implements PaymentGatewayPort {
 
     private static final Logger log = LoggerFactory.getLogger(StripePaymentGatewayAdapter.class);
+    private static final String CURRENCY = "gtq";
 
+    private final StripeClient stripeClient;
+
+    public StripePaymentGatewayAdapter(@Value("${stripe.api-key}") String apiKey) {
+        this.stripeClient = new StripeClient(apiKey);
+    }
+
+    /**
+     * Creates a Stripe PaymentIntent and confirms it immediately.
+     * The final AUTHORIZED/FAILED result arrives via Stripe webhook.
+     *
+     * @param request domain gateway request
+     * @return GatewayResponse with the PaymentIntent ID as gatewayReference
+     * @throws PaymentGatewayException on Stripe API errors
+     */
     @Override
     public GatewayResponse process(GatewayRequest request) {
-        // TODO: integrate with Stripe SDK
-        // Example flow:
-        //   1. Build PaymentIntentCreateParams with request.amount() in centavos
-        //   2. Call Stripe.PaymentIntent.create(params) with idempotency key header
-        //   3. Map response to GatewayResponse
-        log.warn("Stripe gateway process() not yet implemented — idempotencyKey={}", request.idempotencyKey());
-        throw new PaymentGatewayException("Stripe gateway integration not implemented yet", null);
+        log.info("Submitting payment to Stripe — idempotencyKey={} amount={} currency={}",
+                request.idempotencyKey(), request.amount(), request.currency());
+
+        long amountInCents = toSmallestUnit(request.amount());
+
+        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                .setAmount(amountInCents)
+                .setCurrency(CURRENCY)
+                .setPaymentMethod(request.gatewayToken())
+                .setConfirm(true) // confirm immediately
+                .setReturnUrl("https://orionticket.com") // required for 3DS redirects
+                .build();
+
+        try {
+            com.stripe.net.RequestOptions options = com.stripe.net.RequestOptions.builder()
+                    .setIdempotencyKey(request.idempotencyKey())
+                    .build();
+
+            PaymentIntent intent = stripeClient.paymentIntents().create(params, options);
+
+            log.info("Stripe PaymentIntent created — id={} status={}", intent.getId(), intent.getStatus());
+            return new GatewayResponse(true, intent.getId(), null);
+
+        } catch (IdempotencyException e) {
+            // Idempotent replay: Stripe returned cached response from a previous request
+            // with same key
+            log.info("Stripe idempotency hit — returning cached result for key={}", request.idempotencyKey());
+            return new GatewayResponse(true, e.getStripeError().getPaymentIntent().getId(), null);
+        } catch (StripeException e) {
+            log.error("Stripe API error — code={} message={}", e.getCode(), e.getMessage());
+            return new GatewayResponse(false, null, e.getMessage());
+        }
+    }
+
+    /**
+     * Converts a BigDecimal amount to the smallest currency unit (centavos for
+     * GTQ).
+     */
+    private long toSmallestUnit(BigDecimal amount) {
+        return amount.multiply(new BigDecimal("100")).longValue();
     }
 
 }

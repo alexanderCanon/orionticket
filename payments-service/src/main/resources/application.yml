@@ -24,16 +24,47 @@ spring:
     port: ${RABBITMQ_PORT:5672}
     username: ${RABBITMQ_USER:guest}
     password: ${RABBITMQ_PASSWORD:guest}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3000
+          max-attempts: 3
+          multiplier: 2.0
+  scheduling:
+    enabled: true
 
 server:
   port: ${SERVER_PORT:8085}
+
+# --- RabbitMQ topology names ---
+rabbitmq:
+  exchanges:
+    payments: payments.events
+    orders: orders.events
+    event-management: event-mgmt.events
+  queues:
+    order-created: payments.queue.order-created
+    date-added: payments.queue.date-added
 
 # --- Inter-service URLs ---
 services:
   orders:
     base-url: ${ORDERS_SERVICE_URL:http://localhost:8083}
+  event-management:
+    base-url: ${EVENT_MANAGEMENT_SERVICE_URL:http://localhost:8082}
 
-# --- Actuator (observability — BR-CC-06) ---
+# --- Stripe ---
+stripe:
+  api-key: ${STRIPE_API_KEY:sk_test_placeholder}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_placeholder}
+
+# --- Payout generation scheduler ---
+scheduling:
+  payout-generation:
+    cron: ${PAYOUT_GENERATION_CRON:0 0 * * * *}  # every hour
+
+# --- Actuator ---
 management:
   endpoints:
     web:
@@ -55,3 +86,4 @@ logging:
     com.orionticket: DEBUG
     org.springframework.security: INFO
     org.springframework.web.client: DEBUG
+    org.springframework.amqp: INFO
