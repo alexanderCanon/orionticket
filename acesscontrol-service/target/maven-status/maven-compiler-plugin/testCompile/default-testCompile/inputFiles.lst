@@ -1,0 +1,6 @@
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/TestcontainersConfiguration.java
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/base/IntegrationTestBase.java
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/base/IntegrationTestConfiguration.java
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/base/TestSecurityConfig.java
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/infrastructure/adapters/in/rest/ValidationControllerTest.java
+/home/alexavers/projects/orionticket/acesscontrol-service/src/test/java/com/orionticket/acesscontrol/infrastructure/adapters/out/persistence/ValidationRecordRepositoryTest.java
