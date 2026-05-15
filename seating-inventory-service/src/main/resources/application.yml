@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: seating-inventory-service
+
+  datasource:
+    # Las variables de entorno tienen defaults para desarrollo local (sin Docker)
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/seating_inventory_db
+    username: ${DB_USER:orion}
+    password: ${DB_PASSWORD:secret}
+
+  jpa:
+    hibernate:
+      # "validate" significa: Hibernate NO crea ni modifica tablas.
+      # Solo verifica que el schema de la DB coincida con las entidades JPA.
+      # Flyway es quien controla el schema real con los archivos V1__, V2__, V3__.
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    # "baseline-on-migrate: true" permite usar Flyway en una DB que ya tiene tablas
+    # (por ejemplo, si alguien creó tablas manualmente antes de activar Flyway).
+    baseline-on-migrate: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+server:
+  port: 8083
+
+# Secret para validar JWT. Debe coincidir con el que usa Identity Service.
+# En producción esto viene de una variable de entorno segura, nunca hardcodeado.
+jwt:
+  secret: ${JWT_SECRET:defaultSecretKeyThatMustBeVeryLongAndSecureForHS256AlgorithmXYZ}
+
+# Exposición de endpoints de Actuator para healthcheck de Docker
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

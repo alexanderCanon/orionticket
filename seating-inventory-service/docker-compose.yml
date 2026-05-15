@@ -1,0 +1,62 @@
+version: '3.8'
+
+# Compose propio del seating-inventory-service.
+# Cada desarrollador levanta su propia infraestructura de forma independiente.
+# Puerto 5435 para no colisionar con identity (5439) ni event-management (5434).
+
+services:
+
+  seating-db:
+    image: postgres:16-alpine
+    container_name: seating-inventory-postgres
+    environment:
+      POSTGRES_USER: orion
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: seating_inventory_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - seating_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion -d seating_inventory_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: orion-rabbitmq-seating
+    ports:
+      - "5672:5672"     # AMQP — protocolo de mensajería
+      - "15672:15672"   # Management UI: http://localhost:15672 (guest/guest)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  seating-inventory-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seating-inventory-service
+    ports:
+      - "8083:8083"
+    environment:
+      DB_HOST: seating-db
+      DB_PORT: 5432
+      DB_USER: orion
+      DB_PASSWORD: secret
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      JWT_SECRET: defaultSecretKeyThatMustBeVeryLongAndSecureForHS256AlgorithmXYZ
+    depends_on:
+      seating-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+volumes:
+  seating_pg_data:
