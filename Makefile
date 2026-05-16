@@ -1,7 +1,9 @@
 SHELL := /bin/sh
 
-MVNW := ./mvnw
-COMPOSE := docker compose
+MVNW     := ./mvnw
+COMPOSE  := docker compose
+COMPOSE_LOCAL := docker compose -f docker-compose.local.yml --env-file .env.local
+COMPOSE_PROD  := docker compose -f docker-compose.prod.yml  --env-file .env.prod
 
 SERVICES := identity-service event-management-service seating-inventory-service orders-service payments-service ticket-issuance-service access-control-service notifications-service reporting-service gateway-service
 EXISTING_SERVICES := identity-service event-management-service seating-inventory-service payments-service ticket-issuance-service access-control-service notifications-service reporting-service gateway-service
@@ -12,7 +14,9 @@ CRITICAL_SERVICES := rabbitmq identity-service event-management-service seating-
 	coverage-identity coverage-check-identity coverage-event-management coverage-check-event-management coverage-payments coverage-check-payments coverage-ticket-issuance coverage-check-ticket-issuance \
 	compile compile-existing compile-identity compile-event-management compile-seating-inventory compile-orders compile-payments compile-ticket-issuance compile-access-control compile-notifications compile-reporting compile-gateway \
 	docker-build docker-build-existing docker-up docker-up-build docker-up-critical docker-up-gateway docker-up-identity docker-up-event-management docker-up-seating-inventory docker-up-orders docker-up-payments docker-up-ticket-issuance docker-up-access-control docker-up-notifications docker-up-reporting docker-up-rabbitmq \
-	docker-down docker-restart docker-ps logs logs-gateway logs-identity logs-event-management logs-seating-inventory logs-orders logs-payments logs-ticket-issuance logs-access-control logs-notifications logs-reporting logs-rabbitmq
+	docker-down docker-restart docker-ps logs logs-gateway logs-identity logs-event-management logs-seating-inventory logs-orders logs-payments logs-ticket-issuance logs-access-control logs-notifications logs-reporting logs-rabbitmq \
+	local-up local-up-build local-down local-restart local-ps local-logs \
+	prod-up prod-up-build prod-down prod-restart prod-ps prod-logs
 
 help:
 	@echo "OrionTicket commands"
@@ -46,7 +50,7 @@ help:
 	@echo "  make compile-existing       Compile services currently present in the repo"
 	@echo "  make compile-payments"
 	@echo ""
-	@echo "Docker"
+	@echo "Docker (full stack con DBs embebidas — docker-compose.yml)"
 	@echo "  make docker-build           Build Docker images for all compose services"
 	@echo "  make docker-build-existing  Build Docker images for services currently present in the repo"
 	@echo "  make docker-up              Start all compose services"
@@ -56,6 +60,22 @@ help:
 	@echo "  make docker-ps              Show compose service status"
 	@echo "  make logs                   Follow logs for all services"
 	@echo "  make logs-payments          Follow logs for payments-service"
+	@echo ""
+	@echo "Local (DB externa, docker-compose.local.yml + .env.local)"
+	@echo "  make local-up               Levantar RabbitMQ y todos los servicios (DB externa)"
+	@echo "  make local-up-build         Build + levantar (local)"
+	@echo "  make local-down             Detener y eliminar contenedores locales"
+	@echo "  make local-restart          Reiniciar todos los servicios locales"
+	@echo "  make local-ps               Estado de los servicios locales"
+	@echo "  make local-logs             Seguir logs de todos los servicios locales"
+	@echo ""
+	@echo "Prod (DB y RabbitMQ externos, docker-compose.prod.yml + .env.prod)"
+	@echo "  make prod-up                Levantar todos los servicios en producción"
+	@echo "  make prod-up-build          Build + levantar (prod)"
+	@echo "  make prod-down              Detener y eliminar contenedores de producción"
+	@echo "  make prod-restart           Reiniciar todos los servicios de producción"
+	@echo "  make prod-ps                Estado de los servicios de producción"
+	@echo "  make prod-logs              Seguir logs de todos los servicios de producción"
 
 test: test-identity test-event-management test-seating-inventory test-orders test-payments test-ticket-issuance test-access-control test-notifications test-reporting test-gateway
 
@@ -241,3 +261,43 @@ logs-notifications:
 
 logs-reporting:
 	$(COMPOSE) logs -f reporting-service
+
+# ── Local (DB externa) ────────────────────────────────────────────────────
+
+local-up:
+	$(COMPOSE_LOCAL) up -d
+
+local-up-build:
+	$(COMPOSE_LOCAL) up -d --build
+
+local-down:
+	$(COMPOSE_LOCAL) down
+
+local-restart:
+	$(COMPOSE_LOCAL) restart
+
+local-ps:
+	$(COMPOSE_LOCAL) ps
+
+local-logs:
+	$(COMPOSE_LOCAL) logs -f
+
+# ── Prod (DB y RabbitMQ externos) ────────────────────────────────────────
+
+prod-up:
+	$(COMPOSE_PROD) up -d
+
+prod-up-build:
+	$(COMPOSE_PROD) up -d --build
+
+prod-down:
+	$(COMPOSE_PROD) down
+
+prod-restart:
+	$(COMPOSE_PROD) restart
+
+prod-ps:
+	$(COMPOSE_PROD) ps
+
+prod-logs:
+	$(COMPOSE_PROD) logs -f
