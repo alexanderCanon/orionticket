@@ -104,7 +104,7 @@ class CreateOrderIntegrationTest {
                 .buyerId(buyerId).eventId(eventId).dateId(dateId)
                 .reservationId(reservationId).build();
 
-        when(eventPublisher.publishOrderCreated(any())).then(inv -> null); // no-op
+        // @MockBean hace void methods no-ops automáticamente; no se necesita stubbing
 
         // Primera orden — OK
         orderUseCase.createOrder(command);

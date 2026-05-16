@@ -123,13 +123,10 @@ public class OrderService implements OrderUseCase {
 
         // 9. Publicar evento DESPUÉS del commit — si la DB falla, el evento no sale
         Promotion finalAppliedPromotion = appliedPromotion;
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishOrderCreated(savedOrder);
-                if (finalAppliedPromotion != null && !finalAppliedPromotion.isAvailable()) {
-                    eventPublisher.publishPromotionExhausted(finalAppliedPromotion);
-                }
+        publishAfterCommit(() -> {
+            eventPublisher.publishOrderCreated(savedOrder);
+            if (finalAppliedPromotion != null && !finalAppliedPromotion.isAvailable()) {
+                eventPublisher.publishPromotionExhausted(finalAppliedPromotion);
             }
         });
 
@@ -164,12 +161,7 @@ public class OrderService implements OrderUseCase {
                     order.expire();
                     Order expired = orderRepository.save(order);
                     // Publicar expiración después del commit
-                    TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                        @Override
-                        public void afterCommit() {
-                            eventPublisher.publishOrderExpired(expired);
-                        }
-                    });
+                    publishAfterCommit(() -> eventPublisher.publishOrderExpired(expired));
                     log.info("Order {} expired due to reservation {} expiry", order.getOrderId(), reservationId);
                 },
                 // Si no hay orden para esta reserva, solo log — no es error
@@ -185,12 +177,22 @@ public class OrderService implements OrderUseCase {
         order.confirm();
         Order confirmed = orderRepository.save(order);
         // Publicar confirmación después del commit
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishOrderConfirmed(confirmed, paymentId);
-            }
-        });
+        publishAfterCommit(() -> eventPublisher.publishOrderConfirmed(confirmed, paymentId));
         log.info("Order {} confirmed with payment {}", orderId, paymentId);
+    }
+
+    // Si hay transacción activa (producción), registra el hook afterCommit.
+    // Si no (tests unitarios con Mockito), ejecuta inmediatamente para que los mocks sean verificables.
+    private void publishAfterCommit(Runnable action) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    action.run();
+                }
+            });
+        } else {
+            action.run();
+        }
     }
 }
