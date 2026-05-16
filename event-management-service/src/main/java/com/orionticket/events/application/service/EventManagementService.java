@@ -70,7 +70,7 @@ public class EventManagementService implements EventManagementUseCase {
         Event event = eventRepositoryPort.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
 
-        // Nota: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        // Validate that the operator has the PLATFORM_OPERATOR or SUPER_ADMIN role once authorization is wired.
         
         event.approve();
         
@@ -87,7 +87,7 @@ public class EventManagementService implements EventManagementUseCase {
         Event event = eventRepositoryPort.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event not found: " + eventId));
 
-        // Nota: En el futuro, validar que operatorId tiene el rol PLATFORM_OPERATOR o SUPER_ADMIN
+        // Validate that the operator has the PLATFORM_OPERATOR or SUPER_ADMIN role once authorization is wired.
         
         event.reject(reason);
         

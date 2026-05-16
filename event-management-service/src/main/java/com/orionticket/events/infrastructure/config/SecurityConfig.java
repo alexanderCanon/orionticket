@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .requestMatchers("/v1/venues/**").permitAll()
                 .requestMatchers("/v1/catalog/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)

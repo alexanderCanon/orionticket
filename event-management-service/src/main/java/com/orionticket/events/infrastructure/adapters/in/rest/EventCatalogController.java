@@ -5,6 +5,10 @@ import com.orionticket.events.domain.model.Event;
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.CatalogResponse;
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.EventDateResponse;
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.EventResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +27,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/catalog")
 @RequiredArgsConstructor
+@Tag(name = "Catalog", description = "Public event catalog endpoints")
 public class EventCatalogController {
 
     private final GetEventCatalogUseCase getEventCatalogUseCase;
 
+    @Operation(summary = "Search public event catalog", description = "Returns released catalog events filtered by category, city, date, or organizer.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Catalog events returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid filter or pagination parameter")
+    })
     @GetMapping("/events")
     public ResponseEntity<CatalogResponse<EventResponse>> getCatalog(
             @RequestParam(required = false) String category,

@@ -10,6 +10,10 @@ import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.BuyerT
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.IssueTicketRequest;
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.TicketResponse;
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.mapper.TicketRestMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -30,6 +34,7 @@ import java.util.UUID;
 @Validated
 @RestController
 @RequestMapping("/v1")
+@Tag(name = "Tickets", description = "Ticket issuance, lifecycle, and buyer ticket query endpoints")
 public class TicketController {
 
     private final TicketQueryUseCase ticketQueryUseCase;
@@ -52,6 +57,12 @@ public class TicketController {
         this.ticketRestMapper = ticketRestMapper;
     }
 
+    @Operation(summary = "Issue ticket", description = "Issues a ticket after payment authorization.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Ticket issued"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "409", description = "Ticket already exists or invalid lifecycle transition")
+    })
     @PostMapping("/tickets")
     @ResponseStatus(HttpStatus.CREATED)
     public TicketResponse issueTicket(@Valid @RequestBody IssueTicketRequest request) {
@@ -60,6 +71,12 @@ public class TicketController {
         );
     }
 
+    @Operation(summary = "Cancel ticket", description = "Cancels an issued ticket by ticket ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ticket canceled"),
+            @ApiResponse(responseCode = "404", description = "Ticket not found"),
+            @ApiResponse(responseCode = "409", description = "Ticket cannot be canceled from its current state")
+    })
     @PutMapping("/tickets/{ticketId}/cancel")
     public TicketResponse cancelTicket(@PathVariable UUID ticketId) {
         return ticketRestMapper.toResponse(
@@ -67,6 +84,12 @@ public class TicketController {
         );
     }
 
+    @Operation(summary = "Invalidate ticket", description = "Invalidates a ticket by ticket ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ticket invalidated"),
+            @ApiResponse(responseCode = "404", description = "Ticket not found"),
+            @ApiResponse(responseCode = "409", description = "Ticket cannot be invalidated from its current state")
+    })
     @PutMapping("/tickets/{ticketId}/invalidate")
     public TicketResponse invalidateTicket(@PathVariable UUID ticketId) {
         return ticketRestMapper.toResponse(
@@ -74,11 +97,21 @@ public class TicketController {
         );
     }
 
+    @Operation(summary = "Get ticket", description = "Returns ticket details by ticket ID.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ticket found"),
+            @ApiResponse(responseCode = "404", description = "Ticket not found")
+    })
     @GetMapping("/tickets/{ticketId}")
     public TicketResponse getTicket(@PathVariable UUID ticketId) {
         return ticketRestMapper.toResponse(ticketQueryUseCase.getTicket(ticketId));
     }
 
+    @Operation(summary = "List buyer tickets", description = "Returns paginated tickets owned by a buyer.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Buyer tickets returned"),
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters")
+    })
     @GetMapping("/buyers/{buyerId}/tickets")
     public BuyerTicketsResponse listBuyerTickets(
             @PathVariable UUID buyerId,

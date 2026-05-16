@@ -4,6 +4,10 @@ import com.orionticket.seating.batch.application.port.in.BatchManagementUseCase;
 import com.orionticket.seating.batch.domain.model.Batch;
 import com.orionticket.seating.batch.infrastructure.adapters.in.rest.dto.BatchResponse;
 import com.orionticket.seating.batch.infrastructure.adapters.in.rest.dto.CreateBatchRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +21,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/events/{eventId}/dates/{dateId}/batches")
 @RequiredArgsConstructor
+@Tag(name = "Batches", description = "Sales batch configuration and query endpoints")
 public class BatchController {
 
     private final BatchManagementUseCase batchManagementUseCase;
 
+    @Operation(summary = "Create batch", description = "Creates a sales batch with price, capacity, and schedule.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Batch created"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "409", description = "Batch conflicts with existing inventory rules")
+    })
     @PostMapping
     public ResponseEntity<BatchResponse> createBatch(
             @PathVariable UUID eventId,
@@ -36,6 +47,10 @@ public class BatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(BatchResponse.from(batch));
     }
 
+    @Operation(summary = "List batches", description = "Returns batches configured for an event date.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Batches returned")
+    })
     @GetMapping
     public ResponseEntity<List<BatchResponse>> getBatches(
             @PathVariable UUID eventId,

@@ -45,7 +45,7 @@ public class SecurityConfig {
 
                 // Swagger UI y OpenAPI spec: herramienta de desarrollo y documentación.
                 // Debe ser accesible sin token para que el equipo pueda explorar la API.
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                 // Endpoints internos de seed: solo para poblar datos en entornos locales.
                 // En producción, este path debería estar bloqueado por el API Gateway.
