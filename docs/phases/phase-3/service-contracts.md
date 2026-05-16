@@ -1339,6 +1339,139 @@
 
 ---
 
+## Notifications Service
+
+### GET /v1/notifications
+
+| Field | Value |
+|---|---|
+| **Owner** | Notifications |
+| **Related use case** | UC-NO-01, UC-TI-03 |
+| **Description** | Retrieve Notification delivery records for operational support and audit visibility. Notifications is primarily event-driven; this endpoint exposes the delivery log, not a command to create business state. |
+
+**Query parameters:** `recipientId` (uuid, optional), `status` (`PENDING | DISPATCHED | DELIVERED | FAILED`, optional), `channel` (`EMAIL | SMS | WHATSAPP`, optional), `triggeredBy` (string, optional), `page` (integer, optional), `size` (integer, optional)
+
+**Response (200 OK):**
+```json
+{
+  "notifications": [
+    {
+      "notificationId": "uuid",
+      "recipientId": "uuid",
+      "channel": "EMAIL | SMS | WHATSAPP",
+      "templateId": "string",
+      "status": "PENDING | DISPATCHED | DELIVERED | FAILED",
+      "retryCount": "integer",
+      "triggeredBy": "string",
+      "createdAt": "ISO-8601"
+    }
+  ],
+  "page": "integer",
+  "totalPages": "integer"
+}
+```
+
+**Error codes:**
+| Code | Meaning |
+|---|---|
+| 403 | Caller is not Support, Platform Operator, or Super Admin |
+| 422 | Invalid filter or pagination parameter |
+
+---
+
+### GET /v1/notifications/{notificationId}
+
+| Field | Value |
+|---|---|
+| **Owner** | Notifications |
+| **Related use case** | UC-NO-01 |
+| **Description** | Retrieve a single Notification delivery record, including its payload, for support troubleshooting. |
+
+**Path parameters:** `notificationId` (uuid)
+
+**Response (200 OK):**
+```json
+{
+  "notificationId": "uuid",
+  "recipientId": "uuid",
+  "channel": "EMAIL | SMS | WHATSAPP",
+  "templateId": "string",
+  "payload": {
+    "key": "value"
+  },
+  "status": "PENDING | DISPATCHED | DELIVERED | FAILED",
+  "retryCount": "integer",
+  "triggeredBy": "string",
+  "createdAt": "ISO-8601"
+}
+```
+
+**Error codes:**
+| Code | Meaning |
+|---|---|
+| 403 | Caller is not Support, Platform Operator, or Super Admin |
+| 404 | Notification not found |
+
+---
+
+### POST /v1/notifications/{notificationId}/retry
+
+| Field | Value |
+|---|---|
+| **Owner** | Notifications |
+| **Related use case** | UC-NO-01, UC-TI-03 |
+| **Description** | Retry delivery for a specific FAILED or PENDING Notification. This is an operational delivery retry; Ticket resend remains owned by Ticket Issuance through `POST /v1/tickets/{ticketId}/resend`. |
+
+**Path parameters:** `notificationId` (uuid)
+
+**Request body:** None
+
+**Response (200 OK):**
+```json
+{
+  "notificationId": "uuid",
+  "recipientId": "uuid",
+  "channel": "EMAIL | SMS | WHATSAPP",
+  "status": "DISPATCHED | DELIVERED | FAILED",
+  "retryCount": "integer"
+}
+```
+
+**Error codes:**
+| Code | Meaning |
+|---|---|
+| 403 | Caller is not Support or Super Admin |
+| 404 | Notification not found |
+| 409 | Notification is already DELIVERED or retry limit exceeded |
+
+---
+
+### POST /v1/notifications/retry-failed
+
+| Field | Value |
+|---|---|
+| **Owner** | Notifications |
+| **Related use case** | UC-NO-01 |
+| **Description** | Retry all currently FAILED or PENDING Notifications. Intended for Support or scheduled operational recovery jobs. |
+
+**Request body:** None
+
+**Response (200 OK):**
+```json
+{
+  "processed": "integer",
+  "delivered": "integer",
+  "failed": "integer"
+}
+```
+
+**Error codes:**
+| Code | Meaning |
+|---|---|
+| 403 | Caller is not Support, Platform Operator, or Super Admin |
+
+---
+
 ## Reporting Service
 
 ### GET /v1/reports/sales

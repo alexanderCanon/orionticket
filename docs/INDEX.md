@@ -50,6 +50,8 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
 - [Mapa de Pertenencia de Datos (Ownership)](phases/phase-3/data-ownership-map.md)
 - [Diagrama de Despliegue e Infraestructura](phases/phase-3/deployment-diagram.md)
 - [Carpeta de Decisiones Arquitectónicas (ADRs)](phases/phase-3/adrs/)
+  - [ADR-018: Seguridad JWT con JWKS](phases/phase-3/adrs/ADR-018-jwt-jwks-security.md)
+  - [ADR-019: Envío de Tickets por Email con Resend](phases/phase-3/adrs/ADR-019-ticket-email-delivery-resend.md)
 - [Carpeta de Diagramas Entidad-Relación (ER)](phases/phase-3/er-diagrams/)
 
 ### Capítulo 4 — Backlog y Planificación

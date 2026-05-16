@@ -16,6 +16,7 @@ Responsable de la autenticación, autorización y gestión de usuarios/roles. Es
 - **Contrato API:** [Identity Service Endpoints](../../phases/phase-3/service-contracts.md) (Sección Identity).
 - **Endpoint Staff (US-009):** `POST /v1/organizers/{organizerId}/staff` - Creación de validadores y staff.
 - **Diagrama ER:** [Modelo de Datos de Identity](../../phases/phase-3/er-diagrams/identity.md).
+- **Decisión de Seguridad:** [ADR-018: JWT Validation with JWKS](../../phases/phase-3/adrs/ADR-018-jwt-jwks-security.md).
 
 ## 3. Eventos de Dominio
 ### Genera (Produce):

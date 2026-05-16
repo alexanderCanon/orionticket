@@ -8,11 +8,14 @@ Responsable del envío de comunicaciones externas (Email, SMS, WhatsApp) a trav�
 - Envío asíncrono de notificaciones basado en eventos.
 - Gestión de plantillas (Templates).
 - Lógica de reintentos en caso de fallo del proveedor.
+- Envío de tickets por email usando Resend y plantillas Thymeleaf, según ADR-019.
 
 ## 2. Documentación Técnica Específica
 - **Casos de Uso:** [UC-NO-01](../../phases/phase-2/use-case-catalog.md).
 - **Agregado:** [Notification](../../phases/phase-1/aggregate-definitions.md).
+- **Contrato API:** [Notifications Endpoints](../../phases/phase-3/service-contracts.md).
 - **Diagrama ER:** [Modelo de Datos de Notifications](../../phases/phase-3/er-diagrams/notifications.md).
+- **Decisión de Email:** [ADR-019: Ticket Email Delivery with Resend](../../phases/phase-3/adrs/ADR-019-ticket-email-delivery-resend.md).
 
 ## 3. Eventos de Dominio
 ### Genera (Produce):
