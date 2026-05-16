@@ -38,6 +38,7 @@ Comportamiento del sistema, actores y reglas de negocio.
 - [Mapa de Actores y Roles](phases/phase-2/actor-role-map.md)
 - [Catálogo de Casos de Uso](phases/phase-2/use-case-catalog.md)
 - [Flujos Críticos (Diagramas de Secuencia)](phases/phase-2/critical-flows.md)
+- [Diagramas de Flujo del Sistema](phases/phase-2/system-flow-diagrams.md)
 - [Reglas de Negocio](phases/phase-2/business-rules.md)
 - [Requerimientos Funcionales (UML)](phases/phase-2/functional-requirements.md)
 
