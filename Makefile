@@ -9,6 +9,7 @@ CRITICAL_SERVICES := rabbitmq identity-service event-management-service seating-
 
 .PHONY: help \
 	test test-existing test-identity test-event-management test-seating-inventory test-orders test-payments test-ticket-issuance test-access-control test-notifications test-reporting test-gateway \
+	coverage-identity coverage-check-identity coverage-event-management coverage-check-event-management coverage-payments coverage-check-payments coverage-ticket-issuance coverage-check-ticket-issuance \
 	compile compile-existing compile-identity compile-event-management compile-seating-inventory compile-orders compile-payments compile-ticket-issuance compile-access-control compile-notifications compile-reporting compile-gateway \
 	docker-build docker-build-existing docker-up docker-up-build docker-up-critical docker-up-gateway docker-up-identity docker-up-event-management docker-up-seating-inventory docker-up-orders docker-up-payments docker-up-ticket-issuance docker-up-access-control docker-up-notifications docker-up-reporting docker-up-rabbitmq \
 	docker-down docker-restart docker-ps logs logs-gateway logs-identity logs-event-management logs-seating-inventory logs-orders logs-payments logs-ticket-issuance logs-access-control logs-notifications logs-reporting logs-rabbitmq
@@ -29,6 +30,16 @@ help:
 	@echo "  make test-notifications"
 	@echo "  make test-reporting"
 	@echo "  make test-gateway"
+	@echo ""
+	@echo "Coverage"
+	@echo "  make coverage-identity        Generate the JaCoCo report for identity-service unit tests"
+	@echo "  make coverage-check-identity  Run full identity-service verification and enforce 70% focused line coverage"
+	@echo "  make coverage-event-management        Generate the JaCoCo report for event-management-service unit tests"
+	@echo "  make coverage-check-event-management  Run full event-management-service verification and enforce 70% focused line coverage"
+	@echo "  make coverage-payments        Generate the JaCoCo report for payments-service unit tests"
+	@echo "  make coverage-check-payments  Run full payments-service verification and enforce 70% focused line coverage"
+	@echo "  make coverage-ticket-issuance        Generate the JaCoCo report for ticket-issuance-service unit tests"
+	@echo "  make coverage-check-ticket-issuance  Run full ticket-issuance-service verification and enforce 10% temporary line coverage"
 	@echo ""
 	@echo "Compile"
 	@echo "  make compile                Compile all Maven services"
@@ -79,6 +90,30 @@ test-reporting:
 
 test-gateway:
 	$(MVNW) -f gateway-service/pom.xml test
+
+coverage-identity:
+	$(MVNW) -f identity-service/pom.xml -Dtest='!*IntegrationTest' test jacoco:report
+
+coverage-check-identity:
+	$(MVNW) -f identity-service/pom.xml verify
+
+coverage-event-management:
+	$(MVNW) -f event-management-service/pom.xml -Dtest='!*IntegrationTest' test jacoco:report
+
+coverage-check-event-management:
+	$(MVNW) -f event-management-service/pom.xml verify
+
+coverage-payments:
+	$(MVNW) -f payments-service/pom.xml -Dtest='!*IntegrationTest' test jacoco:report
+
+coverage-check-payments:
+	$(MVNW) -f payments-service/pom.xml verify
+
+coverage-ticket-issuance:
+	$(MVNW) -f ticket-issuance-service/pom.xml -Dtest='!*IntegrationTest' test jacoco:report
+
+coverage-check-ticket-issuance:
+	$(MVNW) -f ticket-issuance-service/pom.xml verify
 
 compile: compile-identity compile-event-management compile-seating-inventory compile-orders compile-payments compile-ticket-issuance compile-access-control compile-notifications compile-reporting compile-gateway
 
