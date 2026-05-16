@@ -52,6 +52,7 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
 - [Carpeta de Decisiones Arquitectónicas (ADRs)](phases/phase-3/adrs/)
   - [ADR-018: Seguridad JWT con JWKS](phases/phase-3/adrs/ADR-018-jwt-jwks-security.md)
   - [ADR-019: Envío de Tickets por Email con Resend](phases/phase-3/adrs/ADR-019-ticket-email-delivery-resend.md)
+  - [ADR-020: Observabilidad con Grafana Cloud](phases/phase-3/adrs/ADR-020-observability-grafana-cloud.md)
 - [Carpeta de Diagramas Entidad-Relación (ER)](phases/phase-3/er-diagrams/)
 
 ### Capítulo 4 — Backlog y Planificación
@@ -75,4 +76,6 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
 
 - **[Guía de Coordinación del Equipo](project/TEAM.md):** Ownership (Alan, Ivan, David, Alex), estrategia de Git y reglas de PR.
 - **[Guía de Implementación Técnica](project/implementation-guide.md):** Plan detallado de 45 días.
+- **[Observabilidad con Grafana Cloud](project/observability-grafana-cloud.md):** Base mínima para métricas Prometheus, logs, trazas, dashboards y alertas.
+- **[Reflexión de Cierre: De Velocidad a Evidencia](project/engineering-reality-check.md):** Cambio de fase para pasar de implementación acelerada a evaluación técnica.
 - **[MANUALES POR SERVICIO (Índice Técnico)](project/services/TECHNICAL_INDEX.md):** **Punto de partida para codear.** Documentación fragmentada por servicio y base compartida.

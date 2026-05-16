@@ -64,7 +64,7 @@
 | NFR-024 | Distributed tracing | OpenTelemetry traces propagated across all synchronous and asynchronous inter-service calls. End-to-end trace from Buyer action to final outcome. | All |
 | NFR-025 | Business metrics per service | Each service exposes domain-specific metrics (e.g., Reservations created/expired per minute, Payments authorized/failed per minute, Validations per second). | All |
 | NFR-026 | Alerting on SLA breaches | Automated alerts when latency targets (NFR-001 through NFR-005) are exceeded, when error rates cross threshold, or when availability drops below 99.9%. | All |
-| NFR-027 | Central operational dashboard | Single dashboard aggregating health, latency, throughput, and error rate across all services. Accessible to Platform Operator, Super Admin, and DevOps team. | All (infrastructure) |
+| NFR-027 | Central operational dashboard | Single Grafana Cloud dashboard aggregating health, latency, throughput, and error rate across all services. Accessible to Platform Operator, Super Admin, and DevOps team. | All (infrastructure) |
 
 ---
 
