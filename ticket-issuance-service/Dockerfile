@@ -1,13 +1,33 @@
-FROM maven:3.9.9-eclipse-temurin-21 AS build
-WORKDIR /workspace
-COPY pom.xml .
-COPY src ./src
-RUN mvn -B clean package -DskipTests
+# ── Build stage ───────────────────────────────────────────────────────────────
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
-FROM eclipse-temurin:21-jre
+WORKDIR /build
+
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline -q
+
+COPY src src
+RUN ./mvnw package -DskipTests -q
+
+# ── Runtime stage ─────────────────────────────────────────────────────────────
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+RUN addgroup -S orion && adduser -S orion -G orion
+
 WORKDIR /app
-RUN useradd --system --create-home spring
-USER spring
-COPY --from=build /workspace/target/ticket-issuance-service-*.jar app.jar
+
+COPY --from=builder /build/target/*.jar app.jar
+
+USER orion
+
 EXPOSE 8086
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8086/actuator/health || exit 1
+
+ENTRYPOINT ["java", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", \
+    "-jar", "app.jar"]

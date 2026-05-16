@@ -28,5 +28,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 ENTRYPOINT ["java", \
     "-Djava.security.egd=file:/dev/./urandom", \
-    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:default}", \
+    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", \
     "-jar", "app.jar"]

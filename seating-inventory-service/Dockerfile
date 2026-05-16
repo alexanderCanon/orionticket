@@ -1,17 +1,33 @@
-# Build en dos etapas:
-# 1. Compilar y empaquetar el JAR con Maven
-# 2. Imagen final mínima solo con el JAR (no incluye Maven ni fuentes)
+# ── Build stage ───────────────────────────────────────────────────────────────
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
+WORKDIR /build
+
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
-# Descarga dependencias primero (aprovecha caché de Docker si pom.xml no cambió)
-RUN mvn dependency:go-offline -B
-COPY src ./src
-RUN mvn clean package -DskipTests -B
+RUN ./mvnw dependency:go-offline -q
 
-FROM eclipse-temurin:21-jre-alpine
+COPY src src
+RUN ./mvnw package -DskipTests -q
+
+# ── Runtime stage ─────────────────────────────────────────────────────────────
+FROM eclipse-temurin:21-jre-alpine AS runtime
+
+RUN addgroup -S orion && adduser -S orion -G orion
+
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+
+COPY --from=builder /build/target/*.jar app.jar
+
+USER orion
+
 EXPOSE 8083
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1
+
+ENTRYPOINT ["java", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", \
+    "-jar", "app.jar"]

@@ -1,20 +1,38 @@
-target
-.git
+# Compiled output — rebuilt inside the container
+target/
+
+# Git metadata
+.git/
 .gitignore
-*.md
+.gitattributes
+
+# IDE and editor files
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files — never bake secrets into the image
 .env
 *.env
-.DS_Store
-*.log
-.idea
-*.iml
-.vscode
+
+# Documentation
+*.md
+
+# Docker files — not needed in build context
+Dockerfile
 docker-compose*.yml
 docker-compose*.yaml
-**/node_modules
-**/dist
-**/build
+
+# Eclipse / Spring Tool Suite
 **/.classpath
 **/.project
-**/.settings
+**/.settings/
 **/.factorypath
