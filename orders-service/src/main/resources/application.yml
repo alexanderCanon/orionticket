@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: orders-service
+
+  datasource:
+    # Variables de entorno con defaults para desarrollo local (sin Docker)
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5436}/orders_db
+    username: ${DB_USER:orion}
+    password: ${DB_PASSWORD:secret}
+
+  jpa:
+    hibernate:
+      # "validate" = Hibernate no crea ni modifica tablas; Flyway gestiona el schema
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    # baseline-on-migrate permite usar Flyway en DBs que ya existían sin historial
+    baseline-on-migrate: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+server:
+  port: 8084
+
+# Secret JWT — debe coincidir con Identity Service. En prod viene de variable de entorno.
+jwt:
+  secret: ${JWT_SECRET:defaultSecretKeyThatMustBeVeryLongAndSecureForHS256AlgorithmXYZ}
+
+# Porcentaje de service fee aplicado al subtotal después de descuento de promoción
+orders:
+  service-fee:
+    rate: ${SERVICE_FEE_RATE:0.10}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
