@@ -5,9 +5,9 @@ spring:
   application:
     name: ticket-issuance-service
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/ticket_issuance}
-    username: ${DB_USERNAME:ticket_issuance}
-    password: ${DB_PASSWORD:ticket_issuance}
+    url: jdbc:postgresql://${TICKET_ISSUANCE_DB_HOST:localhost}:${TICKET_ISSUANCE_DB_PORT:5432}/${TICKET_ISSUANCE_DB_NAME:ticket_issuance_db}
+    username: ${TICKET_ISSUANCE_DB_USER:ticket_issuance}
+    password: ${TICKET_ISSUANCE_DB_PASSWORD:ticket_issuance}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -17,7 +17,7 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
+    username: ${RABBITMQ_USER:${RABBITMQ_USERNAME:guest}}
     password: ${RABBITMQ_PASSWORD:guest}
 
 management:

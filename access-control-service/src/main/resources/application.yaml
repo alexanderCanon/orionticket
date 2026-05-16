@@ -1,11 +1,11 @@
 spring:
   application:
-    name: accesscontrol
+    name: access-control-service
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/accesscontrol}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${ACCESS_CONTROL_DB_HOST:localhost}:${ACCESS_CONTROL_DB_PORT:5432}/${ACCESS_CONTROL_DB_NAME:access_control_db}
+    username: ${ACCESS_CONTROL_DB_USER:access_control}
+    password: ${ACCESS_CONTROL_DB_PASSWORD:access_control}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -31,7 +31,7 @@ spring:
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
+    username: ${RABBITMQ_USER:${RABBITMQ_USERNAME:guest}}
     password: ${RABBITMQ_PASSWORD:guest}
     virtual-host: ${RABBITMQ_VHOST:/}
 
@@ -39,10 +39,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${IDENTITY_JWKS_URI:http://identity-service:8080/.well-known/jwks.json}
+          jwk-set-uri: ${IDENTITY_JWKS_URI:http://identity-service:8081/.well-known/jwks.json}
 
 server:
-  port: ${APP_PORT:8086}
+  port: ${SERVER_PORT:${APP_PORT:8087}}
   error:
     include-message: always
     include-binding-errors: always
@@ -61,7 +61,7 @@ management:
 
 app:
   ticket-issuance:
-    base-url: ${TICKET_ISSUANCE_URL:http://ticket-issuance-service:8087}
+    base-url: ${TICKET_ISSUANCE_URL:http://ticket-issuance-service:8086}
     timeout-ms: ${TICKET_ISSUANCE_TIMEOUT:100}
   validation:
     offline-sync-max-records: ${OFFLINE_SYNC_MAX_RECORDS:1000}

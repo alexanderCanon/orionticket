@@ -1,10 +1,10 @@
 spring:
   application:
-    name: reporting
+    name: reporting-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/reporting
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${REPORTING_DB_HOST:localhost}:${REPORTING_DB_PORT:5432}/${REPORTING_DB_NAME:reporting_db}
+    username: ${REPORTING_DB_USER:reporting}
+    password: ${REPORTING_DB_PASSWORD:reporting}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -25,13 +25,13 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:${RABBITMQ_USERNAME:guest}}
+    password: ${RABBITMQ_PASSWORD:guest}
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8089}
 
 management:
   endpoints:
