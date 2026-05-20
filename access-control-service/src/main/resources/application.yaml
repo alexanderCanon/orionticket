@@ -3,12 +3,12 @@ spring:
     name: access-control-service
 
   datasource:
-    url: jdbc:postgresql://${ACCESS_CONTROL_DB_HOST:localhost}:${ACCESS_CONTROL_DB_PORT:5432}/${ACCESS_CONTROL_DB_NAME:access_control_db}
-    username: ${ACCESS_CONTROL_DB_USER:access_control}
-    password: ${ACCESS_CONTROL_DB_PASSWORD:access_control}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:access_control}
+    username: ${GLOBAL_DB_USER:app_user}
+    password: ${GLOBAL_DB_PASSWORD:AppSecret789}
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
+      maximum-pool-size: 20
+      minimum-idle: 10
       idle-timeout: 300000
       connection-timeout: 20000
 
@@ -25,6 +25,8 @@ spring:
 
   flyway:
     enabled: true
+    schemas: ${DB_SCHEMA:access_control}
+    create-schemas: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
@@ -54,7 +56,7 @@ management:
         include: health,info,metrics,prometheus
   endpoint:
     health:
-      show-details: when_authorized
+      show-details: always
   health:
     circuitbreakers:
       enabled: true

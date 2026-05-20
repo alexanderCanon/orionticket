@@ -2,9 +2,11 @@ spring:
   application:
     name: event-management-service
   datasource:
-    url: jdbc:postgresql://${EVENT_MANAGEMENT_DB_HOST:localhost}:${EVENT_MANAGEMENT_DB_PORT:5432}/${EVENT_MANAGEMENT_DB_NAME:event_management_db}
-    username: ${EVENT_MANAGEMENT_DB_USER:orion}
-    password: ${EVENT_MANAGEMENT_DB_PASSWORD:secret}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:event_management}
+    username: ${GLOBAL_DB_USER:app_user}
+    password: ${GLOBAL_DB_PASSWORD:AppSecret789}
+    hikari:
+      minimum-idle: 10
   jpa:
     hibernate:
       ddl-auto: validate
@@ -14,6 +16,8 @@ spring:
         format_sql: true
   flyway:
     enabled: true
+    schemas: ${DB_SCHEMA:event_management}
+    create-schemas: true
     baseline-on-migrate: true
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
@@ -29,3 +33,12 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always

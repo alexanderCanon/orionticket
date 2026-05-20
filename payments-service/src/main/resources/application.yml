@@ -2,10 +2,12 @@ spring:
   application:
     name: payments-service
   datasource:
-    url: jdbc:postgresql://${PAYMENTS_DB_HOST:localhost}:${PAYMENTS_DB_PORT:5432}/${PAYMENTS_DB_NAME:payments_db}
-    username: ${PAYMENTS_DB_USER:orion_payments}
-    password: ${PAYMENTS_DB_PASSWORD:payments_secret}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:payments}
+    username: ${GLOBAL_DB_USER:app_user}
+    password: ${GLOBAL_DB_PASSWORD:AppSecret789}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 10
   jpa:
     hibernate:
       ddl-auto: validate
@@ -14,10 +16,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
-    url: jdbc:postgresql://${PAYMENTS_DB_HOST:localhost}:${PAYMENTS_DB_PORT:5432}/${PAYMENTS_DB_NAME:payments_db}
-    user: ${PAYMENTS_DB_USER:orion_payments}
-    password: ${PAYMENTS_DB_PASSWORD:payments_secret}
     enabled: true
+    schemas: ${DB_SCHEMA:payments}
+    create-schemas: true
     baseline-on-migrate: true
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}

@@ -3,10 +3,11 @@ spring:
     name: orders-service
 
   datasource:
-    # Variables de entorno con defaults para desarrollo local (sin Docker)
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5436}/orders_db
-    username: ${DB_USER:orion}
-    password: ${DB_PASSWORD:secret}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:orders}
+    username: ${GLOBAL_DB_USER:app_user}
+    password: ${GLOBAL_DB_PASSWORD:AppSecret789}
+    hikari:
+      minimum-idle: 10
 
   jpa:
     hibernate:
@@ -19,7 +20,8 @@ spring:
 
   flyway:
     enabled: true
-    # baseline-on-migrate permite usar Flyway en DBs que ya existían sin historial
+    schemas: ${DB_SCHEMA:orders}
+    create-schemas: true
     baseline-on-migrate: true
 
   rabbitmq:
@@ -44,7 +46,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus,metrics
   endpoint:
     health:
       show-details: always

@@ -16,173 +16,19 @@ services:
     networks:
       - orionticket-local
 
-  # ── Databases ─────────────────────────────────────────────────────────────
-
-  identity-db:
+  orionticket-db:
     image: postgres:16-alpine
-    container_name: identity-db
+    container_name: orionticket-db
     environment:
-      POSTGRES_USER: ${IDENTITY_DB_USER:-identity_user}
-      POSTGRES_PASSWORD: ${IDENTITY_DB_PASSWORD:-identity_password}
-      POSTGRES_DB: ${IDENTITY_DB_NAME:-identity_db}
+      POSTGRES_USER: ${GLOBAL_DB_USER:-app_user}
+      POSTGRES_PASSWORD: ${GLOBAL_DB_PASSWORD:-AppSecret789}
+      POSTGRES_DB: ${GLOBAL_DB_NAME:-orionticketdb}
     ports:
-      - "5433:5432"
+      - "5000:5432"
     volumes:
-      - identity_pg_data:/var/lib/postgresql/data
+      - orionticket_db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${IDENTITY_DB_USER:-identity_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  event-management-db:
-    image: postgres:16-alpine
-    container_name: event-management-db
-    environment:
-      POSTGRES_USER: ${EVENT_MANAGEMENT_DB_USER:-event_management_user}
-      POSTGRES_PASSWORD: ${EVENT_MANAGEMENT_DB_PASSWORD:-event_management_password}
-      POSTGRES_DB: ${EVENT_MANAGEMENT_DB_NAME:-event_management_db}
-    ports:
-      - "5434:5432"
-    volumes:
-      - event_management_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${EVENT_MANAGEMENT_DB_USER:-event_management_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  seating-inventory-db:
-    image: postgres:16-alpine
-    container_name: seating-inventory-db
-    environment:
-      POSTGRES_USER: ${SEATING_INVENTORY_DB_USER:-seating_inventory_user}
-      POSTGRES_PASSWORD: ${SEATING_INVENTORY_DB_PASSWORD:-seating_inventory_password}
-      POSTGRES_DB: ${SEATING_INVENTORY_DB_NAME:-seating_inventory_db}
-    ports:
-      - "5435:5432"
-    volumes:
-      - seating_inventory_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${SEATING_INVENTORY_DB_USER:-seating_inventory_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  orders-db:
-    image: postgres:16-alpine
-    container_name: orders-db
-    environment:
-      POSTGRES_USER: ${ORDERS_DB_USER:-orders_user}
-      POSTGRES_PASSWORD: ${ORDERS_DB_PASSWORD:-orders_password}
-      POSTGRES_DB: ${ORDERS_DB_NAME:-orders_db}
-    ports:
-      - "5436:5432"
-    volumes:
-      - orders_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ORDERS_DB_USER:-orders_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  payments-db:
-    image: postgres:16-alpine
-    container_name: payments-db
-    environment:
-      POSTGRES_USER: ${PAYMENTS_DB_USER:-payments_user}
-      POSTGRES_PASSWORD: ${PAYMENTS_DB_PASSWORD:-payments_password}
-      POSTGRES_DB: ${PAYMENTS_DB_NAME:-payments_db}
-    ports:
-      - "5437:5432"
-    volumes:
-      - payments_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PAYMENTS_DB_USER:-payments_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  ticket-issuance-db:
-    image: postgres:16-alpine
-    container_name: ticket-issuance-db
-    environment:
-      POSTGRES_USER: ${TICKET_ISSUANCE_DB_USER:-ticket_issuance_user}
-      POSTGRES_PASSWORD: ${TICKET_ISSUANCE_DB_PASSWORD:-ticket_issuance_password}
-      POSTGRES_DB: ${TICKET_ISSUANCE_DB_NAME:-ticket_issuance_db}
-    ports:
-      - "5438:5432"
-    volumes:
-      - ticket_issuance_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${TICKET_ISSUANCE_DB_USER:-ticket_issuance_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  access-control-db:
-    image: postgres:16-alpine
-    container_name: access-control-db
-    environment:
-      POSTGRES_USER: ${ACCESS_CONTROL_DB_USER:-access_control_user}
-      POSTGRES_PASSWORD: ${ACCESS_CONTROL_DB_PASSWORD:-access_control_password}
-      POSTGRES_DB: ${ACCESS_CONTROL_DB_NAME:-access_control_db}
-    ports:
-      - "5439:5432"
-    volumes:
-      - access_control_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${ACCESS_CONTROL_DB_USER:-access_control_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  notifications-db:
-    image: postgres:16-alpine
-    container_name: notifications-db
-    environment:
-      POSTGRES_USER: ${NOTIFICATIONS_DB_USER:-notifications_user}
-      POSTGRES_PASSWORD: ${NOTIFICATIONS_DB_PASSWORD:-notifications_password}
-      POSTGRES_DB: ${NOTIFICATIONS_DB_NAME:-notifications_db}
-    ports:
-      - "5440:5432"
-    volumes:
-      - notifications_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${NOTIFICATIONS_DB_USER:-notifications_user}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - orionticket-local
-
-  reporting-db:
-    image: postgres:16-alpine
-    container_name: reporting-db
-    environment:
-      POSTGRES_USER: ${REPORTING_DB_USER:-reporting_user}
-      POSTGRES_PASSWORD: ${REPORTING_DB_PASSWORD:-reporting_password}
-      POSTGRES_DB: ${REPORTING_DB_NAME:-reporting_db}
-    ports:
-      - "5441:5432"
-    volumes:
-      - reporting_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${REPORTING_DB_USER:-reporting_user}"]
+      test: ["CMD-SHELL", "pg_isready -U ${GLOBAL_DB_USER:-app_user} -d ${GLOBAL_DB_NAME:-orionticketdb}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -201,15 +47,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8081
-      IDENTITY_DB_HOST: identity-db
-      IDENTITY_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${IDENTITY_SERVICE_PORT:-8081}:8081"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      identity-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -224,15 +70,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8082
-      EVENT_MANAGEMENT_DB_HOST: event-management-db
-      EVENT_MANAGEMENT_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      event-management-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -247,15 +93,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8083
-      SEATING_INVENTORY_DB_HOST: seating-inventory-db
-      SEATING_INVENTORY_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      seating-inventory-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -270,8 +116,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8084
-      ORDERS_DB_HOST: orders-db
-      ORDERS_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
       EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
       SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
@@ -280,7 +126,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      orders-db:
+      orionticket-db:
         condition: service_healthy
       event-management-service:
         condition: service_started
@@ -299,8 +145,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8085
-      PAYMENTS_DB_HOST: payments-db
-      PAYMENTS_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
       ORDERS_SERVICE_URL: http://orders-service:8084
     ports:
@@ -308,7 +154,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      payments-db:
+      orionticket-db:
         condition: service_healthy
       orders-service:
         condition: service_started
@@ -325,15 +171,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8086
-      TICKET_ISSUANCE_DB_HOST: ticket-issuance-db
-      TICKET_ISSUANCE_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      ticket-issuance-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -348,8 +194,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8087
-      ACCESS_CONTROL_DB_HOST: access-control-db
-      ACCESS_CONTROL_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
       TICKET_ISSUANCE_URL: http://ticket-issuance-service:8086
     ports:
@@ -357,7 +203,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-      access-control-db:
+      orionticket-db:
         condition: service_healthy
       ticket-issuance-service:
         condition: service_started
@@ -374,15 +220,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8088
-      NOTIFICATIONS_DB_HOST: notifications-db
-      NOTIFICATIONS_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      notifications-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -397,15 +243,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
       SERVER_PORT: 8089
-      REPORTING_DB_HOST: reporting-db
-      REPORTING_DB_PORT: 5432
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${REPORTING_SERVICE_PORT:-8089}:8089"
     depends_on:
       rabbitmq:
         condition: service_healthy
-      reporting-db:
+      orionticket-db:
         condition: service_healthy
     networks:
       - orionticket-local
@@ -456,15 +302,7 @@ services:
 # ── Volumes ───────────────────────────────────────────────────────────────
 
 volumes:
-  identity_pg_data:
-  event_management_pg_data:
-  seating_inventory_pg_data:
-  orders_pg_data:
-  payments_pg_data:
-  ticket_issuance_pg_data:
-  access_control_pg_data:
-  notifications_pg_data:
-  reporting_pg_data:
+  orionticket_db_data:
 
 # ── Networks ──────────────────────────────────────────────────────────────
 

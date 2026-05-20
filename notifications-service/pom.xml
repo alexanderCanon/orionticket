@@ -101,6 +101,13 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+    
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -112,7 +119,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-        </dependencies>
+        
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
     </dependencyManagement>
 
     <build>
@@ -124,3 +138,5 @@
         </plugins>
     </build>
 </project>
+
+

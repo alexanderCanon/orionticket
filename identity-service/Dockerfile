@@ -1,12 +1,17 @@
+# syntax=docker/dockerfile:1
+# ── Build stage ───────────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /build
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
-RUN ./mvnw dependency:go-offline -q
 COPY src src
-RUN ./mvnw package -DskipTests -q
+# --mount=type=cache persiste el repositorio Maven local entre builds
+# sin incluirlo en la imagen final ni exponerlo a fallos de red intermedios.
+RUN --mount=type=cache,target=/root/.m2 \
+    ./mvnw package -DskipTests -q
 
+# ── Runtime stage ─────────────────────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-alpine AS runtime
 RUN addgroup -S orion && adduser -S orion -G orion
 WORKDIR /app
@@ -15,4 +20,7 @@ USER orion
 EXPOSE 8081
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1
-ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:default}", "-jar", "app.jar"]
+ENTRYPOINT ["java", \
+    "-Djava.security.egd=file:/dev/./urandom", \
+    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", \
+    "-jar", "app.jar"]

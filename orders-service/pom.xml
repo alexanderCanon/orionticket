@@ -15,7 +15,7 @@
     <artifactId>orders-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>orders-service</name>
-    <description>OrionTicket – Orders Service</description>
+    <description>OrionTicket â€“ Orders Service</description>
 
     <properties>
         <java.version>21</java.version>
@@ -24,7 +24,7 @@
     </properties>
 
     <dependencies>
-        <!-- Core web, JPA, seguridad, mensajería, actuator, validación -->
+        <!-- Core web, JPA, seguridad, mensajerÃ­a, actuator, validaciÃ³n -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -65,7 +65,7 @@
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
-        <!-- JWT — mismo stack que seating-inventory-service -->
+        <!-- JWT â€” mismo stack que seating-inventory-service -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -97,7 +97,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Testcontainers PostgreSQL para tests de integración -->
+        <!-- Testcontainers PostgreSQL para tests de integraciÃ³n -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
@@ -116,6 +116,20 @@
             <artifactId>rabbitmq</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
+        </dependency>
+    
+        <!-- Shared Dependencies -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+    
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.12.5</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
@@ -136,3 +150,5 @@
         </plugins>
     </build>
 </project>
+
+

@@ -21,17 +21,13 @@ CREATE TABLE tickets (
     )
 );
 
-CREATE TABLE ticket_deliveries (
-    delivery_id UUID PRIMARY KEY,
+CREATE TABLE ticket_delivery_channels (
     ticket_id UUID NOT NULL REFERENCES tickets(ticket_id),
     channel VARCHAR(32) NOT NULL,
-    status VARCHAR(32) NOT NULL,
-    delivered_at TIMESTAMPTZ NULL,
-    CONSTRAINT chk_ticket_deliveries_channel CHECK (channel IN ('EMAIL', 'PDF', 'QR', 'WALLET', 'DOWNLOAD')),
-    CONSTRAINT chk_ticket_deliveries_status CHECK (status IN ('PENDING', 'DELIVERED', 'FAILED'))
+    CONSTRAINT chk_ticket_delivery_channels_channel CHECK (channel IN ('EMAIL', 'PDF', 'QR', 'WALLET', 'DOWNLOAD'))
 );
 
 CREATE INDEX idx_tickets_buyer_id ON tickets (buyer_id);
 CREATE INDEX idx_tickets_order_id ON tickets (order_id);
 CREATE INDEX idx_tickets_event_date ON tickets (event_id, date_id);
-CREATE INDEX idx_ticket_deliveries_ticket_id ON ticket_deliveries (ticket_id);
+CREATE INDEX idx_ticket_delivery_channels_ticket_id ON ticket_delivery_channels (ticket_id);

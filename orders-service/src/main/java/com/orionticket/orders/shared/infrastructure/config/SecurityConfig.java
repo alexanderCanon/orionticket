@@ -23,19 +23,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // CSRF deshabilitado: API stateless, autenticada por JWT, no por sesión/cookie
+            // CSRF deshabilitado: API stateless, autenticada por JWT, no por sesiÃ³n/cookie
             .csrf(AbstractHttpConfigurer::disable)
-            // Sin estado de sesión en servidor; el token JWT es el único estado
+            // Sin estado de sesiÃ³n en servidor; el token JWT es el Ãºnico estado
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Healthcheck y métricas son públicos (Docker y load balancer los necesitan)
-                .requestMatchers("/actuator/**").permitAll()
-                // Todo lo demás requiere JWT válido
+                // Healthcheck y mÃ©tricas son pÃºblicos (Docker y load balancer los necesitan)
+                .requestMatchers("/actuator/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                // Todo lo demÃ¡s requiere JWT vÃ¡lido
                 .anyRequest().authenticated()
             )
-            // Insertar filtro JWT antes del filtro de autenticación estándar de Spring
+            // Insertar filtro JWT antes del filtro de autenticaciÃ³n estÃ¡ndar de Spring
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
+
