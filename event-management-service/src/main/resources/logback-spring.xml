@@ -10,7 +10,7 @@
 <configuration>
 
     <!-- Appender de consola legible para desarrollo local -->
-    <springProfile name="local,default">
+    <springProfile name="local,lab,default">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId:-NO_CORRELATION}] %logger{36} - %msg%n</pattern>

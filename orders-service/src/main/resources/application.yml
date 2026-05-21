@@ -3,11 +3,12 @@ spring:
     name: orders-service
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:orders}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb
     username: ${GLOBAL_DB_USER:app_user}
     password: ${GLOBAL_DB_PASSWORD:AppSecret789}
     hikari:
       minimum-idle: 10
+      connection-init-sql: SET search_path TO ${DB_SCHEMA:orders}
 
   jpa:
     hibernate:

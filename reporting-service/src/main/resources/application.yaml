@@ -2,13 +2,14 @@ spring:
   application:
     name: reporting-service
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb?currentSchema=${DB_SCHEMA:reporting}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb
     username: ${GLOBAL_DB_USER:app_user}
     password: ${GLOBAL_DB_PASSWORD:AppSecret789}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
       minimum-idle: 10
+      connection-init-sql: SET search_path TO ${DB_SCHEMA:reporting}
       connection-timeout: 20000
       idle-timeout: 300000
       max-lifetime: 1200000
