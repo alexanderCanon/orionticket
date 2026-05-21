@@ -76,6 +76,64 @@ Para validar sin crear `.env`, usar:
 ORION_ENV_FILE=.env.local.example docker compose -f compose.local.yml --env-file .env.local.example config
 ```
 
+## Prueba inicial: RabbitMQ
+
+Antes de levantar microservicios contra la base externa, validar primero que el
+compose renderiza correctamente y que RabbitMQ queda vivo.
+
+Requisitos previos:
+
+- `.env.local` debe existir o se debe usar `ORION_ENV_FILE` apuntando a otro
+  archivo valido.
+- `IP_NUBE` debe estar definido para que Compose pueda interpolar
+  `compose.local.yml`, aunque RabbitMQ no use la base de datos.
+- `RABBITMQ_USER` y `RABBITMQ_PASSWORD` deben mantenerse en `guest`/`guest`
+  mientras el contenedor no defina credenciales propias con
+  `RABBITMQ_DEFAULT_USER` y `RABBITMQ_DEFAULT_PASS`.
+
+Comandos:
+
+```sh
+docker compose -f compose.local.yml --env-file .env.local config
+docker compose -f compose.local.yml --env-file .env.local up -d rabbitmq
+docker compose -f compose.local.yml ps rabbitmq
+```
+
+RabbitMQ debe quedar `running` y saludable antes de iniciar cualquier
+microservicio. Luego se recomienda levantar servicios uno por uno para aislar
+fallos de conexion a PostgreSQL, Flyway o mensajeria.
+
+Orden operativo sugerido:
+
+```text
+rabbitmq
+identity-service
+event-management-service
+seating-inventory-service
+orders-service
+payments-service
+ticket-issuance-service
+notifications-service
+```
+
+## Estrategia pendiente ante caidas de RabbitMQ
+
+La tolerancia a caidas del broker no debe resolverse con publicacion directa
+desde la logica de negocio. La estrategia recomendada para servicios que emiten
+eventos criticos es el patron transactional outbox:
+
+- Persistir el cambio de negocio y el evento pendiente en la base de datos del
+  mismo servicio, dentro de la misma transaccion.
+- Publicar eventos desde un worker o scheduler separado.
+- Reintentar publicaciones fallidas cuando RabbitMQ vuelva a estar disponible.
+- Hacer consumidores idempotentes para tolerar reintentos y entregas duplicadas.
+- Definir retencion, limpieza y observabilidad de la tabla outbox.
+
+Esta estrategia queda documentada como decision operativa pendiente. No debe
+bloquear la primera prueba del laboratorio, cuyo alcance es validar RabbitMQ,
+conexion a PostgreSQL via HAProxy, creacion de schemas por Flyway y arranque
+basico de microservicios.
+
 ## Variables del gateway
 
 Reemplazar los valores de ejemplo por IPs reales de Tailscale:
