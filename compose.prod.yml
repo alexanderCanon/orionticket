@@ -42,6 +42,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
       interval: 30s
@@ -71,6 +75,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health || exit 1"]
       interval: 30s
@@ -100,6 +108,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8083/actuator/health || exit 1"]
       interval: 30s
@@ -135,6 +147,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8084/actuator/health || exit 1"]
       interval: 30s
@@ -170,6 +186,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8085/actuator/health || exit 1"]
       interval: 30s
@@ -199,6 +219,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8086/actuator/health || exit 1"]
       interval: 30s
@@ -231,6 +255,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8087/actuator/health || exit 1"]
       interval: 30s
@@ -260,6 +288,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8088/actuator/health || exit 1"]
       interval: 30s
@@ -289,6 +321,10 @@ services:
         condition: service_healthy
     networks:
       - orionticket-prod
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-512m}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8089/actuator/health || exit 1"]
       interval: 30s
