@@ -9,6 +9,9 @@ import java.util.UUID;
 @Builder
 public class LoginResponse {
     private String accessToken;
+    private String tokenType;
+    private long expiresIn;
     private UUID userId;
-    private UUID roleId;
+    private String role;
+    private UUID organizerId;
 }

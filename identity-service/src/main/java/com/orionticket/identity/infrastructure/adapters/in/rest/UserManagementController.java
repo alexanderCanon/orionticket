@@ -2,6 +2,7 @@ package com.orionticket.identity.infrastructure.adapters.in.rest;
 
 import com.orionticket.identity.application.port.in.UserManagementUseCase;
 import com.orionticket.identity.domain.model.User;
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUserResolver;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.UpdateRoleRequest;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,14 +21,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 @Tag(name = "Users", description = "Platform user administration endpoints")
 public class UserManagementController {
 
     private final UserManagementUseCase userManagementUseCase;
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
-
-    // En producción esto se obtiene del token JWT (Spring Security Principal)
-    private final UUID TEMPORARY_ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000003");
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     @Operation(summary = "Suspend user", description = "Suspends an existing user account.")
     @ApiResponses({
@@ -35,7 +36,7 @@ public class UserManagementController {
     })
     @PutMapping("/{userId}/suspend")
     public ResponseEntity<UserResponse> suspendUser(@PathVariable UUID userId) {
-        User updatedUser = userManagementUseCase.suspendUser(userId, TEMPORARY_ADMIN_ID);
+        User updatedUser = userManagementUseCase.suspendUser(userId, authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 
@@ -49,7 +50,7 @@ public class UserManagementController {
     public ResponseEntity<UserResponse> updateUserRole(
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateRoleRequest request) {
-        User updatedUser = userManagementUseCase.updateUserRole(userId, request.getNewRoleId(), TEMPORARY_ADMIN_ID);
+        User updatedUser = userManagementUseCase.updateUserRole(userId, request.getNewRoleId(), authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 
@@ -77,7 +78,7 @@ public class UserManagementController {
                 request.getPhone(), 
                 request.getRoleId(), 
                 request.getOrganizerId(), 
-                TEMPORARY_ADMIN_ID);
+                authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(mapToResponse(user));
     }
 
@@ -91,7 +92,7 @@ public class UserManagementController {
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable UUID userId,
             @Valid @RequestBody com.orionticket.identity.infrastructure.adapters.in.rest.dto.UpdateUserRequest request) {
-        User updatedUser = userManagementUseCase.updateUser(userId, request.getFullName(), request.getPhone(), TEMPORARY_ADMIN_ID);
+        User updatedUser = userManagementUseCase.updateUser(userId, request.getFullName(), request.getPhone(), authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.ok(mapToResponse(updatedUser));
     }
 

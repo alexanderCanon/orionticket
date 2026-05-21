@@ -1,9 +1,13 @@
 package com.orionticket.identity.infrastructure;
 
 import com.orionticket.identity.infrastructure.adapters.out.persistence.repository.SpringDataUserRepository;
+import com.orionticket.identity.application.port.out.IdentityEventPublisherPort;
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUser;
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUserResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -15,11 +19,13 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class OrganizerStaffIntegrationTest {
+class OrganizerStaffIntegrationTest extends IdentityPostgresContainerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -27,9 +33,17 @@ class OrganizerStaffIntegrationTest {
     @Autowired
     private SpringDataUserRepository userRepository;
 
+    @MockBean
+    private IdentityEventPublisherPort eventPublisherPort;
+
+    @MockBean
+    private AuthenticatedUserResolver authenticatedUserResolver;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
+        when(authenticatedUserResolver.requireOrganizerOwnership(any(UUID.class)))
+                .thenAnswer(invocation -> new AuthenticatedUser(UUID.randomUUID(), "ORGANIZER", invocation.getArgument(0)));
     }
 
     @Test

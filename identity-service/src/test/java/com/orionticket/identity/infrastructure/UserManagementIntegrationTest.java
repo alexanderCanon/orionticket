@@ -1,10 +1,13 @@
 package com.orionticket.identity.infrastructure;
 
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUser;
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUserResolver;
 import com.orionticket.identity.infrastructure.adapters.out.persistence.repository.SpringDataUserRepository;
 import com.orionticket.identity.infrastructure.adapters.out.persistence.entity.UserJpaEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -16,11 +19,12 @@ import java.util.UUID;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
-class UserManagementIntegrationTest {
+class UserManagementIntegrationTest extends IdentityPostgresContainerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,11 +32,17 @@ class UserManagementIntegrationTest {
     @Autowired
     private SpringDataUserRepository userRepository;
 
+    @MockBean
+    private AuthenticatedUserResolver authenticatedUserResolver;
+
     private UUID testUserId;
+    private final UUID adminId = UUID.fromString("00000000-0000-0000-0000-000000000003");
 
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
+        when(authenticatedUserResolver.currentUser())
+                .thenReturn(new AuthenticatedUser(adminId, "SUPER_ADMIN", null));
 
         // Creamos un usuario de prueba directamente en la BD
         testUserId = UUID.randomUUID();

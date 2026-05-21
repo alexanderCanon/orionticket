@@ -230,11 +230,12 @@
 **Response (200 OK):**
 ```json
 {
-  "token": "string (JWT)",
+  "accessToken": "string (JWT)",
+  "tokenType": "Bearer",
+  "expiresIn": "integer (seconds)",
   "userId": "uuid",
   "role": "string",
-  "organizerId": "uuid | null",
-  "expiresAt": "ISO-8601"
+  "organizerId": "uuid | null"
 }
 ```
 

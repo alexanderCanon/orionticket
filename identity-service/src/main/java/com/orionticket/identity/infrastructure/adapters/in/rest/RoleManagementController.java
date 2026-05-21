@@ -2,6 +2,7 @@ package com.orionticket.identity.infrastructure.adapters.in.rest;
 
 import com.orionticket.identity.application.port.in.RoleManagementUseCase;
 import com.orionticket.identity.domain.model.Role;
+import com.orionticket.identity.infrastructure.adapters.out.security.AuthenticatedUserResolver;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.CreateRoleRequest;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.RoleResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/roles")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 @Tag(name = "Roles", description = "Role and permission administration endpoints")
 public class RoleManagementController {
 
     private final RoleManagementUseCase roleManagementUseCase;
-    
-    // En producción esto se obtiene del token JWT (Spring Security Principal)
-    private final UUID TEMPORARY_ADMIN_ID = UUID.fromString("00000000-0000-0000-0000-000000000003");
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     @Operation(summary = "Create role", description = "Creates a platform role with its permissions.")
     @ApiResponses({
@@ -36,7 +37,7 @@ public class RoleManagementController {
     })
     @PostMapping
     public ResponseEntity<RoleResponse> createRole(@Valid @RequestBody CreateRoleRequest request) {
-        Role role = roleManagementUseCase.createRole(request.getName(), request.getPermissions(), TEMPORARY_ADMIN_ID);
+        Role role = roleManagementUseCase.createRole(request.getName(), request.getPermissions(), authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.status(HttpStatus.CREATED).body(mapToResponse(role));
     }
 
@@ -59,7 +60,7 @@ public class RoleManagementController {
     public ResponseEntity<RoleResponse> updateRole(
             @PathVariable UUID roleId,
             @Valid @RequestBody CreateRoleRequest request) {
-        Role role = roleManagementUseCase.updateRole(roleId, request.getName(), request.getPermissions(), TEMPORARY_ADMIN_ID);
+        Role role = roleManagementUseCase.updateRole(roleId, request.getName(), request.getPermissions(), authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.ok(mapToResponse(role));
     }
 
@@ -71,7 +72,7 @@ public class RoleManagementController {
     })
     @DeleteMapping("/{roleId}")
     public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {
-        roleManagementUseCase.deleteRole(roleId, TEMPORARY_ADMIN_ID);
+        roleManagementUseCase.deleteRole(roleId, authenticatedUserResolver.currentUser().userId());
         return ResponseEntity.noContent().build();
     }
 
