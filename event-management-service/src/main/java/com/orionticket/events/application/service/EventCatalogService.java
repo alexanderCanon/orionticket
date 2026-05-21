@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,5 +40,24 @@ public class EventCatalogService implements GetEventCatalogUseCase {
         });
         
         return events;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Event> getEventById(UUID eventId) {
+        Optional<Event> eventOpt = eventRepositoryPort.findById(eventId);
+        
+        eventOpt.ifPresent(event -> {
+            event.getDates().forEach(eventDate -> {
+                venueRepositoryPort.findById(eventDate.getVenueId())
+                        .ifPresent(v -> eventDate.setVenueName(v.getName()));
+                
+                if (eventDate.getAvailableSeats() == null) {
+                    eventDate.setAvailableSeats(eventDate.getCapacity());
+                }
+            });
+        });
+        
+        return eventOpt;
     }
 }

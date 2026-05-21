@@ -1,0 +1,72 @@
+<div class="history-container">
+  <h2>Mis Entradas</h2>
+  <p class="subtitle">Aquí puedes ver tus compras anteriores y descargar tus entradas.</p>
+
+  @if (isLoading()) {
+    <div class="card empty-state">
+      <p>Cargando tus compras...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="alert alert-error">{{ loadError() }}</div>
+  } @else {
+    <div class="filters-container card glass-panel">
+      <div class="filter-group">
+        <label for="eventFilter">Filtrar por Evento:</label>
+        <select id="eventFilter" [(ngModel)]="selectedEvent" class="filter-select">
+          <option value="ALL">Todos los Eventos</option>
+          @for (event of availableEvents(); track event) {
+            <option [value]="event">{{ event }}</option>
+          }
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label for="statusFilter">Estado:</label>
+        <select id="statusFilter" [(ngModel)]="selectedStatus" class="filter-select">
+          <option value="ALL">Todos los Estados</option>
+          <option value="CONFIRMED">Confirmadas</option>
+          <option value="CREATED">Pendientes</option>
+          <option value="EXPIRED">Expiradas</option>
+          <option value="CANCELLED">Canceladas</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="ticket-list">
+      @for (order of filteredOrders(); track order.id) {
+        <div class="card ticket-row">
+          <div class="ticket-info">
+            <h3>{{ order.eventName }}</h3>
+            <p><strong>Ubicación:</strong> {{ order.seatLabel }}</p>
+            <p><strong>Orden:</strong> {{ order.id }}</p>
+            <p><strong>Comprado el:</strong> {{ order.purchaseDate | date:'longDate' }}</p>
+          </div>
+          <div class="ticket-stats">
+            <span class="status-badge" [class]="'status-' + (order.status | lowercase)">
+              {{ order.status }}
+            </span>
+            <p><strong>Total:</strong> ${{ order.total }}</p>
+          </div>
+          <div class="ticket-actions">
+            @if (order.status === 'CREATED') {
+              <button (click)="payOrder(order.id)" class="btn btn-primary">
+                Pagar ahora
+              </button>
+            } @else if (order.status === 'CONFIRMED') {
+              <button (click)="downloadTicket(order)" class="btn" [disabled]="downloadingId() === order.id">
+                {{ downloadingId() === order.id ? 'Generando...' : 'Descargar PDF' }}
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="card empty-state">
+          <p>No tienes compras que coincidan con estos filtros.</p>
+          @if (myOrders().length === 0) {
+            <a routerLink="/" class="btn btn-primary" style="margin-top: 1rem;">Ver Eventos</a>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

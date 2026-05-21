@@ -6,9 +6,11 @@ import com.orionticket.seating.reservation.domain.model.Reservation;
 // Puerto de salida para publicar eventos de dominio al bus de mensajería.
 // El dominio define QUÉ publicar; RabbitMqEventPublisherAdapter define CÓMO.
 // Esta separación permite testear el dominio sin RabbitMQ real (usando un mock).
+import java.math.BigDecimal;
+
 public interface DomainEventPublisherPort {
 
-    void publishReservationCreated(Reservation reservation);
+    void publishReservationCreated(Reservation reservation, BigDecimal batchPrice);
 
     void publishReservationExpired(Reservation reservation);
 

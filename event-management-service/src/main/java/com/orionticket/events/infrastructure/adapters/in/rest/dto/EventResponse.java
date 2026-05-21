@@ -11,6 +11,7 @@ public class EventResponse {
     private UUID eventId;
     private String name;
     private String category;
+    private String description;
     private String organizerName;
     private List<EventDateResponse> dates;
 }

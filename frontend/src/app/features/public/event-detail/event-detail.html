@@ -1,0 +1,59 @@
+<div class="event-detail-container">
+  @if (isLoading()) {
+    <p>Cargando detalles del evento...</p>
+  } @else if (event()) {
+    <div class="card detail-card">
+      <div class="event-hero" [class]="'event-hero ' + getCategoryClass(event()?.category)">
+        <span class="category-icon">{{ getCategoryIcon(event()?.category) }}</span>
+      </div>
+      <div class="detail-content">
+        <h1>{{ event()?.name }}</h1>
+        <p class="category">{{ event()?.category }}</p>
+        <p class="organizer">Organizado por: {{ event()?.organizerName }}</p>
+        
+        @if (event()?.description) {
+          <div class="event-description">
+            <p>{{ event()?.description }}</p>
+          </div>
+        }
+
+        @if (event()?.dates && event()?.dates?.length > 0) {
+          <div class="dates-section">
+            <h3>Selecciona una fecha</h3>
+            <div class="date-selector">
+              <select class="form-select date-dropdown" [ngModel]="selectedDateId()" (ngModelChange)="selectDate($event)" style="width: 100%; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-color); background: var(--surface-card); color: var(--text-primary); font-size: 1rem;">
+                <option [value]="null" disabled>Selecciona una fecha...</option>
+                @for (date of event().dates; track date.dateId) {
+                  <option [value]="date.dateId">
+                    {{ date.scheduledAt | date:'EEEE, d MMMM yyyy - HH:mm':'UTC':'es' }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            @if (selectedDate()) {
+              <div class="selected-date-info glass-panel" style="padding: 1rem; border-radius: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                <p class="date-text" style="margin: 0 0 0.5rem 0;"><strong>📅 Fecha y Hora:</strong> {{ selectedDate().scheduledAt | date:'EEEE, d MMMM yyyy - HH:mm':'UTC':'es' }}</p>
+                <p class="venue-text" style="margin: 0 0 0.5rem 0;"><strong>🏟 Lugar:</strong> {{ selectedDate().venueName }}</p>
+                <p class="seats-text" style="margin: 0;"><strong>🎟 Disponibilidad:</strong> {{ selectedDate().availableSeats | number }} lugares disponibles</p>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="buy-section">
+          <button
+            (click)="goToCheckout()"
+            class="btn btn-primary btn-lg"
+            [disabled]="!selectedDateId()">
+            Reservar Asientos
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="card">
+      <p>No se pudo cargar el evento.</p>
+    </div>
+  }
+</div>

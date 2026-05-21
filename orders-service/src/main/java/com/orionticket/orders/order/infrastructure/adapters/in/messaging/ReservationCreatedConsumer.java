@@ -35,9 +35,9 @@ public class ReservationCreatedConsumer {
                     .batchId(UUID.fromString((String) payload.get("batchId")))
                     .batchPrice(new BigDecimal(payload.get("batchPrice").toString()))
                     .buyerId(UUID.fromString((String) payload.get("buyerId")))
-                    .eventId(UUID.fromString((String) payload.get("eventEntityId")))
+                    .eventId(UUID.fromString((String) payload.get("eventId")))
                     .dateId(UUID.fromString((String) payload.get("dateId")))
-                    .expiresAt(Instant.parse((String) payload.get("expiresAt")))
+                    .expiresAt(java.time.ZonedDateTime.parse((String) payload.get("expiresAt")).toInstant())
                     .receivedAt(Instant.now())
                     .build();
 

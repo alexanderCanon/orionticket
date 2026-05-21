@@ -1,0 +1,63 @@
+.scanner-container {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+.scanner-card {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+.scanner-header h2 {
+  color: var(--color-primary-dark);
+  margin-bottom: var(--spacing-2);
+}
+.camera-frame {
+  background: #000;
+  color: #fff;
+  height: 250px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: var(--spacing-4) 0;
+  position: relative;
+  border: 4px dashed var(--color-primary);
+}
+.camera-frame p {
+  margin-bottom: var(--spacing-3);
+  font-weight: 600;
+}
+.manual-entry {
+  margin-top: var(--spacing-5);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-4);
+}
+.input-group {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+.input-group .form-control {
+  flex: 1;
+  padding: var(--spacing-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+.scan-result {
+  margin-top: var(--spacing-5);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-sm);
+}
+.scan-result.success {
+  background: color-mix(in srgb, var(--color-success) 20%, transparent);
+  color: var(--color-success);
+}
+.scan-result.error {
+  background: color-mix(in srgb, var(--color-error) 20%, transparent);
+  color: var(--color-error);
+}
+.scan-result h3 {
+  margin-bottom: var(--spacing-1);
+}

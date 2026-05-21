@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,7 @@ public class EventCatalogController {
                         .eventId(event.getEventId())
                         .name(event.getName())
                         .category(event.getCategory())
+                        .description(event.getDescription())
                         .organizerName(event.getOrganizerName())
                         .dates(event.getDates().stream()
                                 .map(d -> EventDateResponse.builder()
@@ -71,5 +73,32 @@ public class EventCatalogController {
                 .build();
         
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Get public event details", description = "Returns details of a specific event.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Event returned"),
+            @ApiResponse(responseCode = "404", description = "Event not found")
+    })
+    @GetMapping("/events/{eventId}")
+    public ResponseEntity<EventResponse> getEventById(@PathVariable UUID eventId) {
+        return getEventCatalogUseCase.getEventById(eventId)
+                .map(event -> EventResponse.builder()
+                        .eventId(event.getEventId())
+                        .name(event.getName())
+                        .category(event.getCategory())
+                        .description(event.getDescription())
+                        .organizerName(event.getOrganizerName())
+                        .dates(event.getDates().stream()
+                                .map(d -> EventDateResponse.builder()
+                                        .dateId(d.getDateId())
+                                        .scheduledAt(d.getScheduledAt())
+                                        .venueName(d.getVenueName())
+                                        .availableSeats(d.getAvailableSeats())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build())
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

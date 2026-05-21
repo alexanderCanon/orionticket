@@ -1,0 +1,47 @@
+<div class="create-container">
+  <div class="card create-card">
+    <h2>Crear Nuevo Evento</h2>
+    <p class="subtitle">Configura los detalles principales de tu evento.</p>
+
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+      @if (errorMessage()) {
+        <div class="alert alert-error">{{ errorMessage() }}</div>
+      }
+      @if (successMessage()) {
+        <div class="alert alert-success">{{ successMessage() }}</div>
+      }
+
+      <div class="form-group">
+        <label for="name">Nombre del Evento</label>
+        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Ej. Concierto de Rock">
+      </div>
+
+      <div class="form-group">
+        <label for="category">Categoría</label>
+        <select id="category" formControlName="category" class="form-control">
+          <option value="Música">Música</option>
+          <option value="Conferencia">Conferencia</option>
+          <option value="Deportes">Deportes</option>
+          <option value="Teatro">Teatro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Descripción</label>
+        <textarea id="description" formControlName="description" class="form-control" rows="4" placeholder="Detalles del evento..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="totalCapacity">Capacidad Total (Recinto)</label>
+        <input type="number" id="totalCapacity" formControlName="totalCapacity" class="form-control" placeholder="Ej: 1000">
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/organizer" class="btn">Cancelar</a>
+        <button type="submit" class="btn btn-primary" [disabled]="eventForm.invalid || isSubmitting()">
+          {{ isSubmitting() ? 'Guardando...' : 'Crear Evento' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface GetEventCatalogUseCase {
     Page<Event> getCatalog(String category, String city, LocalDate date, UUID organizerId, Pageable pageable);
+    Optional<Event> getEventById(UUID eventId);
 }

@@ -14,15 +14,24 @@ public class OrderSummaryResponse {
 
     private UUID orderId;
     private UUID eventId;
+    private UUID dateId;
+    private UUID seatId;
     private BigDecimal total;
     private String currency;
     private String status;
     private Instant createdAt;
 
     public static OrderSummaryResponse from(Order order) {
+        UUID firstSeatId = null;
+        if (order.getLineItems() != null && !order.getLineItems().isEmpty()) {
+            firstSeatId = order.getLineItems().get(0).getSeatId();
+        }
+
         return OrderSummaryResponse.builder()
                 .orderId(order.getOrderId())
                 .eventId(order.getEventId())
+                .dateId(order.getDateId())
+                .seatId(firstSeatId)
                 .total(order.getTotal())
                 .currency(order.getCurrency())
                 .status(order.getStatus().name())

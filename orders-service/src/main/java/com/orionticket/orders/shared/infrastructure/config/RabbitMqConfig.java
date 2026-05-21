@@ -15,7 +15,7 @@ import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 public class RabbitMqConfig {
 
     // Exchange compartido con todos los servicios (Topic permite routing por patrón)
-    public static final String EXCHANGE = "orionticket.topic";
+    public static final String EXCHANGE = "orionticket.events.exchange";
 
     // DLX/DLQ: mensajes que fallan reiteradamente van aquí en lugar de perderse
     public static final String DLX = "orionticket.dlx";

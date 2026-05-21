@@ -8,11 +8,28 @@ spring:
     gateway:
       default-filters:
         - PreserveHostHeader
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+              - PATCH
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         - id: identity-service
           uri: ${IDENTITY_SERVICE_URL:http://localhost:8081}
           predicates:
             - Path=/v1/auth/**,/v1/users/**,/v1/roles/**,/v1/organizers/**
+        - id: seating-inventory-seats
+          uri: ${SEATING_INVENTORY_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/v1/events/*/dates/*/seats
         - id: event-management-service
           uri: ${EVENT_MANAGEMENT_SERVICE_URL:http://localhost:8082}
           predicates:
@@ -24,7 +41,7 @@ spring:
         - id: orders-service
           uri: ${ORDERS_SERVICE_URL:http://localhost:8084}
           predicates:
-            - Path=/v1/orders/**,/v1/checkout/**
+            - Path=/v1/orders/**,/v1/checkout/**,/v1/buyers/**
         - id: payments-service
           uri: ${PAYMENTS_SERVICE_URL:http://localhost:8085}
           predicates:

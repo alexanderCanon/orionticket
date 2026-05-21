@@ -1,0 +1,14 @@
+<div class="success-container">
+  <div class="card success-card">
+    <div class="success-icon">✅</div>
+    <h2>¡Compra Exitosa!</h2>
+    <p>Tu orden <strong>{{ orderId }}</strong> se ha procesado correctamente.</p>
+    
+    <div class="action-buttons">
+      <button (click)="downloadPDF()" class="btn btn-primary btn-lg" [disabled]="isGeneratingPDF()">
+        {{ isGeneratingPDF() ? 'Generando PDF...' : 'Descargar Entrada PDF' }}
+      </button>
+      <a routerLink="/" class="btn">Volver al Catálogo</a>
+    </div>
+  </div>
+</div>

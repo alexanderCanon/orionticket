@@ -1,0 +1,177 @@
+/* Base Premium CSS Template for OrionTicket */
+:root {
+  /* Color Palette (HSL based for easy tweaking) */
+  --color-primary: hsl(240, 100%, 65%);
+  --color-primary-dark: hsl(240, 100%, 55%);
+  --color-secondary: hsl(280, 100%, 65%);
+  --color-background: hsl(240, 10%, 98%);
+  --color-surface: #ffffff;
+  --color-text-main: hsl(240, 10%, 15%);
+  --color-text-muted: hsl(240, 5%, 45%);
+  --color-border: hsl(240, 10%, 90%);
+  --color-error: hsl(350, 80%, 60%);
+  --color-success: hsl(150, 70%, 45%);
+
+  /* Typography */
+  --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-base: 16px;
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 1rem;
+  --spacing-4: 1.5rem;
+  --spacing-5: 2rem;
+  --spacing-6: 3rem;
+
+  /* Shadows (Glassmorphism & Depth) */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  /* Radii */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* Base Component Classes */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-border);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--shadow-glass);
+}
+
+/* Public Navbar Styles (Shared across all layouts) */
+.public-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-3) var(--spacing-6);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.public-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-6) var(--spacing-4);
+  min-height: calc(100vh - 80px);
+}
+
+.user-menu {
+  display: flex;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+
+.user-greeting {
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-right: var(--spacing-2);
+}
+
+/* Category Colors & Gradients */
+.cat-deportes { background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important; color: white; }
+.cat-musica { background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%) !important; color: white; }
+.cat-teatro { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%) !important; color: white; }
+.cat-comedia { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%) !important; color: white; }
+.cat-conferencia { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; color: white; }
+.cat-arte { background: linear-gradient(135deg, #d946ef 0%, #a21caf 100%) !important; color: white; }
+.cat-default { background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)) !important; color: white; }
+
+.category-icon {
+  font-size: 5rem;
+  opacity: 0.8;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+  transition: transform 0.3s ease;
+}
+
+.category-icon-small {
+  font-size: 2rem;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}

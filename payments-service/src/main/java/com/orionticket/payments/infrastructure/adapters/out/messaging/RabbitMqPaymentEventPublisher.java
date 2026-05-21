@@ -17,38 +17,50 @@ public class RabbitMqPaymentEventPublisher implements PaymentEventPublisherPort 
     private static final Logger log = LoggerFactory.getLogger(RabbitMqPaymentEventPublisher.class);
 
     private final RabbitTemplate rabbitTemplate;
+    private final String exchange;
 
-    public RabbitMqPaymentEventPublisher(RabbitTemplate rabbitTemplate) {
+    public RabbitMqPaymentEventPublisher(RabbitTemplate rabbitTemplate, 
+                                         @org.springframework.beans.factory.annotation.Value("${rabbitmq.exchanges.payments:payments.events}") String exchange) {
         this.rabbitTemplate = rabbitTemplate;
+        this.exchange = exchange;
     }
 
     @Override
     public void publishPaymentInitiated(PaymentEvent event) {
         log.info("publishPaymentInitiated — paymentId={} orderId={}", event.paymentId(), event.orderId());
-        throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
+        rabbitTemplate.convertAndSend(exchange, "payment.initiated", wrapInEnvelope("PaymentInitiated", event));
     }
 
     @Override
     public void publishPaymentAuthorized(PaymentEvent event) {
         log.info("publishPaymentAuthorized — paymentId={} orderId={}", event.paymentId(), event.orderId());
-        throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
+        rabbitTemplate.convertAndSend(exchange, "payment.authorized", wrapInEnvelope("PaymentAuthorized", event));
     }
 
     @Override
     public void publishPaymentFailed(PaymentFailedEvent event) {
         log.info("publishPaymentFailed — paymentId={} orderId={} reason={}", event.paymentId(), event.orderId(), event.failureReason());
-        throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
+        rabbitTemplate.convertAndSend(exchange, "payment.failed", wrapInEnvelope("PaymentFailed", event));
     }
 
     @Override
     public void publishPayoutGenerated(PayoutEvent event) {
         log.info("publishPayoutGenerated — payoutId={} organizerId={}", event.payoutId(), event.organizerId());
-        throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
+        rabbitTemplate.convertAndSend(exchange, "payout.generated", wrapInEnvelope("PayoutGenerated", event));
     }
 
     @Override
     public void publishPayoutProcessed(PayoutEvent event) {
         log.info("publishPayoutProcessed — payoutId={} organizerId={}", event.payoutId(), event.organizerId());
-        throw new UnsupportedOperationException("RabbitMQ publishing not wired yet — configure exchange/queue first");
+        rabbitTemplate.convertAndSend(exchange, "payout.processed", wrapInEnvelope("PayoutProcessed", event));
+    }
+
+    private java.util.Map<String, Object> wrapInEnvelope(String eventType, Object payload) {
+        java.util.Map<String, Object> envelope = new java.util.LinkedHashMap<>();
+        envelope.put("eventType", eventType);
+        envelope.put("eventId", java.util.UUID.randomUUID().toString());
+        envelope.put("occurredAt", java.time.Instant.now().toString());
+        envelope.put("payload", payload);
+        return envelope;
     }
 }

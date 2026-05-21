@@ -32,6 +32,7 @@ public class JwtProviderAdapter implements JwtProviderPort {
         return Jwts.builder()
                 .subject(user.getUserId().toString())
                 .claim("email", user.getEmail())
+                .claim("fullName", user.getFullName())
                 .claim("roleId", user.getRoleId() != null ? user.getRoleId().toString() : null)
                 .claim("organizerId", user.getOrganizerId() != null ? user.getOrganizerId().toString() : null)
                 .issuedAt(now)

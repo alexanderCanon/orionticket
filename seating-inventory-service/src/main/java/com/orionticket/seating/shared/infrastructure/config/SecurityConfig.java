@@ -36,7 +36,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // GET /v1/events/**/seats es público: un comprador anónimo puede ver
                 // el mapa de disponibilidad antes de crear una cuenta o loguearse.
-                .requestMatchers("/v1/events/**/seats").permitAll()
+                .requestMatchers("/v1/events/*/dates/*/seats").permitAll()
+                // Batches y seating-map también son públicos temporalmente para MVP:
+                // el API Gateway es el punto de autorización real en producción.
+                .requestMatchers("/v1/events/*/dates/*/batches", "/v1/events/*/dates/*/batches/**").permitAll()
+                .requestMatchers("/v1/events/*/dates/*/seating-map").permitAll()
+                .requestMatchers("/v1/reservations", "/v1/reservations/**").permitAll()
 
                 // /actuator/health: Docker y Kubernetes hacen healthchecks sin token.
                 // /actuator/info: monitoreo básico. Sin este permiso el contenedor
