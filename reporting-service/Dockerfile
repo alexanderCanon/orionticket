@@ -3,10 +3,11 @@
 FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /build
 COPY mvnw .
+RUN chmod +x mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
-RUN --mount=type=cache,target=/root/.m2 \
+RUN --mount=type=cache,target=/root/.m2/repository \
     ./mvnw package -DskipTests -q
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
@@ -20,5 +21,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:8089/actuator/health || exit 1
 ENTRYPOINT ["java", \
     "-Djava.security.egd=file:/dev/./urandom", \
-    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-local}", \
     "-jar", "app.jar"]

@@ -2,6 +2,16 @@
 .env.local
 .env.prod
 .env.*.local
-
+estructura.txt
 target/
 .mvn/wrapper/maven-wrapper.jar
+update_poms.py
+update_poms.ps1
+test_results.md
+run_tests.ps1
+remove_bom_all.ps1
+remove_bom.ps1
+out.log
+add_exception_handlers.ps1
+.codex
+OrionTicket_Tests.postman_collection.json

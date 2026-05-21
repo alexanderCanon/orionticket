@@ -1,25 +1,24 @@
-# docker-compose.prod.yml
+# Production backend stack.
 #
-# Entorno de producción (VPS).
-#
-# SUPUESTO: Las bases de datos y RabbitMQ son instancias externas o gestionadas.
-# Este archivo NO levanta contenedores de infraestructura de datos.
-# Todos los valores sensibles deben estar en .env.prod (NO commiteado al repo).
-#
-# Uso:
-#   cp .env.prod.example .env.prod   # Rellena con los valores reales de producción
-#   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
-#
-# O con Make:
-#   make prod-up
-#   make prod-down
-#   make prod-logs
-#
-# IMPORTANTE: Las imágenes se esperan ya construidas (CI/CD) o se construyen
-# in-place con --build. No usar RabbitMQ embebido; apuntar al host externo
-# a través de RABBITMQ_HOST en .env.prod.
+# Levanta los 9 microservicios de negocio y RabbitMQ. No levanta PostgreSQL:
+# todos los servicios conectan a la DB externa por HAProxy en ${IP_NUBE}:5000.
+# El API Gateway vive en otro repo/VPS.
 
 services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: orion-rabbitmq-prod
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - orionticket-prod
 
   identity-service:
     build:
@@ -28,13 +27,19 @@ services:
     image: orionticket/identity-service:${IMAGE_TAG:-latest}
     container_name: identity-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8081
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${IDENTITY_SERVICE_PORT:-8081}:8081"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -51,13 +56,19 @@ services:
     image: orionticket/event-management-service:${IMAGE_TAG:-latest}
     container_name: event-management-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8082
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -74,13 +85,19 @@ services:
     image: orionticket/seating-inventory-service:${IMAGE_TAG:-latest}
     container_name: seating-inventory-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8083
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -97,16 +114,21 @@ services:
     image: orionticket/orders-service:${IMAGE_TAG:-latest}
     container_name: orders-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8084
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
       EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
       SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
     ports:
       - "${ORDERS_SERVICE_PORT:-8084}:8084"
     restart: unless-stopped
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       event-management-service:
         condition: service_healthy
       seating-inventory-service:
@@ -127,16 +149,24 @@ services:
     image: orionticket/payments-service:${IMAGE_TAG:-latest}
     container_name: payments-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8085
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
       ORDERS_SERVICE_URL: http://orders-service:8084
+      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
     ports:
       - "${PAYMENTS_SERVICE_PORT:-8085}:8085"
     restart: unless-stopped
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       orders-service:
+        condition: service_healthy
+      event-management-service:
         condition: service_healthy
     networks:
       - orionticket-prod
@@ -154,13 +184,19 @@ services:
     image: orionticket/ticket-issuance-service:${IMAGE_TAG:-latest}
     container_name: ticket-issuance-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8086
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -177,15 +213,20 @@ services:
     image: orionticket/access-control-service:${IMAGE_TAG:-latest}
     container_name: access-control-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8087
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
       TICKET_ISSUANCE_URL: http://ticket-issuance-service:8086
     ports:
       - "${ACCESS_CONTROL_SERVICE_PORT:-8087}:8087"
     restart: unless-stopped
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       ticket-issuance-service:
         condition: service_healthy
     networks:
@@ -204,13 +245,19 @@ services:
     image: orionticket/notifications-service:${IMAGE_TAG:-latest}
     container_name: notifications-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8088
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -227,13 +274,19 @@ services:
     image: orionticket/reporting-service:${IMAGE_TAG:-latest}
     container_name: reporting-service
     env_file:
-      - .env.prod
+      - ${ORION_ENV_FILE:-.env.prod}
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8089
+      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_PORT: 5000
+      RABBITMQ_HOST: rabbitmq
     ports:
       - "${REPORTING_SERVICE_PORT:-8089}:8089"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - orionticket-prod
     healthcheck:
@@ -242,59 +295,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-
-  gateway-service:
-    build:
-      context: ./gateway-service
-      dockerfile: Dockerfile
-    image: orionticket/gateway-service:${IMAGE_TAG:-latest}
-    container_name: gateway-service
-    env_file:
-      - .env.prod
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SERVER_PORT: 8080
-      IDENTITY_SERVICE_URL: http://identity-service:8081
-      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
-      SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
-      ORDERS_SERVICE_URL: http://orders-service:8084
-      PAYMENTS_SERVICE_URL: http://payments-service:8085
-      TICKET_ISSUANCE_SERVICE_URL: http://ticket-issuance-service:8086
-      ACCESS_CONTROL_SERVICE_URL: http://access-control-service:8087
-      NOTIFICATIONS_SERVICE_URL: http://notifications-service:8088
-      REPORTING_SERVICE_URL: http://reporting-service:8089
-    ports:
-      - "${GATEWAY_SERVICE_PORT:-8080}:8080"
-    restart: unless-stopped
-    depends_on:
-      identity-service:
-        condition: service_healthy
-      event-management-service:
-        condition: service_healthy
-      seating-inventory-service:
-        condition: service_healthy
-      orders-service:
-        condition: service_healthy
-      payments-service:
-        condition: service_healthy
-      ticket-issuance-service:
-        condition: service_healthy
-      access-control-service:
-        condition: service_healthy
-      notifications-service:
-        condition: service_healthy
-      reporting-service:
-        condition: service_healthy
-    networks:
-      - orionticket-prod
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 90s
-
-# ── Networks ──────────────────────────────────────────────────────────────
 
 networks:
   orionticket-prod:
