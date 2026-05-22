@@ -18,6 +18,7 @@ spring:
             max-lifetime: 1800000
             keepalive-time: 60000
             validation-timeout: 3000
+            connection-init-sql: SET search_path TO ${DB_SCHEMA:notifications}
             pool-name: orion-db-pool
             data-source-properties:
                 stringtype: unspecified
@@ -39,6 +40,7 @@ spring:
         create-schemas: true
         baseline-on-migrate: true
         validate-on-migrate: false
+        init-sqls: SET search_path TO ${DB_SCHEMA:notifications}
         locations: classpath:db/migration
     mail:
         host: ${MAIL_HOST:localhost}

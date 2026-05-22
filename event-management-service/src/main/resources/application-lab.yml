@@ -18,6 +18,7 @@ spring:
             max-lifetime: 1800000
             keepalive-time: 60000
             validation-timeout: 3000
+            connection-init-sql: SET search_path TO ${DB_SCHEMA:event_management}
             pool-name: orion-db-pool
             data-source-properties:
                 stringtype: unspecified
@@ -38,6 +39,7 @@ spring:
         default-schema: ${DB_SCHEMA:event_management}
         create-schemas: true
         baseline-on-migrate: true
+        init-sqls: SET search_path TO ${DB_SCHEMA:event_management}
         locations: classpath:db/migration
 
     rabbitmq:
