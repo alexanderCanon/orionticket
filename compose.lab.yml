@@ -25,6 +25,7 @@ services:
             OTEL_SERVICE_NAME: "event-management-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
@@ -59,6 +60,7 @@ services:
             OTEL_SERVICE_NAME: "seating-inventory-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
@@ -95,6 +97,7 @@ services:
             OTEL_SERVICE_NAME: "orders-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
@@ -136,6 +139,7 @@ services:
             OTEL_SERVICE_NAME: "payments-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
@@ -175,6 +179,7 @@ services:
             OTEL_SERVICE_NAME: "ticket-issuance-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
@@ -209,6 +214,7 @@ services:
             OTEL_SERVICE_NAME: "notifications-service"
             OTEL_TRACES_EXPORTER: "otlp"
             OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
             OTEL_METRICS_EXPORTER: "none"
             OTEL_LOGS_EXPORTER: "none"
         ports:
