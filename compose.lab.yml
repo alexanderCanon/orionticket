@@ -15,9 +15,18 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8082
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: event_management
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "event-management-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
         healthcheck:
@@ -40,9 +49,18 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8083
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: seating_inventory
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "seating-inventory-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
         healthcheck:
@@ -65,11 +83,20 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8084
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: orders
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
             EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
             SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "orders-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${ORDERS_SERVICE_PORT:-8084}:8084"
         depends_on:
@@ -97,11 +124,20 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8085
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: payments
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
             ORDERS_SERVICE_URL: http://orders-service:8084
             EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "payments-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${PAYMENTS_SERVICE_PORT:-8085}:8085"
         depends_on:
@@ -129,9 +165,18 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8086
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: ticket_issuance
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "ticket-issuance-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
         healthcheck:
@@ -154,9 +199,18 @@ services:
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8088
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+            DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
             DB_PORT: 5000
+            DB_SCHEMA: notifications
             RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
+            IDENTITY_JWKS_URI: ${IDENTITY_JWKS_URI:?IDENTITY_JWKS_URI is required}
+            JWT_ISSUER: ${JWT_ISSUER:?JWT_ISSUER is required}
+            JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+            OTEL_SERVICE_NAME: "notifications-service"
+            OTEL_TRACES_EXPORTER: "otlp"
+            OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
+            OTEL_METRICS_EXPORTER: "none"
+            OTEL_LOGS_EXPORTER: "none"
         ports:
             - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
         healthcheck:

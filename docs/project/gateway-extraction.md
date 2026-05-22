@@ -85,7 +85,7 @@ Requisitos previos:
 
 - `.env.local` debe existir o se debe usar `ORION_ENV_FILE` apuntando a otro
   archivo valido.
-- `IP_NUBE` debe estar definido para que Compose pueda interpolar
+- `GLOBAL_DB_HOST` debe estar definido para que Compose pueda interpolar
   `compose.local.yml`, aunque RabbitMQ no use la base de datos.
 - `RABBITMQ_USER` y `RABBITMQ_PASSWORD` deben mantenerse en `guest`/`guest`
   mientras el contenedor no defina credenciales propias con

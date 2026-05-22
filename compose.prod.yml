@@ -1,7 +1,7 @@
 # Production backend stack.
 #
 # Levanta los 9 microservicios de negocio y RabbitMQ. No levanta PostgreSQL:
-# todos los servicios conectan a la DB externa por HAProxy en ${IP_NUBE}:5000.
+# todos los servicios conectan a la DB externa por HAProxy en ${GLOBAL_DB_HOST}:5000.
 # El API Gateway vive en otro repo/VPS.
 
 services:
@@ -31,7 +31,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8081
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:
@@ -64,7 +64,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8082
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:
@@ -97,7 +97,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8083
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:
@@ -130,7 +130,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8084
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
       EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
@@ -169,7 +169,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8085
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
       ORDERS_SERVICE_URL: http://orders-service:8084
@@ -208,7 +208,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8086
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:
@@ -241,7 +241,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8087
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
       TICKET_ISSUANCE_URL: http://ticket-issuance-service:8086
@@ -277,7 +277,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8088
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:
@@ -310,7 +310,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8089
-      DB_HOST: ${IP_NUBE:?IP_NUBE is required}
+      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
       DB_PORT: 5000
       RABBITMQ_HOST: rabbitmq
     ports:

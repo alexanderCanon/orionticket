@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Configuración de logging estructurado en JSON para el Event Management Service.
-  Cumple DoD §2: "Structured JSON log emitted on entry and exit (correlation ID
-  propagated via X-Correlation-Id header)."
-
-  En producción (profile != local) se usa el appender JSON.
-  En local se usa el appender de consola legible.
+  Configuración de logging estructurado en JSON para el Seating Inventory Service.
+  Cumple DoD §2: "Structured JSON log emitted on entry and exit."
 -->
 <configuration>
 
@@ -26,7 +22,7 @@
         <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <includeMdcKeyName>correlationId</includeMdcKeyName>
-                <customFields>{"service":"event-management-service","version":"0.0.1"}</customFields>
+                <customFields>{"service":"seating-inventory-service","version":"0.0.1"}</customFields>
             </encoder>
         </appender>
         <root level="INFO">

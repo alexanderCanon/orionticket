@@ -20,6 +20,9 @@ RUN --mount=type=cache,target=/root/.m2/repository \
     ./mvnw package -DskipTests -B \
     && mv target/*.jar target/app.jar
 
+# Download OpenTelemetry Java Agent
+RUN wget -O target/opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
 # ══════════════════════════════════════════════════════════════════
 # Stage 2: RUN — Lightweight runtime image (JRE only)
 # ══════════════════════════════════════════════════════════════════
@@ -32,8 +35,9 @@ RUN apk add --no-cache curl
 RUN addgroup -S orion && adduser -S orion -G orion -u 1001
 WORKDIR /app
 
-# Copy the fat JAR from the builder stage with proper ownership
+# Copy the fat JAR and OTel agent from the builder stage with proper ownership
 COPY --from=builder --chown=orion:orion /build/target/app.jar app.jar
+COPY --from=builder --chown=orion:orion /build/target/opentelemetry-javaagent.jar opentelemetry-javaagent.jar
 
 # Switch to non-root user
 USER orion
