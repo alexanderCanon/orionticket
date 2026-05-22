@@ -1,66 +1,28 @@
-# Services lab stack for the external API Gateway.
-#
-# Just 7 microservices and RabbitMQ.
-# External DB by HAProxy en ${IP_NUBE}:5000.
+x-service-healthcheck: &service-healthcheck
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 60s
 
 services:
-    rabbitmq:
-        image: rabbitmq:3.13-management-alpine
-        container_name: orion-rabbitmq-services-lab
-        ports:
-            - "${RABBITMQ_AMQP_PORT:-5672}:5672"
-            - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
-        healthcheck:
-            test: ["CMD", "rabbitmq-diagnostics", "check_running"]
-            interval: 10s
-            timeout: 5s
-            retries: 5
-        networks:
-            - orionticket-services-lab
-
-    identity-service:
-        build:
-            context: ./identity-service
-            dockerfile: Dockerfile
-        container_name: identity-service-lab
-        env_file:
-            - ${ORION_ENV_FILE:-.env.local}
-        environment:
-            SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
-            SERVER_PORT: 8081
-            DB_HOST: ${IP_NUBE:?IP_NUBE is required}
-            DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
-        ports:
-            - "${IDENTITY_SERVICE_PORT:-8081}:8081"
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
-        networks:
-            - orionticket-services-lab
-        deploy:
-            resources:
-                limits:
-                    memory: ${SERVICE_MEM_LIMIT:-512m}
-
     event-management-service:
         build:
             context: ./event-management-service
             dockerfile: Dockerfile
         container_name: event-management-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8082
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
         ports:
             - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -74,18 +36,18 @@ services:
             dockerfile: Dockerfile
         container_name: seating-inventory-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8083
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
         ports:
             - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -99,24 +61,25 @@ services:
             dockerfile: Dockerfile
         container_name: orders-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8084
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
             EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
             SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
         ports:
             - "${ORDERS_SERVICE_PORT:-8084}:8084"
         depends_on:
-            rabbitmq:
-                condition: service_healthy
             event-management-service:
-                condition: service_started
+                condition: service_healthy
             seating-inventory-service:
-                condition: service_started
+                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8084/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -130,24 +93,25 @@ services:
             dockerfile: Dockerfile
         container_name: payments-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8085
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
             ORDERS_SERVICE_URL: http://orders-service:8084
             EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
         ports:
             - "${PAYMENTS_SERVICE_PORT:-8085}:8085"
         depends_on:
-            rabbitmq:
-                condition: service_healthy
             orders-service:
-                condition: service_started
+                condition: service_healthy
             event-management-service:
-                condition: service_started
+                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8085/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -161,18 +125,18 @@ services:
             dockerfile: Dockerfile
         container_name: ticket-issuance-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8086
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
         ports:
             - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8086/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -186,18 +150,18 @@ services:
             dockerfile: Dockerfile
         container_name: notifications-service-lab
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         environment:
             SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-lab}
             SERVER_PORT: 8088
             DB_HOST: ${IP_NUBE:?IP_NUBE is required}
             DB_PORT: 5000
-            RABBITMQ_HOST: rabbitmq
+            RABBITMQ_HOST: ${RABBITMQ_HOST:?RABBITMQ_HOST is required}
         ports:
             - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
+        healthcheck:
+            <<: *service-healthcheck
+            test: ["CMD-SHELL", "curl -f http://localhost:8088/actuator/health || exit 1"]
         networks:
             - orionticket-services-lab
         deploy:
@@ -216,21 +180,26 @@ services:
             - --config.file=/etc/alloy/config.alloy
             - --storage.path=/var/lib/alloy/data
         env_file:
-            - ${ORION_ENV_FILE:-.env.local}
+            - ${ORION_ENV_FILE:-.env}
         ports:
             - "12345:12345" # Alloy dashboard UI
-            - "4317:4317"   # OTLP gRPC
-            - "4318:4318"   # OTLP HTTP
+            - "4317:4317" # OTLP gRPC
+            - "4318:4318" # OTLP HTTP
         networks:
             - orionticket-services-lab
         depends_on:
-            - identity-service
-            - event-management-service
-            - seating-inventory-service
-            - orders-service
-            - payments-service
-            - ticket-issuance-service
-            - notifications-service
+            event-management-service:
+                condition: service_started
+            seating-inventory-service:
+                condition: service_started
+            orders-service:
+                condition: service_started
+            payments-service:
+                condition: service_started
+            ticket-issuance-service:
+                condition: service_started
+            notifications-service:
+                condition: service_started
 
 networks:
     orionticket-services-lab:
