@@ -1,3 +1,5 @@
+SET search_path TO orders;
+
 -- V4: Tabla de Snapshots de Reservas (Reservation Snapshots)
 -- Copia local de reservas recibidas desde seating-inventory via evento ReservationCreated.
 -- Patrón de snapshot: permite crear órdenes sin llamadas síncronas a otro servicio.

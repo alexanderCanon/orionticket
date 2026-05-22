@@ -1,3 +1,5 @@
+SET search_path TO seating_inventory;
+
 -- V1: Tabla de Tandas (Batches)
 -- Un Batch es un grupo de asientos a un precio específico con cupo limitado.
 -- Ejemplo: "Preventa - Zona A" con capacidad 500 a Q250 desde el 1 de mayo.

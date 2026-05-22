@@ -1,3 +1,5 @@
+SET search_path TO payments;
+
 -- V1__init_payments_schema.sql
 -- Payments Service Schema
 

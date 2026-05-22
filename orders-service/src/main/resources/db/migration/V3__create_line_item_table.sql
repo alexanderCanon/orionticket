@@ -1,3 +1,5 @@
+SET search_path TO orders;
+
 -- V3: Tabla de Ítems de Línea (Line Items)
 -- Un line item representa un asiento dentro de la orden, con el precio de su tanda.
 -- Por diseño: una reserva = un asiento = un line item con quantity=1.

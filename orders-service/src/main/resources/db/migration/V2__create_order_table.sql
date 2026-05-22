@@ -1,3 +1,5 @@
+SET search_path TO orders;
+
 -- V2: Tabla de Órdenes (Orders)
 -- Una orden es el resultado del checkout. Vinculada a una reserva de seating-inventory.
 -- UNIQUE en reservation_id: idempotencia garantizada a nivel de DB (ADR-008).

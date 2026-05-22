@@ -1,3 +1,5 @@
+SET search_path TO payments;
+
 -- V2__add_projection_tables.sql
 -- Local read-model projections consumed from domain events.
 -- These tables allow Payments to work without synchronous calls to other services.

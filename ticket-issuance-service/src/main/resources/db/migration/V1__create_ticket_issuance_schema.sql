@@ -1,3 +1,5 @@
+SET search_path TO ticket_issuance;
+
 CREATE TABLE tickets (
     ticket_id UUID PRIMARY KEY,
     order_id UUID NOT NULL,

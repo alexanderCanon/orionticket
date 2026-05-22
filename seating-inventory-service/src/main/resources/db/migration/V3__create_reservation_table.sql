@@ -1,3 +1,5 @@
+SET search_path TO seating_inventory;
+
 -- V3: Tabla de Reservas (Reservations)
 -- Una Reservation es el "hold" temporal de un asiento por 10 minutos.
 -- Si el comprador paga → el asiento pasa a SOLD y la reserva queda vinculada.

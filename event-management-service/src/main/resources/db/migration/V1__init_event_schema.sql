@@ -1,3 +1,5 @@
+SET search_path TO event_management;
+
 CREATE TABLE events (
     event_id UUID PRIMARY KEY,
     organizer_id UUID NOT NULL,

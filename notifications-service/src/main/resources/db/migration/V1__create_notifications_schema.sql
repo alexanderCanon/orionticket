@@ -1,3 +1,5 @@
+SET search_path TO notifications;
+
 CREATE TABLE notifications (
     notification_id UUID PRIMARY KEY,
     recipient_id UUID NOT NULL,

@@ -1,3 +1,5 @@
+SET search_path TO orders;
+
 -- V1: Tabla de Promociones (Promotions)
 -- Collapse de Pricing en Orders según ADR-011. Gestionado completamente por este servicio.
 

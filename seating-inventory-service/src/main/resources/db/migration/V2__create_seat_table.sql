@@ -1,3 +1,5 @@
+SET search_path TO seating_inventory;
+
 -- V2: Tabla de Asientos (Seats)
 -- Un Seat representa un lugar físico (o virtual para GA) en el evento.
 -- Puede ser MAPPED (asiento numerado con zona/fila) o GENERAL_ADMISSION (sin asignación).
