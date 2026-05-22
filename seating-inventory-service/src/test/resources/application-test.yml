@@ -1,0 +1,17 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9999/.well-known/jwks.json
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: true
+  jpa:
+    properties:
+      hibernate:
+        default_schema: seating_inventory
+  flyway:
+    default-schema: seating_inventory
+    schemas: seating_inventory

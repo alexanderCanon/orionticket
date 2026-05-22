@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: notifications-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${IDENTITY_JWKS_URI:http://identity-service:8081/.well-known/jwks.json}
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb
     username: ${GLOBAL_DB_USER:app_user}
@@ -55,3 +60,6 @@ notifications:
     api-key: ${RESEND_API_KEY:re_placeholder}
     from-email: ${RESEND_FROM_EMAIL:tickets@orionticket.local}
     from-name: ${RESEND_FROM_NAME:OrionTicket}
+
+jwt:
+  issuer: ${JWT_ISSUER:orionticket-identity}

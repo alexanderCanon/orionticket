@@ -10,6 +10,7 @@ import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.BuyerT
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.IssueTicketRequest;
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.TicketResponse;
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.mapper.TicketRestMapper;
+import com.orionticket.ticketissuance.infrastructure.security.AuthenticatedUserResolver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,19 +44,22 @@ public class TicketController {
     private final CancelTicketUseCase cancelTicketUseCase;
     private final InvalidateTicketUseCase invalidateTicketUseCase;
     private final TicketRestMapper ticketRestMapper;
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     public TicketController(
             TicketQueryUseCase ticketQueryUseCase,
             IssueTicketUseCase issueTicketUseCase,
             CancelTicketUseCase cancelTicketUseCase,
             InvalidateTicketUseCase invalidateTicketUseCase,
-            TicketRestMapper ticketRestMapper
+            TicketRestMapper ticketRestMapper,
+            AuthenticatedUserResolver authenticatedUserResolver
     ) {
         this.ticketQueryUseCase = ticketQueryUseCase;
         this.issueTicketUseCase = issueTicketUseCase;
         this.cancelTicketUseCase = cancelTicketUseCase;
         this.invalidateTicketUseCase = invalidateTicketUseCase;
         this.ticketRestMapper = ticketRestMapper;
+        this.authenticatedUserResolver = authenticatedUserResolver;
     }
 
     @Operation(summary = "Issue ticket", description = "Issues a ticket after payment authorization.")
@@ -65,6 +70,7 @@ public class TicketController {
     })
     @PostMapping("/tickets")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public TicketResponse issueTicket(@Valid @RequestBody IssueTicketRequest request) {
         return ticketRestMapper.toResponse(
                 issueTicketUseCase.issueTicket(ticketRestMapper.toCommand(request))
@@ -78,6 +84,7 @@ public class TicketController {
             @ApiResponse(responseCode = "409", description = "Ticket cannot be canceled from its current state")
     })
     @PutMapping("/tickets/{ticketId}/cancel")
+    @PreAuthorize("hasRole('ORGANIZER') or hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     public TicketResponse cancelTicket(@PathVariable UUID ticketId) {
         return ticketRestMapper.toResponse(
                 cancelTicketUseCase.cancelTicket(new CancelTicketCommand(ticketId))
@@ -91,6 +98,7 @@ public class TicketController {
             @ApiResponse(responseCode = "409", description = "Ticket cannot be invalidated from its current state")
     })
     @PutMapping("/tickets/{ticketId}/invalidate")
+    @PreAuthorize("hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     public TicketResponse invalidateTicket(@PathVariable UUID ticketId) {
         return ticketRestMapper.toResponse(
                 invalidateTicketUseCase.invalidateTicket(new InvalidateTicketCommand(ticketId))
@@ -103,8 +111,11 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "Ticket not found")
     })
     @GetMapping("/tickets/{ticketId}")
+    @PreAuthorize("hasRole('BUYER') or hasRole('SUPPORT') or hasRole('DOOR_VALIDATOR') or hasRole('VENUE_STAFF') or hasRole('SUPER_ADMIN')")
     public TicketResponse getTicket(@PathVariable UUID ticketId) {
-        return ticketRestMapper.toResponse(ticketQueryUseCase.getTicket(ticketId));
+        var ticket = ticketQueryUseCase.getTicket(ticketId);
+        authenticatedUserResolver.requireTicketReadAccess(ticket.buyerId());
+        return ticketRestMapper.toResponse(ticket);
     }
 
     @Operation(summary = "List buyer tickets", description = "Returns paginated tickets owned by a buyer.")
@@ -113,11 +124,13 @@ public class TicketController {
             @ApiResponse(responseCode = "400", description = "Invalid pagination parameters")
     })
     @GetMapping("/buyers/{buyerId}/tickets")
+    @PreAuthorize("hasRole('BUYER') or hasRole('SUPPORT') or hasRole('SUPER_ADMIN')")
     public BuyerTicketsResponse listBuyerTickets(
             @PathVariable UUID buyerId,
             @RequestParam(defaultValue = "0") @Min(0) int page,
             @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size
     ) {
+        authenticatedUserResolver.requireBuyerSelfOrPrivileged(buyerId);
         return new BuyerTicketsResponse(
                 ticketQueryUseCase.listBuyerTickets(buyerId, page, size).stream()
                         .map(ticketRestMapper::toResponse)

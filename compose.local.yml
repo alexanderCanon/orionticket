@@ -205,6 +205,33 @@ services:
                 limits:
                     memory: ${SERVICE_MEM_LIMIT:-512m}
 
+    grafana-alloy:
+        image: grafana/alloy:latest
+        container_name: grafana-alloy-lab
+        volumes:
+            - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+        entrypoint:
+            - /bin/alloy
+            - run
+            - --config.file=/etc/alloy/config.alloy
+            - --storage.path=/var/lib/alloy/data
+        env_file:
+            - ${ORION_ENV_FILE:-.env.local}
+        ports:
+            - "12345:12345" # Alloy dashboard UI
+            - "4317:4317"   # OTLP gRPC
+            - "4318:4318"   # OTLP HTTP
+        networks:
+            - orionticket-services-lab
+        depends_on:
+            - identity-service
+            - event-management-service
+            - seating-inventory-service
+            - orders-service
+            - payments-service
+            - ticket-issuance-service
+            - notifications-service
+
 networks:
     orionticket-services-lab:
         name: orionticket-services-lab

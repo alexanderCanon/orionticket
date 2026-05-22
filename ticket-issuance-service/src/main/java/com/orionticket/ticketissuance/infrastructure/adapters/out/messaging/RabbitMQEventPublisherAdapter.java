@@ -3,6 +3,7 @@ package com.orionticket.ticketissuance.infrastructure.adapters.out.messaging;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.ticketissuance.application.port.out.TicketEventPublisherPort;
 import com.orionticket.ticketissuance.domain.model.Ticket;
+import com.orionticket.ticketissuance.infrastructure.config.RabbitMqConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -43,7 +44,11 @@ public class RabbitMQEventPublisherAdapter implements TicketEventPublisherPort {
             String message = objectMapper.writeValueAsString(event);
             
             log.info("Publishing TicketIssued event to RabbitMQ for ticket: {}", ticket.ticketId());
-            rabbitTemplate.convertAndSend("notification-events", message);
+            rabbitTemplate.convertAndSend(
+                    RabbitMqConfig.NOTIFICATION_EVENTS_EXCHANGE,
+                    RabbitMqConfig.TICKET_ISSUED_ROUTING_KEY,
+                    message
+            );
             
         } catch (Exception e) {
             log.error("Error publishing TicketIssued event for ticket: {}", ticket.ticketId(), e);

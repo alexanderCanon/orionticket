@@ -29,6 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -148,7 +149,8 @@ public class PaymentsIntegrationTest {
         mockMvc.perform(post("/v1/payments")
                 .with(jwt().jwt(jwt -> jwt
                         .subject(buyerId.toString())
-                        .claim("role", "BUYER")))
+                        .claim("role", "BUYER"))
+                        .authorities(new SimpleGrantedAuthority("ROLE_BUYER")))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(Map.of(
                         "orderId", orderId,

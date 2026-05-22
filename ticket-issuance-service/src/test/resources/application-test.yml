@@ -1,0 +1,28 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9999/.well-known/jwks.json
+
+  datasource:
+    hikari:
+      connection-init-sql: SET search_path TO ticket_issuance
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: ticket_issuance
+
+  flyway:
+    enabled: true
+    schemas: ticket_issuance
+    create-schemas: true
+    baseline-on-migrate: true
+
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: true

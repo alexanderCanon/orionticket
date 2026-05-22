@@ -19,6 +19,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 import java.util.Objects;
 
 @Configuration
@@ -37,7 +39,7 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/v1/events/**/seats").permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/v1/events/**/seats")).permitAll()
                 .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/v1/internal/**").permitAll()

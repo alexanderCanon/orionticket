@@ -1,10 +1,14 @@
 package com.orionticket.notifications.exception;
 
+import com.orionticket.notifications.domain.exception.NotificationNotFoundException;
+import com.orionticket.notifications.domain.exception.NotificationRetryNotAllowedException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +34,27 @@ public class GlobalExceptionHandler {
         problemDetail.setProperty("errors", ex.getBindingResult().getFieldErrors().stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .toList());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(NotificationNotFoundException.class)
+    public ProblemDetail handleNotificationNotFound(NotificationNotFoundException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setTitle("Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(NotificationRetryNotAllowedException.class)
+    public ProblemDetail handleNotificationRetryNotAllowed(NotificationRetryNotAllowedException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setTitle("Conflict");
+        return problemDetail;
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class, MethodArgumentTypeMismatchException.class})
+    public ProblemDetail handleUnprocessableInput(Exception ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        problemDetail.setTitle("Unprocessable Entity");
         return problemDetail;
     }
 }
