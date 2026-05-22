@@ -44,8 +44,8 @@ public class RabbitMqConfig {
     // ── Exchange principal ───────────────────────────────────────────────────
 
     @Bean
-    public DirectExchange eventsExchange() {
-        return new DirectExchange(EXCHANGE_NAME, true, false);
+    public TopicExchange eventsExchange() {
+        return new TopicExchange(EXCHANGE_NAME, true, false);
     }
 
     // ── Dead Letter Exchange + Queue ─────────────────────────────────────────

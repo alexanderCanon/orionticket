@@ -2,7 +2,9 @@ package com.orionticket.identity.infrastructure.adapters.in.rest;
 
 import com.orionticket.identity.application.port.in.LoginUserUseCase;
 import com.orionticket.identity.application.port.in.RegisterUserUseCase;
+import com.orionticket.identity.domain.model.Role;
 import com.orionticket.identity.domain.model.User;
+import com.orionticket.identity.domain.port.out.RoleRepositoryPort;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.RegisterRequest;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.RegisterResponse;
 import com.orionticket.identity.infrastructure.adapters.in.rest.dto.LoginRequest;
@@ -12,7 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +24,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/auth")
-@RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Buyer registration and login endpoints")
 public class AuthController {
 
     private final RegisterUserUseCase registerUserUseCase;
     private final LoginUserUseCase loginUserUseCase;
+    private final RoleRepositoryPort roleRepositoryPort;
+    private final long jwtExpirationSeconds;
+
+    public AuthController(
+            RegisterUserUseCase registerUserUseCase,
+            LoginUserUseCase loginUserUseCase,
+            RoleRepositoryPort roleRepositoryPort,
+            @Value("${jwt.expiration:${JWT_EXPIRATION:86400}}") long jwtExpirationSeconds) {
+        this.registerUserUseCase = registerUserUseCase;
+        this.loginUserUseCase = loginUserUseCase;
+        this.roleRepositoryPort = roleRepositoryPort;
+        this.jwtExpirationSeconds = jwtExpirationSeconds;
+    }
 
     @Operation(summary = "Register buyer", description = "Registers a buyer account in UNVERIFIED status.")
     @ApiResponses({
@@ -64,11 +78,16 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         String token = loginUserUseCase.login(request.getEmail(), request.getPassword());
         User user = loginUserUseCase.getUserByEmail(request.getEmail());
+        Role role = roleRepositoryPort.findById(user.getRoleId())
+                .orElseThrow(() -> new IllegalStateException("User role not found: " + user.getRoleId()));
 
         LoginResponse response = LoginResponse.builder()
                 .accessToken(token)
+                .tokenType("Bearer")
+                .expiresIn(jwtExpirationSeconds)
                 .userId(user.getUserId())
-                .roleId(user.getRoleId())
+                .role(role.getName())
+                .organizerId(user.getOrganizerId())
                 .build();
 
         return ResponseEntity.ok(response);

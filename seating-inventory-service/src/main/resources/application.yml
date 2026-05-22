@@ -2,10 +2,19 @@ spring:
   application:
     name: seating-inventory-service
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${IDENTITY_JWKS_URI:http://identity-service:8081/.well-known/jwks.json}
+
   datasource:
-    url: jdbc:postgresql://${SEATING_INVENTORY_DB_HOST:${DB_HOST:localhost}}:${SEATING_INVENTORY_DB_PORT:${DB_PORT:5432}}/${SEATING_INVENTORY_DB_NAME:seating_inventory_db}
-    username: ${SEATING_INVENTORY_DB_USER:${DB_USER:orion}}
-    password: ${SEATING_INVENTORY_DB_PASSWORD:${DB_PASSWORD:secret}}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/orionticketdb
+    username: ${GLOBAL_DB_USER:app_user}
+    password: ${GLOBAL_DB_PASSWORD:AppSecret789}
+    hikari:
+      minimum-idle: 10
+      connection-init-sql: SET search_path TO ${DB_SCHEMA:seating_inventory}
 
   jpa:
     hibernate:
@@ -17,6 +26,8 @@ spring:
 
   flyway:
     enabled: true
+    schemas: ${DB_SCHEMA:seating_inventory}
+    create-schemas: true
     baseline-on-migrate: true
 
   rabbitmq:
@@ -29,13 +40,13 @@ server:
   port: ${SERVER_PORT:8083}
 
 jwt:
-  secret: ${JWT_SECRET:defaultSecretKeyThatMustBeVeryLongAndSecureForHS256AlgorithmXYZ}
+  issuer: ${JWT_ISSUER:orionticket-identity}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus,metrics
   endpoint:
     health:
       show-details: always

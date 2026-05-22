@@ -5,6 +5,7 @@ import com.orionticket.payments.domain.exception.PayoutNotFoundException;
 import com.orionticket.payments.domain.model.Payout;
 import com.orionticket.payments.infrastructure.adapters.in.rest.GlobalExceptionHandler;
 import com.orionticket.payments.infrastructure.adapters.in.rest.mapper.PaymentDtoMapper;
+import com.orionticket.payments.infrastructure.security.AuthenticatedUserResolver;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,10 +35,14 @@ class PayoutsControllerTest {
     @MockBean
     private ManagePayoutsUseCase managePayouts;
 
+    @MockBean
+    private AuthenticatedUserResolver authenticatedUserResolver;
+
     @Test
     void listPayoutsMapsStatusFilterAndReturnsPage() throws Exception {
         UUID organizerId = UUID.randomUUID();
         Payout payout = payout(organizerId);
+        when(authenticatedUserResolver.resolvePayoutOrganizerScope(organizerId)).thenReturn(organizerId);
         when(managePayouts.listPayouts(organizerId, Payout.PayoutStatus.PENDING, 0, 20))
                 .thenReturn(List.of(payout));
 

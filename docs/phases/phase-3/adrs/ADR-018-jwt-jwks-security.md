@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | **Date** | 2026-05-15 |
-| **Status** | PROPOSED |
+| **Status** | ACCEPTED |
 
 ## Context
 
@@ -24,7 +24,9 @@ Identity is the issuer of access tokens. The API Gateway validates access tokens
 - Tokens include stable claims required by the platform:
   - `sub` as the authenticated user ID.
   - `email` when available.
-  - `role` or authorities compatible with the Actor-Role Map.
+  - `roleId` as the Identity-owned role ID.
+  - `role` compatible with the Actor-Role Map.
+  - `permissions` as explicit authorities for fine-grained authorization.
   - `organizerId` when the user belongs to an organizer context.
   - `iss`, `iat`, `exp`, and `kid`.
 - Spring Cloud Gateway validates incoming tokens through `IDENTITY_JWKS_URI`.
@@ -39,8 +41,38 @@ Identity is the issuer of access tokens. The API Gateway validates access tokens
 | `JWT_KEY_ID` | Identity | Key identifier exposed in JWT header and JWKS. |
 | `JWT_PRIVATE_KEY` | Identity | Private key used to sign tokens. |
 | `JWT_PUBLIC_KEY` | Identity | Public key exposed through JWKS. |
-| `JWT_EXPIRATION` | Identity | Access token lifetime. |
+| `JWT_EXPIRATION` | Identity | Access token lifetime in seconds. |
 | `IDENTITY_JWKS_URI` | Gateway, services | URI used to validate JWT signatures. |
+
+## Official Role Claim Values
+
+The JWT `role` claim uses these values from the Actor-Role Map:
+
+- `BUYER`
+- `ORGANIZER`
+- `DOOR_VALIDATOR`
+- `VENUE_STAFF`
+- `SUPPORT`
+- `FINANCE`
+- `MARKETING`
+- `PLATFORM_OPERATOR`
+- `SUPER_ADMIN`
+
+## Organizer Identity Scope
+
+For the MVP, `organizerId` in JWT claims means the Identity-owned User ID that
+represents the Organizer account. This matches the current Identity ER note that
+`organizerId` is the `userId` of an Organizer-role User.
+
+If the platform later introduces a separate Organization aggregate/entity, that
+must be documented in a new ADR and migrated explicitly. Until then:
+
+- An `ORGANIZER` token may omit `organizerId`; services must treat `sub` as the
+  effective `organizerId` for that role.
+- Staff users such as `VENUE_STAFF` and `DOOR_VALIDATOR` must carry the owning
+  Organizer's User ID in `organizerId`.
+- Internal platform roles such as `SUPER_ADMIN`, `SUPPORT`, `FINANCE`,
+  `MARKETING`, and `PLATFORM_OPERATOR` may have `organizerId = null`.
 
 ## Consequences
 

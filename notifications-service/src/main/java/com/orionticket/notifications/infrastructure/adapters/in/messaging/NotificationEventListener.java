@@ -19,10 +19,16 @@ public class NotificationEventListener {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationEventListener.class);
     private final RegisterNotificationUseCase registerNotificationUseCase;
+    private final com.orionticket.notifications.application.port.in.DispatchNotificationUseCase dispatchNotificationUseCase;
     private final ObjectMapper objectMapper; // For parsing event payload
 
-    public NotificationEventListener(RegisterNotificationUseCase registerNotificationUseCase, ObjectMapper objectMapper) {
+    public NotificationEventListener(
+            RegisterNotificationUseCase registerNotificationUseCase,
+            com.orionticket.notifications.application.port.in.DispatchNotificationUseCase dispatchNotificationUseCase,
+            ObjectMapper objectMapper
+    ) {
         this.registerNotificationUseCase = registerNotificationUseCase;
+        this.dispatchNotificationUseCase = dispatchNotificationUseCase;
         this.objectMapper = objectMapper;
     }
 
@@ -57,7 +63,16 @@ public class NotificationEventListener {
             );
 
             registerNotificationUseCase.register(newNotification);
-            log.info("Notification registered successfully for event: {}", triggeredBy);
+            log.info("Notification registered successfully for event: {}. Initiating dispatch.", triggeredBy);
+
+            try {
+                dispatchNotificationUseCase.dispatchNotification(
+                        new com.orionticket.notifications.application.port.in.command.DispatchNotificationCommand(notificationId)
+                );
+                log.info("Notification dispatch completed successfully for notification: {}", notificationId);
+            } catch (Exception dispatchEx) {
+                log.error("Failed to automatically dispatch notification: {}", notificationId, dispatchEx);
+            }
 
         } catch (Exception e) {
             log.error("Error processing notification event: {}", message, e);

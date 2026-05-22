@@ -1,42 +1,61 @@
-# ── Build stage ─────────────────────────────────────────────────────────────
+# syntax=docker/dockerfile:1
+# ══════════════════════════════════════════════════════════════════
+# Stage 1: BUILD — Compiles the application and produces a fat JAR
+# ══════════════════════════════════════════════════════════════════
 FROM eclipse-temurin:21-jdk-alpine AS builder
-
 WORKDIR /build
 
-# Copiar archivos de Maven para cache de dependencias
-COPY mvnw .
+# Copy Maven wrapper files FIRST to cache dependency download layers
+COPY mvnw mvnw.cmd ./
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Descargar dependencias (aprovecha el cache de Docker si pom.xml no cambia)
-RUN ./mvnw dependency:go-offline -q
+# Download dependencies offline utilizing cache mounts to speed up rebuilds
+RUN --mount=type=cache,target=/root/.m2/repository \
+    chmod +x mvnw && ./mvnw dependency:go-offline -B
 
-# Copiar el código fuente y compilar el JAR sin tests
+# Copy source code and build package
 COPY src src
-RUN ./mvnw package -DskipTests -q
+RUN --mount=type=cache,target=/root/.m2/repository \
+    ./mvnw package -DskipTests -B \
+    && mv target/*.jar target/app.jar
 
-# ── Runtime stage ────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════
+# Stage 2: RUN — Lightweight runtime image (JRE only)
+# ══════════════════════════════════════════════════════════════════
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
-# Usuario sin privilegios para mayor seguridad
-RUN addgroup -S orion && adduser -S orion -G orion
+# Install curl for health check
+RUN apk add --no-cache curl
 
+# Security: run as non-root user 'orion'
+RUN addgroup -S orion && adduser -S orion -G orion -u 1001
 WORKDIR /app
 
-# Copiar sólo el JAR generado
-COPY --from=builder /build/target/*.jar app.jar
+# Copy the fat JAR from the builder stage with proper ownership
+COPY --from=builder --chown=orion:orion /build/target/app.jar app.jar
 
-# Cambiar al usuario sin privilegios
+# Switch to non-root user
 USER orion
 
-# Puerto del servicio (coincide con server.port en application.yml)
+# Port exposure
 EXPOSE 8082
 
-# Health check para Docker Compose
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1
+# JVM Memory & Performance Optimization
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-XX:+UseContainerSupport \
+    -XX:MaxRAMPercentage=65.0 \
+    -XX:InitialRAMPercentage=40.0 \
+    -XX:MaxMetaspaceSize=160m \
+    -XX:+UseG1GC \
+    -XX:G1HeapRegionSize=4m \
+    -Xss256k \
+    -XX:+ExitOnOutOfMemoryError \
+    -Dserver.tomcat.threads.max=50"
 
-ENTRYPOINT ["java", \
-    "-Djava.security.egd=file:/dev/./urandom", \
-    "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:default}", \
-    "-jar", "app.jar"]
+# Healthcheck hitting Actuator endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8082/actuator/health || exit 1
+
+# Entrypoint using shell form to expand JAVA_OPTS
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar app.jar"]

@@ -15,11 +15,10 @@
     <artifactId>seating-inventory-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>seating-inventory-service</name>
-    <description>OrionTicket — Microservicio de Inventario y Asientos</description>
+    <description>OrionTicket â€” Microservicio de Inventario y Asientos</description>
 
     <properties>
         <java.version>21</java.version>
-        <jjwt.version>0.12.5</jjwt.version>
         <springdoc.version>2.5.0</springdoc.version>
         <lombok.version>1.18.34</lombok.version>
         <testcontainers.version>1.19.8</testcontainers.version>
@@ -38,13 +37,17 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- Spring Security: filtros JWT, CSRF deshabilitado, stateless sessions -->
+        <!-- Spring Security: Resource Server JWT, CSRF disabled, stateless sessions -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
 
-        <!-- RabbitMQ: publicar y consumir eventos de dominio asincrónicamente -->
+        <!-- RabbitMQ: publicar y consumir eventos de dominio asincrÃ³nicamente -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
@@ -81,8 +84,12 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+        </dependency>
 
-        <!-- Lombok: genera getters, setters, constructores, @Builder automáticamente -->
+        <!-- Lombok: genera getters, setters, constructores, @Builder automÃ¡ticamente -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -90,29 +97,20 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- JWT (JSON Web Token): validar tokens firmados emitidos por Identity Service -->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jjwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jjwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- ── Tests ── -->
+        <!-- â”€â”€ Tests â”€â”€ -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- Testcontainers: levanta una PostgreSQL y RabbitMQ real dentro del test -->
@@ -134,6 +132,13 @@
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
+    
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.12.5</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -143,7 +148,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <!-- Lombok solo es necesario en compilación, no en el JAR final -->
+                        <!-- Lombok solo es necesario en compilaciÃ³n, no en el JAR final -->
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -154,3 +159,4 @@
         </plugins>
     </build>
 </project>
+

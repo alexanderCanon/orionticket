@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class SeatingMapController {
             @ApiResponse(responseCode = "409", description = "Seating map cannot be changed in the current event state")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ORGANIZER') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<List<SeatResponse>> configureSeatingMap(
             @PathVariable UUID eventId,
             @PathVariable UUID dateId,

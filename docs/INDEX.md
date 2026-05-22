@@ -77,5 +77,7 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
 - **[Guía de Coordinación del Equipo](project/TEAM.md):** Ownership (Alan, Ivan, David, Alex), estrategia de Git y reglas de PR.
 - **[Guía de Implementación Técnica](project/implementation-guide.md):** Plan detallado de 45 días.
 - **[Observabilidad con Grafana Cloud](project/observability-grafana-cloud.md):** Base mínima para métricas Prometheus, logs, trazas, dashboards y alertas.
+- **[Extraccion del API Gateway y laboratorio local](project/gateway-extraction.md):** Compose de microservicios esenciales, RabbitMQ y conexion a PostgreSQL via HAProxy.
+- **[Plan de recuperacion de base limpia para laboratorio](project/lab-database-recovery-plan.md):** Pasos para reiniciar pruebas con schemas independientes y Flyway.
 - **[Reflexión de Cierre: De Velocidad a Evidencia](project/engineering-reality-check.md):** Cambio de fase para pasar de implementación acelerada a evaluación técnica.
 - **[MANUALES POR SERVICIO (Índice Técnico)](project/services/TECHNICAL_INDEX.md):** **Punto de partida para codear.** Documentación fragmentada por servicio y base compartida.

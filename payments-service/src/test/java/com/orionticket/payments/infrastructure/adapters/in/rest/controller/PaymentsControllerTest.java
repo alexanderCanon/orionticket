@@ -8,6 +8,7 @@ import com.orionticket.payments.domain.model.Payment;
 import com.orionticket.payments.domain.port.out.PaymentRepositoryPort;
 import com.orionticket.payments.infrastructure.adapters.in.rest.GlobalExceptionHandler;
 import com.orionticket.payments.infrastructure.adapters.in.rest.mapper.PaymentDtoMapper;
+import com.orionticket.payments.infrastructure.security.AuthenticatedUserResolver;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -50,11 +51,18 @@ class PaymentsControllerTest {
     @MockBean
     private PaymentRepositoryPort paymentRepository;
 
+    @MockBean
+    private StripeWebhookSignatureVerifier signatureVerifier;
+
+    @MockBean
+    private AuthenticatedUserResolver authenticatedUserResolver;
+
     @Test
     void postPaymentsReturnsCreatedPaymentResponse() throws Exception {
         UUID orderId = UUID.randomUUID();
         UUID buyerId = UUID.randomUUID();
         Payment payment = payment(orderId, buyerId);
+        when(authenticatedUserResolver.currentUserId()).thenReturn(buyerId);
         when(initiatePayment.initiate(eq(orderId), eq(buyerId), eq(Payment.PaymentMethod.CARD), eq("tok-card")))
                 .thenReturn(payment);
 

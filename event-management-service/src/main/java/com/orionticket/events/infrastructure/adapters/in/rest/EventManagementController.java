@@ -5,6 +5,7 @@ import com.orionticket.events.domain.model.Event;
 import com.orionticket.events.domain.model.EventDate;
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.AddEventDateRequest;
 import com.orionticket.events.infrastructure.adapters.in.rest.dto.CreateEventRequest;
+import com.orionticket.events.infrastructure.adapters.out.security.AuthenticatedUserResolver;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -24,11 +26,10 @@ import java.util.UUID;
 public class EventManagementController {
 
     private final EventManagementUseCase eventManagementUseCase;
-
-    // Extract from the JWT once the authentication context is wired.
-    private final UUID TEMPORARY_ORGANIZER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     @PostMapping
+    @PreAuthorize("hasRole('ORGANIZER')")
     @Operation(summary = "Create a new event", description = "Creates a new event in DRAFT status")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Event created"),
@@ -36,7 +37,7 @@ public class EventManagementController {
     })
     public ResponseEntity<Event> createEvent(@Valid @RequestBody CreateEventRequest request) {
         Event event = eventManagementUseCase.createEvent(
-                TEMPORARY_ORGANIZER_ID,
+                authenticatedUserResolver.requireOrganizerId(),
                 request.getName(),
                 request.getDescription(),
                 request.getCategory()
@@ -45,6 +46,7 @@ public class EventManagementController {
     }
 
     @PostMapping("/{eventId}/dates")
+    @PreAuthorize("hasRole('ORGANIZER')")
     @Operation(summary = "Add a date to an event", description = "Adds a date with venue and capacity to a DRAFT event")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Date added"),
@@ -58,7 +60,7 @@ public class EventManagementController {
             
         EventDate date = eventManagementUseCase.addDateToEvent(
                 eventId,
-                TEMPORARY_ORGANIZER_ID,
+                authenticatedUserResolver.requireOrganizerId(),
                 request.getScheduledAt(),
                 request.getVenueId(),
                 request.getCapacity()
@@ -67,6 +69,7 @@ public class EventManagementController {
     }
 
     @PostMapping("/{eventId}/submit")
+    @PreAuthorize("hasRole('ORGANIZER')")
     @Operation(summary = "Submit event for review", description = "Transitions an event from DRAFT to UNDER_REVIEW")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event submitted for review"),
@@ -74,11 +77,12 @@ public class EventManagementController {
             @ApiResponse(responseCode = "409", description = "Event cannot be submitted from its current state")
     })
     public ResponseEntity<Event> submitEventForReview(@PathVariable UUID eventId) {
-        Event event = eventManagementUseCase.submitEventForReview(eventId, TEMPORARY_ORGANIZER_ID);
+        Event event = eventManagementUseCase.submitEventForReview(eventId, authenticatedUserResolver.requireOrganizerId());
         return ResponseEntity.ok(event);
     }
 
     @PostMapping("/{eventId}/approve")
+    @PreAuthorize("hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "Approve event", description = "Transitions an event to RELEASED status. Only for Platform Operators.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event approved"),
@@ -86,13 +90,13 @@ public class EventManagementController {
             @ApiResponse(responseCode = "409", description = "Event cannot be approved from its current state")
     })
     public ResponseEntity<Event> approveEvent(@PathVariable UUID eventId) {
-        // Extract the operator ID from the JWT once role-based access is wired.
-        UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
+        UUID operatorId = authenticatedUserResolver.currentUser().userId();
         Event event = eventManagementUseCase.approveEvent(eventId, operatorId);
         return ResponseEntity.ok(event);
     }
 
     @PostMapping("/{eventId}/reject")
+    @PreAuthorize("hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     @Operation(summary = "Reject event", description = "Rejects an event and returns it to DRAFT status. Only for Platform Operators.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event rejected"),
@@ -103,13 +107,13 @@ public class EventManagementController {
     public ResponseEntity<Event> rejectEvent(
             @PathVariable UUID eventId,
             @Valid @RequestBody com.orionticket.events.infrastructure.adapters.in.rest.dto.RejectEventRequest request) {
-        // Extract the operator ID from the JWT once role-based access is wired.
-        UUID operatorId = UUID.fromString("00000000-0000-0000-0000-000000000009");
+        UUID operatorId = authenticatedUserResolver.currentUser().userId();
         Event event = eventManagementUseCase.rejectEvent(eventId, operatorId, request.getReason());
         return ResponseEntity.ok(event);
     }
 
     @PostMapping("/{eventId}/cancel")
+    @PreAuthorize("hasRole('ORGANIZER')")
     @Operation(summary = "Cancel event", description = "Transitions an event to CANCELED status. Requires a cancellation reason.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Event canceled"),
@@ -120,7 +124,7 @@ public class EventManagementController {
     public ResponseEntity<Event> cancelEvent(
             @PathVariable UUID eventId,
             @Valid @RequestBody com.orionticket.events.infrastructure.adapters.in.rest.dto.CancelEventRequest request) {
-        Event event = eventManagementUseCase.cancelEvent(eventId, TEMPORARY_ORGANIZER_ID, request.getReason());
+        Event event = eventManagementUseCase.cancelEvent(eventId, authenticatedUserResolver.requireOrganizerId(), request.getReason());
         return ResponseEntity.ok(event);
     }
 }

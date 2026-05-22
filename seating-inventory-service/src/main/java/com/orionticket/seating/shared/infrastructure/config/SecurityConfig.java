@@ -1,71 +1,67 @@
 package com.orionticket.seating.shared.infrastructure.config;
 
-import com.orionticket.seating.shared.infrastructure.filter.CorrelationIdFilter;
-import com.orionticket.seating.shared.infrastructure.filter.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
+import com.orionticket.seating.shared.infrastructure.security.JwtAuthoritiesConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimValidator;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.util.Objects;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CorrelationIdFilter correlationIdFilter;
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthoritiesConverter authoritiesConverter) throws Exception {
+        JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
+        authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+
         http
-            // CSRF deshabilitado: el servicio es stateless y usa JWT en el header Authorization,
-            // no cookies de sesión. El ataque CSRF explota que los navegadores envían cookies
-            // automáticamente; con JWT en Authorization eso no aplica.
             .csrf(AbstractHttpConfigurer::disable)
-
-            // STATELESS: Spring Security NO crea HttpSession. Cada request porta su propio JWT.
-            // POR QUÉ: en microservicios el servidor no guarda estado de sesión.
-            // Escala horizontalmente sin necesidad de sesión compartida (Redis, etc.).
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
             .authorizeHttpRequests(auth -> auth
-                // GET /v1/events/**/seats es público: un comprador anónimo puede ver
-                // el mapa de disponibilidad antes de crear una cuenta o loguearse.
-                .requestMatchers("/v1/events/**/seats").permitAll()
-
-                // /actuator/health: Docker y Kubernetes hacen healthchecks sin token.
-                // /actuator/info: monitoreo básico. Sin este permiso el contenedor
-                // siempre aparece como "unhealthy" aunque esté funcionando.
-                .requestMatchers("/actuator/**").permitAll()
-
-                // Swagger UI y OpenAPI spec: herramienta de desarrollo y documentación.
-                // Debe ser accesible sin token para que el equipo pueda explorar la API.
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/v1/events/**/seats")).permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-
-                // Endpoints internos de seed: solo para poblar datos en entornos locales.
-                // En producción, este path debería estar bloqueado por el API Gateway.
                 .requestMatchers("/v1/internal/**").permitAll()
-
-                // Cualquier otro endpoint requiere JWT válido:
-                // POST /v1/reservations, POST /batches, DELETE /reservations/{id}, etc.
                 .anyRequest().authenticated()
             )
-
-            // CorrelationIdFilter va PRIMERO: extrae o genera el X-Correlation-ID
-            // antes de que cualquier otro filtro ejecute lógica de negocio.
-            // Así todos los logs del request comparten el mismo ID desde el inicio.
-            .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)
-
-            // JwtAuthenticationFilter: valida la firma del token y carga el userId
-            // en el SecurityContext. Debe ir antes del filtro estándar de Spring
-            // para que la autenticación esté lista cuando se evalúen las reglas de autorización.
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(authenticationConverter))
+            );
 
         return http.build();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(
+            @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkSetUri,
+            @Value("${jwt.issuer:${JWT_ISSUER:orionticket-identity}}") String issuer) {
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
+        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(
+                new JwtTimestampValidator(),
+                new JwtClaimValidator<>("iss", claim -> Objects.equals(claim, issuer))
+        );
+        decoder.setJwtValidator(validator);
+        return decoder;
     }
 }

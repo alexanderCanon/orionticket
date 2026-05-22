@@ -1,0 +1,59 @@
+// Configuration file for Grafana Alloy to scrape Spring Boot microservices
+// and export metrics/traces to Grafana Cloud.
+
+// Prometheus Remote Write endpoint configuration
+prometheus.remote_write "grafana_cloud_metrics" {
+  endpoint {
+    url = sys.env("GRAFANA_CLOUD_PROMETHEUS_REMOTE_WRITE_URL")
+    basic_auth {
+      username = sys.env("GRAFANA_CLOUD_PROMETHEUS_USERNAME")
+      password = sys.env("GRAFANA_CLOUD_API_KEY")
+    }
+  }
+}
+
+// Scrape Spring Boot microservices Actuator /prometheus endpoints
+prometheus.scrape "spring_boot_scrape" {
+  targets = [
+    {"__address__" = "identity-service:8081"},
+    {"__address__" = "event-management-service:8082"},
+    {"__address__" = "seating-inventory-service:8083"},
+    {"__address__" = "orders-service:8084"},
+    {"__address__" = "payments-service:8085"},
+    {"__address__" = "ticket-issuance-service:8086"},
+    {"__address__" = "notifications-service:8088"},
+  ]
+  metrics_path = "/actuator/prometheus"
+  scrape_interval = "15s"
+  forward_to = [prometheus.remote_write.grafana_cloud_metrics.receiver]
+}
+
+// OpenTelemetry receiver for services exporting traces via OTLP
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+  output {
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+// Batch traces before exporting to reduce API calls
+otelcol.processor.batch "default" {
+  output {
+    traces = [otelcol.exporter.otlp.grafana_cloud_traces.input]
+  }
+}
+
+// Export traces to Grafana Cloud Tempo (OTLP Gateway)
+otelcol.exporter.otlp "grafana_cloud_traces" {
+  client {
+    endpoint = sys.env("GRAFANA_CLOUD_TEMPO_OTLP_ENDPOINT")
+    headers = {
+      "Authorization" = sys.env("OTEL_EXPORTER_OTLP_HEADERS"),
+    }
+  }
+}

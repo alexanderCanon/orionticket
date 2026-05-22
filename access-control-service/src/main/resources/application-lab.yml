@@ -1,0 +1,90 @@
+spring:
+  application:
+    name: access-control-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5000}/${GLOBAL_DB_NAME}?prepareThreshold=0
+    username: ${GLOBAL_DB_USER}
+    password: ${GLOBAL_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+      keepalive-time: 60000
+      validation-timeout: 3000
+      pool-name: orion-db-pool
+      data-source-properties:
+        stringtype: unspecified
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        default_schema: ${DB_SCHEMA:access_control}
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    execute-in-transaction: true
+    schemas: ${DB_SCHEMA:access_control}
+    default-schema: ${DB_SCHEMA:access_control}
+    create-schemas: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:${RABBITMQ_USERNAME:guest}}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${IDENTITY_JWKS_URI:http://identity-service:8081/.well-known/jwks.json}
+
+server:
+  port: ${SERVER_PORT:${APP_PORT:8087}}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: ${API_DOCS_ENABLED:true}
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${API_DOCS_ENABLED:true}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+app:
+  ticket-issuance:
+    base-url: ${TICKET_ISSUANCE_URL:http://ticket-issuance-service:8086}
+    timeout-ms: ${TICKET_ISSUANCE_TIMEOUT:100}
+  validation:
+    offline-sync-max-records: ${OFFLINE_SYNC_MAX_RECORDS:1000}
+
+logging:
+  level:
+    root: INFO
+    com.orionticket: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

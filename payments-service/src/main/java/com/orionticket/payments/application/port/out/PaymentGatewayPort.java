@@ -35,7 +35,9 @@ public interface PaymentGatewayPort {
             String paymentMethod,
             String gatewayToken,
             BigDecimal amount,
-            String currency
+            String currency,
+            java.util.UUID paymentId,
+            java.util.UUID orderId
     ) {}
 
     /**

@@ -1,0 +1,274 @@
+# Local backend stack.
+#
+# Levanta los 7 microservicios necesarios para el flujo principal, PostgreSQL
+# local y RabbitMQ. No levanta API Gateway, Access Control ni Reporting.
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: orion-rabbitmq-local
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - orionticket-local
+
+  orionticket-db:
+    image: postgres:16-alpine
+    container_name: orionticket-db-local
+    environment:
+      POSTGRES_USER: ${GLOBAL_DB_USER:-app_user}
+      POSTGRES_PASSWORD: ${GLOBAL_DB_PASSWORD:-AppSecret789}
+      POSTGRES_DB: ${GLOBAL_DB_NAME:-orionticketdb}
+    ports:
+      - "${GLOBAL_DB_PORT:-5000}:5432"
+    volumes:
+      - orionticket_local_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${GLOBAL_DB_USER:-app_user} -d ${GLOBAL_DB_NAME:-orionticketdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - orionticket-local
+
+  identity-service:
+    build:
+      context: ./identity-service
+      dockerfile: Dockerfile
+    container_name: identity-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8081
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${IDENTITY_SERVICE_PORT:-8081}:8081"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  event-management-service:
+    build:
+      context: ./event-management-service
+      dockerfile: Dockerfile
+    container_name: event-management-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8082
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  seating-inventory-service:
+    build:
+      context: ./seating-inventory-service
+      dockerfile: Dockerfile
+    container_name: seating-inventory-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8083
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  orders-service:
+    build:
+      context: ./orders-service
+      dockerfile: Dockerfile
+    container_name: orders-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8084
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
+      SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
+    ports:
+      - "${ORDERS_SERVICE_PORT:-8084}:8084"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+      event-management-service:
+        condition: service_started
+      seating-inventory-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  payments-service:
+    build:
+      context: ./payments-service
+      dockerfile: Dockerfile
+    container_name: payments-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8085
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+      ORDERS_SERVICE_URL: http://orders-service:8084
+      EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
+    ports:
+      - "${PAYMENTS_SERVICE_PORT:-8085}:8085"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+      orders-service:
+        condition: service_started
+      event-management-service:
+        condition: service_started
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  ticket-issuance-service:
+    build:
+      context: ./ticket-issuance-service
+      dockerfile: Dockerfile
+    container_name: ticket-issuance-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8086
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  notifications-service:
+    build:
+      context: ./notifications-service
+      dockerfile: Dockerfile
+    container_name: notifications-service-local
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SERVER_PORT: 8088
+      DB_HOST: orionticket-db
+      DB_PORT: 5432
+      RABBITMQ_HOST: rabbitmq
+    ports:
+      - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      orionticket-db:
+        condition: service_healthy
+    networks:
+      - orionticket-local
+    deploy:
+      resources:
+        limits:
+          memory: ${SERVICE_MEM_LIMIT:-1536m}
+
+  grafana-alloy:
+    image: grafana/alloy:latest
+    container_name: grafana-alloy-local
+    volumes:
+      - ./alloy/config.alloy:/etc/alloy/config.alloy:ro
+    entrypoint:
+      - /bin/alloy
+      - run
+      - --config.file=/etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+    env_file:
+      - ${ORION_ENV_FILE:-.env}
+    ports:
+      - "12345:12345" # Alloy dashboard UI
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    networks:
+      - orionticket-local
+    depends_on:
+      - identity-service
+      - event-management-service
+      - seating-inventory-service
+      - orders-service
+      - payments-service
+      - ticket-issuance-service
+      - notifications-service
+
+volumes:
+  orionticket_local_db_data:
+
+networks:
+  orionticket-local:
+    name: orionticket-local
+    driver: bridge

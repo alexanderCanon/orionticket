@@ -6,6 +6,7 @@ import com.orionticket.orders.order.domain.exception.ReservationSnapshotNotFound
 import com.orionticket.orders.promotion.domain.exception.InvalidPromotionCodeException;
 import com.orionticket.orders.promotion.domain.exception.PromotionExhaustedException;
 import com.orionticket.orders.promotion.domain.exception.PromotionNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +43,11 @@ public class GlobalExceptionHandler {
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .findFirst().orElse("Validation error");
         return error(HttpStatus.BAD_REQUEST, msg);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return error(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

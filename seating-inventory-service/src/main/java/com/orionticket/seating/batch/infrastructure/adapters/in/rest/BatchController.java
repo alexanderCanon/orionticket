@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class BatchController {
             @ApiResponse(responseCode = "409", description = "Batch conflicts with existing inventory rules")
     })
     @PostMapping
+    @PreAuthorize("hasRole('ORGANIZER') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<BatchResponse> createBatch(
             @PathVariable UUID eventId,
             @PathVariable UUID dateId,
@@ -52,6 +54,7 @@ public class BatchController {
             @ApiResponse(responseCode = "200", description = "Batches returned")
     })
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<BatchResponse>> getBatches(
             @PathVariable UUID eventId,
             @PathVariable UUID dateId) {

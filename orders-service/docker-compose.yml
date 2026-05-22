@@ -26,6 +26,8 @@ services:
       DB_PASSWORD: secret
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
+      JWT_ISSUER: orionticket-identity
+      IDENTITY_JWKS_URI: http://identity-service:8081/.well-known/jwks.json
     depends_on:
       orders-db:
         condition: service_healthy
