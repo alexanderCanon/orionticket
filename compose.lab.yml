@@ -237,8 +237,8 @@ services:
         entrypoint:
             - /bin/alloy
             - run
-            - /etc/alloy/config.alloy
             - --storage.path=/var/lib/alloy/data
+            - /etc/alloy/config.alloy
         env_file:
             - ${ORION_ENV_FILE:-.env}
         ports:
