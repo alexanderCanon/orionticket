@@ -13,4 +13,6 @@ public interface SpringDataPaymentRepository extends JpaRepository<PaymentJpaEnt
     Optional<PaymentJpaEntity> findByIdempotencyKey(String idempotencyKey);
 
     Optional<PaymentJpaEntity> findByOrderId(UUID orderId);
+
+    Optional<PaymentJpaEntity> findByGatewayReference(String gatewayReference);
 }

@@ -51,7 +51,8 @@ services:
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
-      JWT_SECRET: defaultSecretKeyThatMustBeVeryLongAndSecureForHS256AlgorithmXYZ
+      JWT_ISSUER: orionticket-identity
+      IDENTITY_JWKS_URI: http://identity-service:8081/.well-known/jwks.json
     depends_on:
       seating-db:
         condition: service_healthy

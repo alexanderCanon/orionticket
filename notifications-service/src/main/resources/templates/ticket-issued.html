@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tu Ticket - OrionTicket</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            padding: 32px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .header p {
+            margin: 8px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 32px;
+            color: #1f2937;
+        }
+        .greeting {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .greeting strong {
+            color: #111827;
+        }
+        .ticket-card {
+            background-color: #f9fafb;
+            border: 1px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .event-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        .grid-row {
+            display: table-row;
+        }
+        .grid-cell {
+            display: table-cell;
+            width: 50%;
+            padding-bottom: 12px;
+            vertical-align: top;
+        }
+        .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6b7280;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-size: 14px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 12px 32px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1);
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            border-top: 1px solid #f3f4f6;
+        }
+        .footer p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Tu ticket está listo!</h1>
+            <p>OrionTicket - Tu acceso directo al espectáculo</p>
+        </div>
+        <div class="content">
+            <div class="greeting">
+                Hola <strong th:text="${recipientName != null ? recipientName : 'Cliente'}">Cliente</strong>,<br/>
+                ¡Gracias por tu compra! Tu entrada para el evento ya ha sido emitida con éxito. A continuación encontrarás los detalles de tu ticket:
+            </div>
+            
+            <div class="ticket-card">
+                <div class="event-title" th:text="${eventName != null ? eventName : 'Detalles del Evento'}">Nombre del Evento</div>
+                
+                <div class="grid">
+                    <div class="grid-row">
+                        <div class="grid-cell">
+                            <div class="label">Fecha y Hora</div>
+                            <div class="value" th:text="${eventDate != null ? eventDate : 'Ver detalles en portal'}">Fecha y Hora</div>
+                        </div>
+                        <div class="grid-cell">
+                            <div class="label">Lugar</div>
+                            <div class="value" th:text="${venueName != null ? venueName : 'Estadio Principal'}">Lugar</div>
+                        </div>
+                    </div>
+                    <div class="grid-row">
+                        <div class="grid-cell">
+                            <div class="label">Asiento / Sección</div>
+                            <div class="value" th:text="${seatCode != null ? seatCode : 'Entrada General'}">Sección</div>
+                        </div>
+                        <div class="grid-cell">
+                            <div class="label">ID de Orden</div>
+                            <div class="value" th:text="${orderId != null ? orderId : 'N/A'}">Orden</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container" th:if="${ticketUrl != null}">
+                <a th:href="${ticketUrl}" class="btn" target="_blank">Ver Mi Ticket en Línea</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Este correo electrónico fue generado automáticamente por <strong>OrionTicket</strong>.</p>
+            <p>Si tienes alguna consulta, por favor contáctanos a través del soporte oficial.</p>
+        </div>
+    </div>
+</body>
+</html>

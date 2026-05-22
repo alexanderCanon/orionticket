@@ -48,3 +48,10 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+notifications:
+  email:
+    enabled: ${NOTIFICATIONS_EMAIL_ENABLED:true}
+    api-key: ${RESEND_API_KEY:re_placeholder}
+    from-email: ${RESEND_FROM_EMAIL:tickets@orionticket.local}
+    from-name: ${RESEND_FROM_NAME:OrionTicket}

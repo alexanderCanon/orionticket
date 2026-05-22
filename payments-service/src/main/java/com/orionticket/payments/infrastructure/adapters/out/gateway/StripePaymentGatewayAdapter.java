@@ -37,8 +37,8 @@ public class StripePaymentGatewayAdapter implements PaymentGatewayPort {
 
     private final StripeClient stripeClient;
 
-    public StripePaymentGatewayAdapter(@Value("${stripe.api-key}") String apiKey) {
-        this.stripeClient = new StripeClient(apiKey);
+    public StripePaymentGatewayAdapter(StripeClient stripeClient) {
+        this.stripeClient = stripeClient;
     }
 
     /**
@@ -62,6 +62,8 @@ public class StripePaymentGatewayAdapter implements PaymentGatewayPort {
                 .setPaymentMethod(request.gatewayToken())
                 .setConfirm(true) // confirm immediately
                 .setReturnUrl("https://orionticket.com") // required for 3DS redirects
+                .putMetadata("paymentId", request.paymentId().toString())
+                .putMetadata("orderId", request.orderId().toString())
                 .build();
 
         try {

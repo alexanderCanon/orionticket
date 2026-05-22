@@ -19,7 +19,9 @@ public class NotificationPersistenceMapper {
                 NotificationStatus.valueOf(entity.getStatus()),
                 entity.getRetryCount(),
                 entity.getTriggeredBy(),
-                entity.getCreatedAt()
+                entity.getCreatedAt(),
+                entity.getProviderMessageId(),
+                entity.getFailureReason()
         );
     }
 
@@ -34,6 +36,8 @@ public class NotificationPersistenceMapper {
         entity.setRetryCount(notification.retryCount());
         entity.setTriggeredBy(notification.triggeredBy());
         entity.setCreatedAt(notification.createdAt());
+        entity.setProviderMessageId(notification.providerMessageId());
+        entity.setFailureReason(notification.failureReason());
         return entity;
     }
 }

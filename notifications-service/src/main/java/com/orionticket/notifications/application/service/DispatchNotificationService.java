@@ -30,11 +30,11 @@ public class DispatchNotificationService implements DispatchNotificationUseCase 
                 .orElseThrow(() -> new NotificationNotFoundException(command.notificationId()));
 
         // Attempt to send the notification
-        boolean sentSuccessfully = notificationSender.send(notificationToDispatch);
+        com.orionticket.notifications.domain.model.NotificationSendResult result = notificationSender.send(notificationToDispatch);
 
-        NotificationStatus newStatus = sentSuccessfully ? NotificationStatus.DELIVERED : NotificationStatus.FAILED;
+        NotificationStatus newStatus = result.success() ? NotificationStatus.DELIVERED : NotificationStatus.FAILED;
 
-        // Create a new Notification instance with updated status
+        // Create a new Notification instance with updated status, providerMessageId, and failureReason
         Notification dispatchedNotification = new Notification(
                 notificationToDispatch.notificationId(),
                 notificationToDispatch.recipientId(),
@@ -42,9 +42,11 @@ public class DispatchNotificationService implements DispatchNotificationUseCase 
                 notificationToDispatch.templateId(),
                 notificationToDispatch.payload(),
                 newStatus,
-                notificationToDispatch.retryCount(), // Retry count might be incremented on failure
+                notificationToDispatch.retryCount(),
                 notificationToDispatch.triggeredBy(),
-                notificationToDispatch.createdAt());
+                notificationToDispatch.createdAt(),
+                result.providerMessageId(),
+                result.failureReason());
 
         return notificationRepository.save(dispatchedNotification);
     }

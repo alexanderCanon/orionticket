@@ -7,6 +7,7 @@ import com.orionticket.seating.reservation.domain.exception.ReservationNotFoundE
 import com.orionticket.seating.seat.domain.exception.SeatNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -46,6 +47,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BatchExhaustedException.class)
     public ResponseEntity<Map<String, Object>> handleGone(RuntimeException ex) {
         return buildResponse(HttpStatus.GONE, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     // 422 UNPROCESSABLE ENTITY: el JSON llegó bien formado pero falló validación de campos

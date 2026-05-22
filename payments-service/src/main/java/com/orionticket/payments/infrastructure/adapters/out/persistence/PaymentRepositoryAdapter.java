@@ -39,4 +39,9 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     public Optional<Payment> findByOrderId(UUID orderId) {
         return repository.findByOrderId(orderId).map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Payment> findByGatewayReference(String gatewayReference) {
+        return repository.findByGatewayReference(gatewayReference).map(mapper::toDomain);
+    }
 }

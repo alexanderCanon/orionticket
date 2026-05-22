@@ -4,6 +4,7 @@ import com.orionticket.seating.reservation.application.port.in.ReservationUseCas
 import com.orionticket.seating.reservation.domain.model.Reservation;
 import com.orionticket.seating.reservation.infrastructure.adapters.in.rest.dto.CreateReservationRequest;
 import com.orionticket.seating.reservation.infrastructure.adapters.in.rest.dto.ReservationResponse;
+import com.orionticket.seating.shared.infrastructure.security.AuthenticatedUserResolver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class ReservationController {
 
     private final ReservationUseCase reservationUseCase;
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
     // POST /v1/reservations: el endpoint más crítico del servicio.
     // Delega al ReservationService que maneja el lock pesimista y la transacción atómica.
@@ -35,11 +38,12 @@ public class ReservationController {
             @ApiResponse(responseCode = "410", description = "Batch is exhausted")
     })
     @PostMapping
+    @PreAuthorize("hasRole('BUYER')")
     public ResponseEntity<ReservationResponse> createReservation(
             @Valid @RequestBody CreateReservationRequest request) {
 
         Reservation reservation = reservationUseCase.createReservation(
-                request.getSeatId(), request.getBuyerId(),
+                request.getSeatId(), authenticatedUserResolver.currentUserId(),
                 request.getEventId(), request.getDateId(), request.getBatchId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ReservationResponse.from(reservation));
@@ -54,6 +58,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "Reservation cannot be released from its current state")
     })
     @DeleteMapping("/{reservationId}")
+    @PreAuthorize("hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<ReservationResponse> releaseReservation(
             @PathVariable UUID reservationId) {
 

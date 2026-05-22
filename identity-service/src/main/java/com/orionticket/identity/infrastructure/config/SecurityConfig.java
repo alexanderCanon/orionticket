@@ -34,6 +34,8 @@ public class SecurityConfig {
 
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/v1/auth/**").permitAll() // Registro/Login siempre abierto
                 .requestMatchers("/.well-known/jwks.json").permitAll()

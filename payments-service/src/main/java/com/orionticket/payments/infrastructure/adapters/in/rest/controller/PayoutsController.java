@@ -5,11 +5,13 @@ import com.orionticket.payments.domain.model.Payout;
 import com.orionticket.payments.infrastructure.adapters.in.rest.dto.PayoutListResponse;
 import com.orionticket.payments.infrastructure.adapters.in.rest.dto.PayoutResponse;
 import com.orionticket.payments.infrastructure.adapters.in.rest.mapper.PaymentDtoMapper;
+import com.orionticket.payments.infrastructure.security.AuthenticatedUserResolver;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +28,15 @@ public class PayoutsController {
 
     private final ManagePayoutsUseCase managePayouts;
     private final PaymentDtoMapper mapper;
+    private final AuthenticatedUserResolver authenticatedUserResolver;
 
-    public PayoutsController(ManagePayoutsUseCase managePayouts, PaymentDtoMapper mapper) {
+    public PayoutsController(
+            ManagePayoutsUseCase managePayouts,
+            PaymentDtoMapper mapper,
+            AuthenticatedUserResolver authenticatedUserResolver) {
         this.managePayouts = managePayouts;
         this.mapper = mapper;
+        this.authenticatedUserResolver = authenticatedUserResolver;
     }
 
     /**
@@ -42,6 +49,7 @@ public class PayoutsController {
             @ApiResponse(responseCode = "400", description = "Invalid filter value")
     })
     @GetMapping
+    @PreAuthorize("hasRole('ORGANIZER') or hasRole('FINANCE') or hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<PayoutListResponse> listPayouts(
             @RequestParam(required = false) UUID organizerId,
             @RequestParam(required = false) String status,
@@ -58,7 +66,8 @@ public class PayoutsController {
             }
         }
 
-        List<Payout> payouts = managePayouts.listPayouts(organizerId, payoutStatus, page, size);
+        UUID scopedOrganizerId = authenticatedUserResolver.resolvePayoutOrganizerScope(organizerId);
+        List<Payout> payouts = managePayouts.listPayouts(scopedOrganizerId, payoutStatus, page, size);
         List<PayoutResponse> responses = payouts.stream().map(mapper::toResponse).toList();
         // totalPages is -1 for v1 (in-memory pagination — no count query)
         return ResponseEntity.ok(new PayoutListResponse(responses, page, -1));
@@ -74,8 +83,10 @@ public class PayoutsController {
             @ApiResponse(responseCode = "404", description = "Payout not found")
     })
     @GetMapping("/{payoutId}")
+    @PreAuthorize("hasRole('ORGANIZER') or hasRole('FINANCE') or hasRole('PLATFORM_OPERATOR') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<PayoutResponse> getPayout(@PathVariable UUID payoutId) {
         Payout payout = managePayouts.getPayout(payoutId);
+        authenticatedUserResolver.requirePayoutReadAccess(payout.getOrganizerId());
         return ResponseEntity.ok(mapper.toResponse(payout));
     }
 }

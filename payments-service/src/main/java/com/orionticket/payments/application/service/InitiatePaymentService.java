@@ -105,7 +105,9 @@ public class InitiatePaymentService implements InitiatePaymentUseCase {
                 method.name(),
                 gatewayToken,
                 order.total(),
-                order.currency()
+                order.currency(),
+                payment.getPaymentId(),
+                payment.getOrderId()
         );
 
         GatewayResponse gatewayResponse;
@@ -125,6 +127,9 @@ public class InitiatePaymentService implements InitiatePaymentUseCase {
             publishPaymentFailed(saved, gatewayResponse.failureReason());
             return saved;
         }
+
+        // Assign external gateway reference
+        payment.setGatewayReference(gatewayResponse.gatewayReference());
 
         // 7. Persist and publish PaymentInitiated
         Payment saved = paymentRepository.save(payment);

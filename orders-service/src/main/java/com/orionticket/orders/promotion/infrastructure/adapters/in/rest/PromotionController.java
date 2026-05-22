@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class PromotionController {
 
     // POST /v1/promotions — endpoint interno para que operadores creen códigos de descuento
     @PostMapping
+    @PreAuthorize("hasAuthority('promotions:manage') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<PromotionResponse> createPromotion(
             @Valid @RequestBody CreatePromotionRequest request) {
 
@@ -35,6 +37,7 @@ public class PromotionController {
     }
 
     @GetMapping("/{promotionId}")
+    @PreAuthorize("hasAuthority('promotions:manage') or hasRole('SUPER_ADMIN')")
     public ResponseEntity<PromotionResponse> getPromotion(@PathVariable UUID promotionId) {
         return ResponseEntity.ok(PromotionResponse.from(promotionUseCase.getPromotionById(promotionId)));
     }

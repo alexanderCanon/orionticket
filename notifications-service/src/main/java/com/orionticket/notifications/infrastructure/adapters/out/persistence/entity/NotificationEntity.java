@@ -43,6 +43,12 @@ public class NotificationEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @Column(name = "provider_message_id")
+    private String providerMessageId;
+
+    @Column(name = "failure_reason")
+    private String failureReason;
+
     public UUID getNotificationId() {
         return notificationId;
     }
@@ -113,5 +119,21 @@ public class NotificationEntity {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getProviderMessageId() {
+        return providerMessageId;
+    }
+
+    public void setProviderMessageId(String providerMessageId) {
+        this.providerMessageId = providerMessageId;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
     }
 }

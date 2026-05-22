@@ -35,12 +35,12 @@ public class RetryNotificationService implements RetryNotificationUseCase {
 
         for (Notification notification : notificationsToRetry) {
             // Attempt to send the notification
-            boolean sentSuccessfully = notificationSender.send(notification);
+            com.orionticket.notifications.domain.model.NotificationSendResult result = notificationSender.send(notification);
 
-            NotificationStatus newStatus = sentSuccessfully ? NotificationStatus.DELIVERED : NotificationStatus.FAILED;
+            NotificationStatus newStatus = result.success() ? NotificationStatus.DELIVERED : NotificationStatus.FAILED;
             int newRetryCount = notification.retryCount() + 1;
 
-            // Create a new Notification instance with updated status and retry count
+            // Create a new Notification instance with updated status, retry count, providerMessageId, and failureReason
             Notification retriedNotification = new Notification(
                     notification.notificationId(),
                     notification.recipientId(),
@@ -50,7 +50,9 @@ public class RetryNotificationService implements RetryNotificationUseCase {
                     newStatus,
                     newRetryCount,
                     notification.triggeredBy(),
-                    notification.createdAt());
+                    notification.createdAt(),
+                    result.providerMessageId(),
+                    result.failureReason());
 
             updatedNotifications.add(notificationRepository.save(retriedNotification));
         }

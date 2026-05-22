@@ -9,11 +9,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,7 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 class EventManagementIntegrationTest {
+
+    private static final UUID ORGANIZER_ID = UUID.fromString("00000000-0000-0000-0000-000000000002");
+    private static final UUID OPERATOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000009");
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,6 +51,7 @@ class EventManagementIntegrationTest {
                 """;
 
         mockMvc.perform(post("/v1/events")
+                .with(organizerJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
@@ -59,7 +66,7 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento Base");
         event.setCategory("MUSIC");
         event.setStatus("DRAFT");
@@ -75,6 +82,7 @@ class EventManagementIntegrationTest {
                 """;
 
         mockMvc.perform(post("/v1/events/" + eventId + "/dates")
+                .with(organizerJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
@@ -92,6 +100,7 @@ class EventManagementIntegrationTest {
                 """;
 
         mockMvc.perform(post("/v1/venues")
+                .with(organizerJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isCreated())
@@ -105,7 +114,7 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento para Review");
         event.setCategory("SPORTS");
         event.setStatus("DRAFT");
@@ -123,7 +132,8 @@ class EventManagementIntegrationTest {
         event.getDates().add(date);
         eventRepository.save(event);
 
-        mockMvc.perform(post("/v1/events/" + eventId + "/submit"))
+        mockMvc.perform(post("/v1/events/" + eventId + "/submit")
+                .with(organizerJwt()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("UNDER_REVIEW"));
     }
@@ -133,14 +143,15 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento para Aprobar");
         event.setCategory("MUSIC");
         event.setStatus("UNDER_REVIEW");
         event.setCreatedAt(ZonedDateTime.now());
         eventRepository.save(event);
 
-        mockMvc.perform(post("/v1/events/" + eventId + "/approve"))
+        mockMvc.perform(post("/v1/events/" + eventId + "/approve")
+                .with(operatorJwt()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("RELEASED"));
     }
@@ -150,7 +161,7 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento para Rechazar");
         event.setCategory("MUSIC");
         event.setStatus("UNDER_REVIEW");
@@ -164,6 +175,7 @@ class EventManagementIntegrationTest {
                 """;
 
         mockMvc.perform(post("/v1/events/" + eventId + "/reject")
+                .with(operatorJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -176,7 +188,7 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento para Cancelar");
         event.setCategory("MUSIC");
         event.setStatus("RELEASED");
@@ -190,6 +202,7 @@ class EventManagementIntegrationTest {
                 """;
 
         mockMvc.perform(post("/v1/events/" + eventId + "/cancel")
+                .with(organizerJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -201,7 +214,7 @@ class EventManagementIntegrationTest {
         UUID eventId = UUID.randomUUID();
         EventJpaEntity event = new EventJpaEntity();
         event.setEventId(eventId);
-        event.setOrganizerId(UUID.fromString("00000000-0000-0000-0000-000000000002"));
+        event.setOrganizerId(ORGANIZER_ID);
         event.setName("Evento para Cancelar");
         event.setCategory("MUSIC");
         event.setStatus("RELEASED");
@@ -209,8 +222,24 @@ class EventManagementIntegrationTest {
         eventRepository.save(event);
 
         mockMvc.perform(post("/v1/events/" + eventId + "/cancel")
+                .with(organizerJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    private static org.springframework.test.web.servlet.request.RequestPostProcessor organizerJwt() {
+        return jwt().jwt(jwt -> jwt
+                        .subject(UUID.randomUUID().toString())
+                        .claim("role", "ORGANIZER")
+                        .claim("organizerId", ORGANIZER_ID.toString()))
+                .authorities(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_ORGANIZER"));
+    }
+
+    private static org.springframework.test.web.servlet.request.RequestPostProcessor operatorJwt() {
+        return jwt().jwt(jwt -> jwt
+                        .subject(OPERATOR_ID.toString())
+                        .claim("role", "PLATFORM_OPERATOR"))
+                .authorities(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_PLATFORM_OPERATOR"));
     }
 }
