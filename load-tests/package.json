@@ -1,0 +1,8 @@
+{
+  "name": "orionticket-load-tests",
+  "version": "1.0.0",
+  "description": "K6 load tests for OrionTicket",
+  "scripts": {
+    "test:reservations": "docker run --rm -i grafana/k6 run - < reservations.k6.js"
+  }
+}
