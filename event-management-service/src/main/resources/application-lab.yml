@@ -76,3 +76,7 @@ management:
     endpoint:
         health:
             show-details: always
+
+orion:
+    security:
+        enabled: ${ORION_SECURITY_ENABLED:false}
