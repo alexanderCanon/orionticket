@@ -5,23 +5,26 @@ import { Observable, tap } from 'rxjs';
 import { AuthResponse, UserTokenPayload } from '../../shared/models/auth.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/v1/auth';
+  private readonly API_URL = 'https://api.orionticket.com/v1/auth';
   private readonly TOKEN_KEY = 'orionticket_token';
 
   // Signals for reactive state management
   public currentUser = signal<UserTokenPayload | null>(this.getDecodedToken());
   public isAuthenticated = signal<boolean>(this.hasValidToken());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   login(credentials: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
-      tap(response => {
+      tap((response) => {
         this.setToken(response.accessToken);
-      })
+      }),
     );
   }
 
@@ -49,18 +52,18 @@ export class AuthService {
   private hasValidToken(): boolean {
     const token = this.getToken();
     if (!token) return false;
-    
+
     const decoded = this.decodeToken(token);
     if (!decoded) return false;
 
     // Check expiration (exp is in seconds)
-    return (decoded.exp * 1000) > Date.now();
+    return decoded.exp * 1000 > Date.now();
   }
 
   private getDecodedToken(): UserTokenPayload | null {
     const token = this.getToken();
     if (!token) return null;
-    
+
     if (!this.hasValidToken()) {
       localStorage.removeItem(this.TOKEN_KEY);
       return null;
