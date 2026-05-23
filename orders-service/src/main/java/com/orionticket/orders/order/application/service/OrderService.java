@@ -158,6 +158,11 @@ public class OrderService implements OrderUseCase {
     public void expireOrderByReservation(UUID reservationId) {
         orderRepository.findByReservationId(reservationId).ifPresentOrElse(
                 order -> {
+                    if (order.getStatus() != com.orionticket.orders.order.domain.model.OrderStatus.CREATED) {
+                        log.info("Order {} is already in status {}, ignoring expiry for reservation {}", 
+                            order.getOrderId(), order.getStatus(), reservationId);
+                        return;
+                    }
                     order.expire();
                     Order expired = orderRepository.save(order);
                     // Publicar expiración después del commit

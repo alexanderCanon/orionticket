@@ -97,7 +97,7 @@ public class ReservationService implements ReservationUseCase {
         // Al publicar después del commit, garantizamos consistencia eventual:
         // si el publish falla (RabbitMQ caído), la reserva SÍ está en DB pero el evento
         // no se envió. Esto es aceptable para el Checkpoint 1 (Outbox Pattern lo resolvería completamente).
-        eventPublisher.publishReservationCreated(reservation);
+        eventPublisher.publishReservationCreated(reservation, batch.getPrice());
 
         if (batch.isExhausted()) {
             eventPublisher.publishBatchExhausted(batch);

@@ -1,0 +1,35 @@
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+.success-card {
+  text-align: center;
+  padding: var(--spacing-6);
+  max-width: 500px;
+  width: 100%;
+}
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-3);
+}
+.success-card h2 {
+  color: var(--color-success);
+  margin-bottom: var(--spacing-2);
+}
+.success-card p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-5);
+}
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  align-items: center;
+}
+.action-buttons .btn {
+  width: 100%;
+  max-width: 300px;
+}

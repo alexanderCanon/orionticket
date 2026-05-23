@@ -1,0 +1,29 @@
+<div class="dashboard-header">
+  <h2>Mis Eventos</h2>
+  <a routerLink="/organizer/create-event" class="btn btn-primary">+ Crear Nuevo Evento</a>
+</div>
+
+<div class="event-list">
+  @for (event of myEvents(); track event.id) {
+    <div class="card event-row">
+      <div class="event-info">
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.date | date:'longDate' }}</p>
+      </div>
+      <div class="event-stats">
+        <div class="stat">
+          <span class="label">Tickets Vendidos</span>
+          <span class="value">{{ event.ticketsSold }} / {{ event.totalCapacity }}</span>
+        </div>
+      </div>
+      <div class="event-actions">
+        <button class="btn btn-secondary">Gestionar</button>
+      </div>
+    </div>
+  } @empty {
+    <div class="card empty-state">
+      <p>Aún no has creado ningún evento.</p>
+      <a routerLink="/organizer/create-event" class="btn btn-primary" style="margin-top: 1rem;">Comienza Ahora</a>
+    </div>
+  }
+</div>

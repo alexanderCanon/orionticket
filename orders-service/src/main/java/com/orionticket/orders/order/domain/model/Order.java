@@ -59,6 +59,9 @@ public class Order {
     }
 
     public void expire() {
+        if (this.status != OrderStatus.CREATED) {
+            throw new IllegalStateException("Only CREATED orders can be expired");
+        }
         this.status = OrderStatus.EXPIRED;
         this.updatedAt = Instant.now();
     }

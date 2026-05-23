@@ -1,0 +1,147 @@
+.payment-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-4);
+}
+
+.payment-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--spacing-5);
+}
+
+@media (max-width: 768px) {
+  .payment-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-summary {
+  background: var(--color-background);
+  height: fit-content;
+}
+
+.order-summary h2 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-4);
+}
+
+.summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-item .label {
+  color: var(--color-text-muted);
+}
+
+.summary-item .value {
+  font-weight: 600;
+}
+
+.summary-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--spacing-2) 0;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summary-total .amount {
+  color: var(--color-primary-dark);
+}
+
+.payment-form h2 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-2);
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-4);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-3);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-3);
+}
+
+.half {
+  flex: 1;
+}
+
+label {
+  display: block;
+  margin-bottom: var(--spacing-1);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color var(--transition-fast);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.btn-pay {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3);
+  font-size: 1.1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-2);
+}
+
+.btn-block {
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-pending { background: #fef3c7; color: #d97706; }
+.status-paid { background: #d1fae5; color: #059669; }
+.status-cancelled { background: #fee2e2; color: #dc2626; }
+
+.mt-3 {
+  margin-top: var(--spacing-3);
+}
+
+.loading-state, .empty-state {
+  text-align: center;
+  padding: var(--spacing-6);
+}

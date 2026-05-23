@@ -1,0 +1,32 @@
+<div class="scanner-container">
+  <div class="card scanner-card">
+    <div class="scanner-header">
+      <h2>Escanear Entrada</h2>
+      <p>Apunta la cámara al código QR de la entrada, o ingresa el código manualmente.</p>
+    </div>
+
+    <div class="scanner-mock">
+      <div class="camera-frame">
+        <p>📷 Cámara Activa (Simulada)</p>
+        <button (click)="simulateScan()" class="btn btn-secondary">Simular Escaneo Exitoso</button>
+      </div>
+    </div>
+
+    <div class="manual-entry">
+      <p>O ingresa el ID de la orden manualmente:</p>
+      <div class="input-group">
+        <input type="text" [(ngModel)]="manualOrderId" placeholder="Ej: ORD-1234" class="form-control">
+        <button (click)="processManualScan()" class="btn btn-primary" [disabled]="!manualOrderId">Validar</button>
+      </div>
+    </div>
+
+    @if (scanResult()) {
+      <div class="scan-result" [ngClass]="scanResult()?.status">
+        <h3>{{ scanResult()?.message }}</h3>
+        @if (scanResult()?.orderId) {
+          <p><strong>Orden:</strong> {{ scanResult()?.orderId }}</p>
+        }
+      </div>
+    }
+  </div>
+</div>

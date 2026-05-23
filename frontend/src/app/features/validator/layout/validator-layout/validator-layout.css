@@ -1,0 +1,25 @@
+.status-indicator {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: var(--spacing-2);
+}
+.online {
+  background-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+  color: var(--color-success);
+}
+.offline {
+  background-color: color-mix(in srgb, var(--color-error) 20%, transparent);
+  color: var(--color-error);
+}
+.badge {
+  background-color: var(--color-warning);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-right: var(--spacing-3);
+}

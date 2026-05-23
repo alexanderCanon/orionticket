@@ -1,0 +1,32 @@
+<nav class="public-navbar glass-panel">
+  <div class="navbar-brand">
+    <a routerLink="/" class="logo">🎟️ OrionTicket</a>
+  </div>
+  <div class="navbar-links">
+    <div class="status-indicator" [class.online]="isOnline()" [class.offline]="!isOnline()" style="margin-right: 10px; display: inline-block;">
+      {{ isOnline() ? 'En Línea' : 'Sin Conexión' }}
+    </div>
+    @if (pendingCount() > 0) {
+      <span class="badge" style="margin-right: 10px;">{{ pendingCount() }} pendientes</span>
+    }
+    
+    @if (isAuthenticated()) {
+      <div class="user-menu" style="display: inline-flex;">
+        <span class="user-greeting">Hola, {{ currentUser()?.fullName || currentUser()?.email }}</span>
+        @if (currentUser()?.roleId === '00000000-0000-0000-0000-000000000001') {
+          <a routerLink="/buyer/history" class="btn btn-primary">Mis Entradas</a>
+        } @else {
+          <a [routerLink]="portalLink()" class="btn btn-primary">Mi Portal</a>
+        }
+        <button (click)="logout()" class="btn btn-outline">Salir</button>
+      </div>
+    } @else {
+      <a routerLink="/login" class="btn">Log In</a>
+      <a routerLink="/register" class="btn btn-primary">Sign Up</a>
+    }
+  </div>
+</nav>
+
+<main class="public-container">
+  <router-outlet></router-outlet>
+</main>

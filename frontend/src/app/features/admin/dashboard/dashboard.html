@@ -1,0 +1,54 @@
+<div class="admin-container">
+  <h2>Panel de Control Global</h2>
+  <p class="subtitle">Métricas y aprobaciones de eventos de toda la plataforma OrionTicket.</p>
+
+  <div class="metrics-grid">
+    <div class="card metric-card">
+      <div class="metric-title">Total Usuarios</div>
+      <div class="metric-value">{{ metrics()?.totalUsers || 0 }}</div>
+    </div>
+    <div class="card metric-card">
+      <div class="metric-title">Eventos Activos</div>
+      <div class="metric-value">{{ metrics()?.activeEvents || 0 }}</div>
+    </div>
+    <div class="card metric-card">
+      <div class="metric-title">Ingresos Globales</div>
+      <div class="metric-value">${{ metrics()?.totalRevenue | number:'1.2-2' }}</div>
+    </div>
+  </div>
+
+  <h3>Eventos Pendientes de Aprobación</h3>
+  <div class="card table-card">
+    @if (pendingEvents().length > 0) {
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID Evento</th>
+            <th>Nombre</th>
+            <th>Organizador</th>
+            <th>Fecha Solicitud</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of pendingEvents(); track event.id) {
+            <tr>
+              <td>{{ event.id }}</td>
+              <td><strong>{{ event.title }}</strong></td>
+              <td>{{ event.organizerEmail }}</td>
+              <td>{{ event.requestDate | date:'short' }}</td>
+              <td class="actions-cell">
+                <button (click)="approveEvent(event.id)" class="btn btn-primary btn-sm">Aprobar</button>
+                <button (click)="rejectEvent(event.id)" class="btn btn-error btn-sm">Rechazar</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="empty-state">
+        <p>No hay eventos pendientes de revisión.</p>
+      </div>
+    }
+  </div>
+</div>

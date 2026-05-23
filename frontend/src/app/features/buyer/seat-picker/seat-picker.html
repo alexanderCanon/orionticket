@@ -1,0 +1,123 @@
+<div class="seat-picker-container">
+  @if (isLoadingEvent()) {
+    <div class="loading-state card">
+      <span class="spinner"></span>
+      <p>Cargando detalles del evento...</p>
+    </div>
+  } @else {
+    <div class="card header-card" [class]="'header-card ' + getCategoryClass()">
+      <span class="category-icon category-icon-small" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); opacity: 0.2; font-size: 4rem;">{{ getCategoryIcon() }}</span>
+      <h2 style="position: relative; z-index: 2;">{{ eventName() }}</h2>
+      <p class="subtitle" style="position: relative; z-index: 2; color: rgba(255,255,255,0.8);">Selecciona la fecha y tus asientos</p>
+    </div>
+
+    <div class="picker-layout">
+      <!-- Columna izquierda: Fechas -->
+      <div class="dates-column">
+        <h3>1. Fechas disponibles</h3>
+        <div class="dates-list">
+          @for (date of dates(); track date.dateId) {
+            <button
+              class="date-btn"
+              [class.selected]="selectedDateId() === date.dateId"
+              (click)="selectDate(date.dateId)">
+              <div class="date-info">
+                <span class="date-icon">📅</span>
+                <span class="date-text">{{ date.scheduledAt | date:'EEEE, d MMMM yyyy - HH:mm':'UTC':'es' }}</span>
+              </div>
+              <div class="venue-info">
+                <span class="venue-text">🏟 {{ date.venueName }}</span>
+              </div>
+            </button>
+          } @empty {
+            <p>No hay fechas disponibles para este evento.</p>
+          }
+        </div>
+      </div>
+
+      <!-- Columna derecha: Asientos y Resumen -->
+      <div class="seats-column">
+        <h3>2. Selecciona tus asientos</h3>
+        
+        @if (!selectedDateId()) {
+          <div class="empty-state">
+            <p>Selecciona una fecha primero para ver los asientos.</p>
+          </div>
+        } @else if (isLoadingSeats()) {
+          <div class="loading-state">
+            <span class="spinner"></span>
+            <p>Buscando asientos...</p>
+          </div>
+        } @else {
+          <div class="seats-legend">
+            <div class="legend-item"><span class="seat-swatch available"></span> Disponible</div>
+            <div class="legend-item"><span class="seat-swatch selected"></span> Seleccionado</div>
+            <div class="legend-item"><span class="seat-swatch unavailable"></span> No disponible</div>
+          </div>
+
+          <div class="stadium-container">
+            @if (isSports()) {
+              <!-- Sports Field Center -->
+              <div class="sports-field">
+                <div class="field-lines"></div>
+                <span class="field-text">Cancha</span>
+              </div>
+            } @else {
+              <!-- Stage Bottom -->
+              <div class="stage-area">
+                <div class="stage-lights"></div>
+                <span class="stage-text">Escenario</span>
+              </div>
+            }
+
+            @for (seat of seats(); track seat.seatId) {
+              <button
+                class="seat-btn stadium-seat"
+                [style.left.px]="seat.x"
+                [style.top.px]="seat.y"
+                [class.available]="seat.status === 'AVAILABLE'"
+                [class.selected]="isSeatSelected(seat.seatId)"
+                [class.unavailable]="seat.status !== 'AVAILABLE'"
+                [title]="getSeatTooltip(seat)"
+                [disabled]="seat.status !== 'AVAILABLE'"
+                (click)="toggleSeat(seat)">
+                {{ seat.displayNumber }}
+              </button>
+            } @empty {
+              <p class="no-seats-msg">No hay asientos configurados para esta fecha.</p>
+            }
+          </div>
+
+          <!-- Resumen de selección -->
+          <div class="selection-summary card">
+      <h3>Asientos seleccionados ({{ selectedCount() }} / {{ MAX_SEATS }})</h3>
+      <div class="selected-tags">
+              @for (seat of selectedSeats(); track seat.seatId) {
+                <span class="badge">{{ getSeatLabel(seat) }} ({{ seat.zone || 'General' }})</span>
+              } @empty {
+                <p class="text-muted">Ningún asiento seleccionado.</p>
+              }
+            </div>
+
+            @if (errorMessage()) {
+              <div class="alert alert-error">{{ errorMessage() }}</div>
+            }
+
+            @if (statusMessage()) {
+              <div class="alert alert-info">
+                <span class="spinner-small"></span> {{ statusMessage() }}
+              </div>
+            }
+
+            <button
+              class="btn btn-primary btn-block reserve-btn"
+              [disabled]="selectedCount() === 0 || isReserving()"
+              (click)="reserveAndProceed()">
+              {{ isReserving() ? 'Procesando...' : 'Reservar y Pagar' }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

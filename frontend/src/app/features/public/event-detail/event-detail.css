@@ -1,0 +1,43 @@
+.event-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.detail-card {
+  padding: 0;
+  overflow: hidden;
+}
+.event-hero {
+  height: 300px;
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-secondary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detail-content {
+  padding: var(--spacing-6);
+}
+.detail-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-1);
+}
+.category {
+  color: var(--color-secondary);
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+  text-transform: uppercase;
+}
+.description {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-6);
+  line-height: 1.6;
+}
+.buy-section {
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-5);
+}
+.btn-lg {
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: 1.2rem;
+}
