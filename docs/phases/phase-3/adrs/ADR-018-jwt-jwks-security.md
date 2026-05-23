@@ -17,6 +17,24 @@ Use **asymmetric JWT signing in Identity** and expose a **JWKS endpoint** for to
 
 Identity is the issuer of access tokens. The API Gateway validates access tokens using Identity's JWKS endpoint and forwards authenticated user context to downstream services. Microservices that expose protected endpoints must also be able to validate JWTs as OAuth2 Resource Servers when called directly in local development or internal testing.
 
+For the MVP, Identity remains a custom Spring Security based authentication
+service. It owns users, roles, password hashing, JWT issuance, and JWKS
+publication, but it is not yet a complete OAuth2 Authorization Server. This
+keeps the MVP simpler while preserving the token validation model required by
+the gateway and downstream services.
+
+The expected post-MVP direction is to evolve Identity toward a formal OAuth2
+Authorization Server model or replace that responsibility with a dedicated
+identity provider. That migration is explicitly deferred and must be covered by
+a future ADR before introducing refresh tokens, authorization-code flows,
+centralized session revocation, external identity providers, or token contract
+changes.
+
+Operational repository note: `identity-service` no longer lives in the main
+OrionTicket monorepo. For the current lab deployment it lives beside
+`orion-api-gateway` in the gateway repository and is deployed separately from
+the remaining business microservices.
+
 ## Target Contract
 
 - Identity signs access tokens with a private key.
@@ -89,6 +107,7 @@ must be documented in a new ADR and migrated explicitly. Until then:
 - Session revocation lists.
 - Multi-tenant key rotation.
 - External identity providers such as Auth0, Cognito, or Keycloak.
+- Moving Identity back into the main business-services monorepo.
 
 ## Implementation Notes
 

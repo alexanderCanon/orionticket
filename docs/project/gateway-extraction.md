@@ -11,6 +11,7 @@ hablara con los microservicios por IPs directas de Tailscale.
 Incluido:
 
 - Spring Cloud Gateway WebFlux.
+- `identity-service` como servicio separado desplegado junto al gateway.
 - Actuator.
 - Dockerfile.
 - Compose con Traefik.
@@ -45,6 +46,10 @@ Excluido por ahora:
 
 - `compose.local.yml`: laboratorio backend sin gateway, sin Access Control y sin Reporting.
 - El codigo de `orion-api-gateway` vive en su repositorio independiente.
+- El codigo de `identity-service` tambien vive ahora en el repositorio del
+  gateway para este laboratorio MVP. No se considera parte del monorepo de
+  microservicios de negocio, aunque sigue siendo un microservicio separado y no
+  debe fusionarse con el gateway.
 
 ## Comandos de laboratorio
 

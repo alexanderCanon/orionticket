@@ -1,9 +1,11 @@
 package com.orionticket.events.infrastructure.config;
 
 import com.orionticket.events.infrastructure.adapters.out.security.JwtAuthoritiesConverter;
+import org.springframework.core.annotation.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +29,27 @@ import java.util.Objects;
 public class SecurityConfig {
 
     @Bean
+    @Order(0)
+    public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http) throws Exception {
+        http
+            .securityMatcher("/v1/catalog/**", "/actuator/health", "/actuator/health/**", "/actuator/info",
+                    "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.GET, "/v1/catalog/**").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/info").permitAll()
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .anyRequest().permitAll()
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthoritiesConverter authoritiesConverter) throws Exception {
         JwtAuthenticationConverter authenticationConverter = new JwtAuthenticationConverter();
         authenticationConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
