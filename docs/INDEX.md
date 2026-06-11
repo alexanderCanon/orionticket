@@ -81,4 +81,5 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
 - **[Extraccion del API Gateway y laboratorio local](project/gateway-extraction.md):** Compose de microservicios esenciales, RabbitMQ y conexion a PostgreSQL via HAProxy.
 - **[Plan de recuperacion de base limpia para laboratorio](project/lab-database-recovery-plan.md):** Pasos para reiniciar pruebas con schemas independientes y Flyway.
 - **[Reflexión de Cierre: De Velocidad a Evidencia](project/engineering-reality-check.md):** Cambio de fase para pasar de implementación acelerada a evaluación técnica.
+- **[Presentación para Video de 1 Minuto](project/presentacion-video-1min.md):** Slides Marp sobre el proyecto, arquitectura y demo. Guion narrado con tiempos en [Guion del Video](project/guion-video-1min.md).
 - **[MANUALES POR SERVICIO (Índice Técnico)](project/services/TECHNICAL_INDEX.md):** **Punto de partida para codear.** Documentación fragmentada por servicio y base compartida.
