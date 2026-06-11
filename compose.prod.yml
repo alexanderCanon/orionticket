@@ -1,7 +1,7 @@
 # Production backend stack.
 #
-# Levanta los 9 microservicios de negocio y RabbitMQ. No levanta PostgreSQL:
-# todos los servicios conectan a la DB externa por HAProxy en ${GLOBAL_DB_HOST}:5000.
+# Levanta los 8 microservicios de negocio y RabbitMQ. No levanta PostgreSQL:
+# todos los servicios conectan a la DB externa (ej. Supabase) configurada en .env.prod.
 # El API Gateway vive en otro repo/VPS.
 
 services:
@@ -20,38 +20,6 @@ services:
     networks:
       - orionticket-prod
 
-  identity-service:
-    build:
-      context: ./identity-service
-      dockerfile: Dockerfile
-    image: orionticket/identity-service:${IMAGE_TAG:-latest}
-    container_name: identity-service
-    env_file:
-      - ${ORION_ENV_FILE:-.env.prod}
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
-      SERVER_PORT: 8081
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
-      RABBITMQ_HOST: rabbitmq
-    ports:
-      - "${IDENTITY_SERVICE_PORT:-8081}:8081"
-    restart: unless-stopped
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    networks:
-      - orionticket-prod
-    deploy:
-      resources:
-        limits:
-          memory: ${SERVICE_MEM_LIMIT:-512m}
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8081/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
 
   event-management-service:
     build:
@@ -64,8 +32,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8082
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${EVENT_MANAGEMENT_SERVICE_PORT:-8082}:8082"
@@ -97,8 +69,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8083
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${SEATING_INVENTORY_SERVICE_PORT:-8083}:8083"
@@ -130,8 +106,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8084
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
       EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
       SEATING_INVENTORY_SERVICE_URL: http://seating-inventory-service:8083
@@ -169,8 +149,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8085
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
       ORDERS_SERVICE_URL: http://orders-service:8084
       EVENT_MANAGEMENT_SERVICE_URL: http://event-management-service:8082
@@ -208,8 +192,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8086
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${TICKET_ISSUANCE_SERVICE_PORT:-8086}:8086"
@@ -241,8 +229,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8087
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
       TICKET_ISSUANCE_URL: http://ticket-issuance-service:8086
     ports:
@@ -277,8 +269,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8088
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${NOTIFICATIONS_SERVICE_PORT:-8088}:8088"
@@ -310,8 +306,12 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SERVER_PORT: 8089
-      DB_HOST: ${GLOBAL_DB_HOST:?GLOBAL_DB_HOST is required}
-      DB_PORT: 5000
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:-4}
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:-1}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=75.0 -XX:ActiveProcessorCount=2"
       RABBITMQ_HOST: rabbitmq
     ports:
       - "${REPORTING_SERVICE_PORT:-8089}:8089"

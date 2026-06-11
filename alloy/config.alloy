@@ -15,7 +15,6 @@ prometheus.remote_write "grafana_cloud_metrics" {
 // Scrape Spring Boot microservices Actuator /prometheus endpoints
 prometheus.scrape "spring_boot_scrape" {
   targets = [
-    {"__address__" = "identity-service:8081"},
     {"__address__" = "event-management-service:8082"},
     {"__address__" = "seating-inventory-service:8083"},
     {"__address__" = "orders-service:8084"},

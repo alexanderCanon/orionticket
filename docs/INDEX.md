@@ -54,6 +54,7 @@ Contratos de API, esquemas, modelos ER y decisiones técnicas.
   - [ADR-019: Envío de Tickets por Email con Resend](phases/phase-3/adrs/ADR-019-ticket-email-delivery-resend.md)
   - [ADR-020: Observabilidad con Grafana Cloud](phases/phase-3/adrs/ADR-020-observability-grafana-cloud.md)
 - [Carpeta de Diagramas Entidad-Relación (ER)](phases/phase-3/er-diagrams/)
+  - [Esquema ER Consolidado (Español)](phases/phase-3/er-diagrams/esquema-er-consolidado.md)
 
 ### Capítulo 4 — Backlog y Planificación
 - [Definición de "Hecho" (DoD)](phases/phase-4/definition-of-done.md)

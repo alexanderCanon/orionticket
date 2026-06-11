@@ -37,32 +37,6 @@ services:
     networks:
       - orionticket-local
 
-  identity-service:
-    build:
-      context: ./identity-service
-      dockerfile: Dockerfile
-    container_name: identity-service-local
-    env_file:
-      - ${ORION_ENV_FILE:-.env}
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
-      SERVER_PORT: 8081
-      DB_HOST: orionticket-db
-      DB_PORT: 5432
-      RABBITMQ_HOST: rabbitmq
-    ports:
-      - "${IDENTITY_SERVICE_PORT:-8081}:8081"
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      orionticket-db:
-        condition: service_healthy
-    networks:
-      - orionticket-local
-    deploy:
-      resources:
-        limits:
-          memory: ${SERVICE_MEM_LIMIT:-1536m}
 
   event-management-service:
     build:
@@ -257,7 +231,6 @@ services:
     networks:
       - orionticket-local
     depends_on:
-      - identity-service
       - event-management-service
       - seating-inventory-service
       - orders-service

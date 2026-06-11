@@ -1,7 +1,5 @@
-.env
-.env.local
-.env.prod
-.env.*.local
+.env.*
+.env.prod.example
 estructura.txt
 target/
 .mvn/wrapper/maven-wrapper.jar
