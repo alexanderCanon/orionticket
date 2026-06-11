@@ -1,0 +1,57 @@
+.create-container {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-4);
+}
+.create-card {
+  width: 100%;
+  max-width: 600px;
+}
+.create-card h2 {
+  color: var(--color-primary-dark);
+  margin-bottom: var(--spacing-1);
+}
+.subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-5);
+}
+.form-group {
+  margin-bottom: var(--spacing-4);
+}
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: 600;
+}
+.form-control {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 1rem;
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(107, 107, 255, 0.2);
+}
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-5);
+}
+.alert {
+  padding: var(--spacing-3);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-4);
+}
+.alert-error {
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  color: var(--color-error);
+}
+.alert-success {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success);
+}

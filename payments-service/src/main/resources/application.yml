@@ -44,6 +44,9 @@ spring:
 server:
   port: ${SERVER_PORT:8085}
 
+jwt:
+  secret: ${JWT_SECRET:dGhpcy1pcy1hLXZlcnktbG9uZy1zZWNyZXQta2V5LWZvci1qd3QtdmFsaWRhdGlvbi1pbi1vcmlvbnRpY2tldA==}
+
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -53,9 +56,9 @@ springdoc:
 # --- RabbitMQ topology names ---
 rabbitmq:
   exchanges:
-    payments: payments.events
-    orders: orders.events
-    event-management: event-mgmt.events
+    payments: orionticket.events.exchange
+    orders: orionticket.events.exchange
+    event-management: orionticket.events.exchange
   queues:
     order-created: payments.queue.order-created
     date-added: payments.queue.date-added

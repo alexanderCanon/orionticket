@@ -1,0 +1,126 @@
+<div class="payment-container">
+  @if (isLoading()) {
+    <div class="loading-state card">
+      <span class="spinner"></span>
+      <p>Cargando información de la orden...</p>
+    </div>
+  } @else if (order()) {
+    <div class="payment-layout">
+      
+      <!-- Detalle de la Orden -->
+      <div class="order-summary card">
+        <h2>Resumen de la Orden</h2>
+        <div class="summary-details">
+          <div class="summary-item">
+            <span class="label">ID de Orden</span>
+            <span class="value">{{ order()?.orderId }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Estado</span>
+            <span class="badge" [class]="'status-' + (order()?.status | lowercase)">{{ order()?.status }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="label">Fecha</span>
+            <span class="value">{{ order()?.createdAt | date:'medium' }}</span>
+          </div>
+          
+          <div class="summary-divider"></div>
+          
+          <div class="summary-total">
+            <span class="label">Total a Pagar</span>
+            <span class="amount">${{ order()?.total | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Pago -->
+      <div class="payment-form card">
+        <h2>Detalles de Pago</h2>
+        
+        @if (order()?.status === 'CREATED') {
+          <p class="subtitle">Ingresa los datos de tu tarjeta para completar la compra.</p>
+          
+          <form (ngSubmit)="processPayment()" #paymentForm="ngForm">
+            <div class="form-group">
+              <label for="cardName">Nombre en la tarjeta</label>
+              <input 
+                type="text" 
+                id="cardName" 
+                name="cardName" 
+                class="form-control" 
+                [(ngModel)]="paymentData.cardName" 
+                required 
+                placeholder="Ej. Juan Pérez">
+            </div>
+
+            <div class="form-group">
+              <label for="cardNumber">Número de tarjeta</label>
+              <input 
+                type="text" 
+                id="cardNumber" 
+                name="cardNumber" 
+                class="form-control" 
+                [(ngModel)]="paymentData.cardNumber" 
+                required 
+                maxlength="19"
+                placeholder="0000 0000 0000 0000">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label for="expiry">Vencimiento (MM/AA)</label>
+                <input 
+                  type="text" 
+                  id="expiry" 
+                  name="expiry" 
+                  class="form-control" 
+                  [(ngModel)]="paymentData.expiry" 
+                  required 
+                  maxlength="5"
+                  placeholder="MM/AA">
+              </div>
+              <div class="form-group half">
+                <label for="cvv">CVV</label>
+                <input 
+                  type="text" 
+                  id="cvv" 
+                  name="cvv" 
+                  class="form-control" 
+                  [(ngModel)]="paymentData.cvv" 
+                  required 
+                  maxlength="4"
+                  placeholder="123">
+              </div>
+            </div>
+
+            @if (errorMessage()) {
+              <div class="alert alert-error">{{ errorMessage() }}</div>
+            }
+
+            <button 
+              type="submit" 
+              class="btn btn-primary btn-block btn-pay" 
+              [disabled]="!paymentForm.form.valid || isProcessing()">
+              @if (isProcessing()) {
+                <span class="spinner-small"></span> Procesando pago...
+              } @else {
+                Pagar ${{ order()?.total | number:'1.2-2' }}
+              }
+            </button>
+          </form>
+        } @else {
+          <div class="alert alert-error">
+            {{ errorMessage() || 'Esta orden no está disponible para pago.' }}
+          </div>
+          <a routerLink="/buyer/history" class="btn btn-block">Volver a mis entradas</a>
+        }
+      </div>
+
+    </div>
+  } @else {
+    <div class="card empty-state">
+      <p>{{ errorMessage() || 'No se encontró la orden.' }}</p>
+      <a routerLink="/" class="btn btn-primary mt-3">Ir al Catálogo</a>
+    </div>
+  }
+</div>

@@ -25,7 +25,7 @@ public class RabbitMqEventPublisherAdapter implements DomainEventPublisherPort {
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void publishReservationCreated(Reservation reservation) {
+    public void publishReservationCreated(Reservation reservation, java.math.BigDecimal batchPrice) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("reservationId", reservation.getReservationId());
         payload.put("seatId", reservation.getSeatId());
@@ -33,6 +33,7 @@ public class RabbitMqEventPublisherAdapter implements DomainEventPublisherPort {
         payload.put("eventId", reservation.getEventId());
         payload.put("dateId", reservation.getDateId());
         payload.put("batchId", reservation.getBatchId());
+        payload.put("batchPrice", batchPrice);
         payload.put("expiresAt", reservation.getExpiresAt().toString());
 
         publish(RabbitMqConfig.RESERVATION_CREATED_KEY, "ReservationCreated", payload);

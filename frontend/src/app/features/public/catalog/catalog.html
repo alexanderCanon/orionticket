@@ -1,0 +1,27 @@
+<div class="catalog-header">
+  <h1>Próximos Eventos</h1>
+  <p>Descubre los mejores eventos en OrionTicket</p>
+</div>
+
+<div class="event-grid">
+  @for (event of events(); track event.eventId) {
+    <div class="card event-card">
+      <div class="event-image-placeholder" [class]="'event-image-placeholder ' + getCategoryClass(event.category)">
+        <span class="category-icon">{{ getCategoryIcon(event.category) }}</span>
+      </div>
+      <div class="event-details">
+        <h3>{{ event.name }}</h3>
+        <p class="event-category">🎭 {{ event.category }}</p>
+        <p class="event-organizer">👤 {{ event.organizerName }}</p>
+        <p class="event-date">📅 {{ getClosestDate(event) }}</p>
+        <div class="event-actions" style="margin-top: 1rem;">
+          <a [routerLink]="['/event', event.eventId]" class="btn btn-primary">Ver Detalles</a>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <div class="empty-state card">
+      <p>No hay eventos disponibles por el momento.</p>
+    </div>
+  }
+</div>

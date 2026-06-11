@@ -1,0 +1,56 @@
+<div class="checkout-container">
+  <div class="card checkout-card">
+    <h2>Resumen de Compra</h2>
+
+    @if (isLoadingSeats()) {
+      <div class="loading-state">
+        <p>Buscando asientos disponibles...</p>
+      </div>
+    } @else if (!availableSeat() && !errorMessage()) {
+      <div class="alert alert-error">No hay asientos disponibles para este evento o fecha.</div>
+    } @else if (availableSeat()) {
+      <div class="order-summary">
+        <div class="summary-item">
+          <span>Zona:</span>
+          <strong>{{ availableSeat()?.zone || 'General' }}</strong>
+        </div>
+        <div class="summary-item">
+          <span>Sección:</span>
+          <strong>{{ availableSeat()?.section }}</strong>
+        </div>
+        <div class="summary-item">
+          <span>Fila / Asiento:</span>
+          <strong>{{ availableSeat()?.row }} - {{ availableSeat()?.seatNumber }}</strong>
+        </div>
+        <div class="summary-item">
+          <span>Cantidad:</span>
+          <strong>1 boleto</strong>
+        </div>
+        <div class="summary-item total">
+          <span>El total se calcula al confirmar</span>
+        </div>
+      </div>
+
+      @if (statusMessage()) {
+        <div class="alert alert-info status-msg">
+          <span class="spinner"></span> {{ statusMessage() }}
+        </div>
+      }
+
+      @if (errorMessage()) {
+        <div class="alert alert-error">{{ errorMessage() }}</div>
+      }
+
+      <button
+        (click)="processPayment()"
+        class="btn btn-primary btn-block"
+        [disabled]="isProcessing()">
+        {{ isProcessing() ? 'Procesando...' : 'Confirmar y Pagar' }}
+      </button>
+    } @else {
+      @if (errorMessage()) {
+        <div class="alert alert-error">{{ errorMessage() }}</div>
+      }
+    }
+  </div>
+</div>

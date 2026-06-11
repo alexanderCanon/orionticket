@@ -76,7 +76,7 @@ class ReservationServiceTest {
         assertThat(result.getExpiresAt()).isAfter(ZonedDateTime.now());
         assertThat(availableSeat.getStatus()).isEqualTo("RESERVED");
         assertThat(activeBatch.getSold()).isEqualTo(1);
-        verify(eventPublisher).publishReservationCreated(result);
+        verify(eventPublisher).publishReservationCreated(result, activeBatch.getPrice());
     }
 
     @Test

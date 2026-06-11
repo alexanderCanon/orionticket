@@ -41,15 +41,18 @@ public class InitiatePaymentService implements InitiatePaymentUseCase {
     private final OrderSummaryPort orderSummary;
     private final PaymentGatewayPort gateway;
     private final PaymentEventPublisherPort eventPublisher;
+    private final com.orionticket.payments.application.port.in.ProcessWebhookUseCase processWebhook;
 
     public InitiatePaymentService(PaymentRepositoryPort paymentRepository,
                                   OrderSummaryPort orderSummary,
                                   PaymentGatewayPort gateway,
-                                  PaymentEventPublisherPort eventPublisher) {
+                                  PaymentEventPublisherPort eventPublisher,
+                                  com.orionticket.payments.application.port.in.ProcessWebhookUseCase processWebhook) {
         this.paymentRepository = paymentRepository;
         this.orderSummary = orderSummary;
         this.gateway = gateway;
         this.eventPublisher = eventPublisher;
+        this.processWebhook = processWebhook;
     }
 
     /**
@@ -136,6 +139,15 @@ public class InitiatePaymentService implements InitiatePaymentUseCase {
         log.info("Payment persisted — paymentId={} status={}", saved.getPaymentId(), saved.getStatus());
 
         publishPaymentInitiated(saved);
+
+        // MVP local simulation: immediately process webhook as AUTHORIZED if success
+        if (gatewayResponse.gatewayReference() != null && gatewayResponse.gatewayReference().startsWith("pi_simulated_")) {
+            log.info("MVP SIMULATION: Auto-triggering webhook authorization for simulated payment");
+            processWebhook.processWebhook(saved.getPaymentId(), gatewayResponse.gatewayReference(), "AUTHORIZED", null);
+            // Refresh saved payment after webhook updates it
+            saved = paymentRepository.findById(saved.getPaymentId()).orElse(saved);
+        }
+
         return saved;
     }
 
