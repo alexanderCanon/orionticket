@@ -1,6 +1,5 @@
 package com.orionticket.seating.seat.application.service;
 
-import com.orionticket.seating.reservation.domain.port.out.DomainEventPublisherPort;
 import com.orionticket.seating.seat.application.port.in.SeatAvailabilityUseCase;
 import com.orionticket.seating.seat.application.port.in.SeatingMapUseCase;
 import com.orionticket.seating.seat.domain.model.Seat;
@@ -19,7 +18,6 @@ import java.util.stream.IntStream;
 public class SeatingMapService implements SeatingMapUseCase, SeatAvailabilityUseCase {
 
     private final SeatRepositoryPort seatRepository;
-    private final DomainEventPublisherPort eventPublisher;
 
     @Override
     @Transactional

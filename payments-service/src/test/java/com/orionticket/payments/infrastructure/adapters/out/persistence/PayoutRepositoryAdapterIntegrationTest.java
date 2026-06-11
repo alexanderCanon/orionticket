@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PayoutRepositoryAdapterIntegrationTest {
 
     @Container
+    @SuppressWarnings("resource")
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
             .withDatabaseName("payments_test")
             .withUsername("payments")

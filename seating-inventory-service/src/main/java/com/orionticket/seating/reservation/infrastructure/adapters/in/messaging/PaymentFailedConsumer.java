@@ -19,6 +19,7 @@ public class PaymentFailedConsumer {
 
     private final ReservationUseCase reservationUseCase;
 
+    @SuppressWarnings("unchecked")
     @RabbitListener(queues = RabbitMqConfig.PAYMENT_FAILED_QUEUE)
     public void handlePaymentFailed(Map<String, Object> message) {
         log.info("PaymentFailed event received: {}", message);

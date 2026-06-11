@@ -1,5 +1,6 @@
 package com.orionticket.notifications.infrastructure.adapters.out.sender;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.notifications.domain.model.Notification;
 import com.orionticket.notifications.domain.model.NotificationSendResult;
@@ -7,8 +8,10 @@ import com.orionticket.notifications.domain.port.out.NotificationSenderPort;
 import com.orionticket.notifications.infrastructure.config.ResendProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -50,7 +53,7 @@ public class EmailSenderAdapter implements NotificationSenderPort {
         // Parse JSON payload
         Map<String, Object> payloadMap;
         try {
-            payloadMap = objectMapper.readValue(notification.payload(), Map.class);
+            payloadMap = objectMapper.readValue(notification.payload(), new TypeReference<Map<String, Object>>() {});
         } catch (Exception e) {
             log.error("Failed to parse notification payload JSON: {}", notification.payload(), e);
             return NotificationSendResult.failure("Invalid payload JSON: " + e.getMessage());
@@ -98,10 +101,11 @@ public class EmailSenderAdapter implements NotificationSenderPort {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                     "https://api.resend.com/emails",
+                    HttpMethod.POST,
                     entity,
-                    Map.class
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
             );
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 String messageId = (String) response.getBody().get("id");

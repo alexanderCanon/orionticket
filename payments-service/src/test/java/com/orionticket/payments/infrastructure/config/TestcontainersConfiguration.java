@@ -11,6 +11,7 @@ public class TestcontainersConfiguration {
 
     @Bean
     @ServiceConnection
+    @SuppressWarnings("resource")
     public PostgreSQLContainer<?> postgresContainer() {
         return new PostgreSQLContainer<>("postgres:16-alpine")
                 .withDatabaseName("payments_test")
@@ -20,6 +21,7 @@ public class TestcontainersConfiguration {
 
     @Bean
     @ServiceConnection
+    @SuppressWarnings("resource")
     public RabbitMQContainer rabbitContainer() {
         return new RabbitMQContainer("rabbitmq:3-management-alpine");
     }

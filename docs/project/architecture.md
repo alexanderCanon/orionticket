@@ -1,3 +1,4 @@
+```mermaid
 graph TB
     %% External
     CLIENT(["🌐 Client\n(Browser / Mobile)"])
@@ -128,3 +129,4 @@ graph TB
     class RABBIT mq
     class PROM,LOKI,TEMPO,GRAF_UI obs
     class TAILSCALE network
+```

@@ -10,7 +10,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,7 +24,6 @@ public class RabbitMqEventPublisherAdapter implements DomainEventPublisherPort {
 
     @Override
     public void publishOrderCreated(Order order) {
-        Map<String, Object> lineItems = new java.util.LinkedHashMap<>();
         List<Map<String, Object>> items = order.getLineItems().stream()
                 .map(li -> {
                     Map<String, Object> item = new java.util.LinkedHashMap<>();

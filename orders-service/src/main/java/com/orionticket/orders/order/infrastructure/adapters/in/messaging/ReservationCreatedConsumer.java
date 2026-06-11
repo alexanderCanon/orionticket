@@ -1,6 +1,5 @@
 package com.orionticket.orders.order.infrastructure.adapters.in.messaging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.orders.order.application.port.in.OrderUseCase;
 import com.orionticket.orders.order.domain.model.ReservationSnapshot;
 import com.orionticket.orders.shared.infrastructure.config.RabbitMqConfig;
@@ -20,7 +19,6 @@ import java.util.UUID;
 public class ReservationCreatedConsumer {
 
     private final OrderUseCase orderUseCase;
-    private final ObjectMapper objectMapper;
 
     // Guarda snapshot local cuando seating-inventory crea una reserva.
     // Esto desacopla el checkout de llamadas síncronas a otro servicio.

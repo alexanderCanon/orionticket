@@ -1,5 +1,6 @@
 package com.orionticket.notifications.infrastructure.adapters.in.messaging;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.notifications.application.port.in.RegisterNotificationUseCase;
 import com.orionticket.notifications.domain.model.Notification;
@@ -39,7 +40,7 @@ public class NotificationEventListener {
             // Assuming the message is a JSON string representing the event
             // and contains enough information to construct a Notification.
             // In a real scenario, you'd have specific event DTOs.
-            Map<String, Object> eventData = objectMapper.readValue(message, Map.class);
+            Map<String, Object> eventData = objectMapper.readValue(message, new TypeReference<Map<String, Object>>() {});
 
             // Extract necessary fields from eventData to construct a Notification
             // This is a simplified example. Real implementation would be more robust.

@@ -38,7 +38,6 @@ public class EventCatalogIntegrationTest {
     private VenueRepositoryPort venueRepositoryPort;
 
     private UUID organizerId;
-    private UUID venueId;
 
     @BeforeEach
     void setUp() {

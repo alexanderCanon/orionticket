@@ -3,7 +3,6 @@ package com.orionticket.payments.infrastructure.adapters.in.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.payments.application.port.in.InitiatePaymentUseCase;
 import com.orionticket.payments.application.port.in.ProcessWebhookUseCase;
-import com.orionticket.payments.domain.exception.PaymentNotFoundException;
 import com.orionticket.payments.domain.model.Payment;
 import com.orionticket.payments.domain.port.out.PaymentRepositoryPort;
 import com.orionticket.payments.infrastructure.adapters.in.rest.GlobalExceptionHandler;

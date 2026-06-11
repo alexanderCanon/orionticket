@@ -84,6 +84,7 @@ public class PaymentsIntegrationTest {
     private PaymentIntentService paymentIntentService;
 
     @BeforeEach
+    @SuppressWarnings("deprecation")
     void setUp() {
         paymentIntentService = mock(PaymentIntentService.class);
         when(stripeClient.paymentIntents()).thenReturn(paymentIntentService);

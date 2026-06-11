@@ -11,7 +11,6 @@ import com.orionticket.orders.order.domain.port.out.DomainEventPublisherPort;
 import com.orionticket.orders.promotion.domain.exception.PromotionExhaustedException;
 import com.orionticket.orders.promotion.domain.model.DiscountType;
 import com.orionticket.orders.promotion.domain.model.Promotion;
-import com.orionticket.orders.promotion.domain.model.PromotionStatus;
 import com.orionticket.orders.promotion.domain.port.out.PromotionRepositoryPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,8 @@ class CreateOrderIntegrationTest {
 
     // PostgreSQL real — Flyway corre las 4 migraciones al arrancar el contexto
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
+    @SuppressWarnings("resource")
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("orders_db")
             .withUsername("orion")
             .withPassword("secret");

@@ -2,7 +2,6 @@ package com.orionticket.orders.integration;
 
 import com.orionticket.orders.order.application.port.in.CreateOrderCommand;
 import com.orionticket.orders.order.application.port.in.OrderUseCase;
-import com.orionticket.orders.order.domain.exception.OrderNotFoundException;
 import com.orionticket.orders.order.domain.model.Order;
 import com.orionticket.orders.order.domain.model.OrderStatus;
 import com.orionticket.orders.order.domain.model.ReservationSnapshot;
@@ -34,7 +33,8 @@ import static org.mockito.Mockito.*;
 class OrderLifecycleIntegrationTest {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
+    @SuppressWarnings("resource")
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("orders_db")
             .withUsername("orion")
             .withPassword("secret");

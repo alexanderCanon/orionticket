@@ -1,4 +1,4 @@
-package com.orionticket.orders.shared.infrastructure.filter;
+package com.orionticket.payments.infrastructure.config;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;

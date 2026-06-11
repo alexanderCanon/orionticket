@@ -2,7 +2,6 @@ package com.orionticket.ticketissuance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orionticket.ticketissuance.domain.model.DeliveryChannel;
-import com.orionticket.ticketissuance.domain.model.TicketStatus;
 import com.orionticket.ticketissuance.domain.model.TicketType;
 import com.orionticket.ticketissuance.infrastructure.adapters.in.rest.dto.IssueTicketRequest;
 import com.orionticket.ticketissuance.infrastructure.adapters.out.persistence.repository.JpaTicketRepository;

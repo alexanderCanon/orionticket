@@ -8,7 +8,6 @@ import com.orionticket.orders.order.domain.model.*;
 import com.orionticket.orders.order.domain.port.out.DomainEventPublisherPort;
 import com.orionticket.orders.order.domain.port.out.OrderRepositoryPort;
 import com.orionticket.orders.order.domain.port.out.ReservationSnapshotRepositoryPort;
-import com.orionticket.orders.promotion.domain.exception.InvalidPromotionCodeException;
 import com.orionticket.orders.promotion.domain.exception.PromotionExhaustedException;
 import com.orionticket.orders.promotion.domain.model.DiscountType;
 import com.orionticket.orders.promotion.domain.model.Promotion;
